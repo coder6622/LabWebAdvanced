@@ -4,7 +4,6 @@ using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 
 var context = new BlogDbContext();
-
 var seeder = new DataSeeder(context);
 
 seeder.Initialize();
@@ -25,7 +24,6 @@ var posts = context.Posts
   .OrderBy(p => p.Title)
   .Select(p => new
   {
-
     Id = p.Id,
     Title = p.Title,
     ViewCount = p.ViewCount,

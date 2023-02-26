@@ -101,9 +101,24 @@ namespace TatBlog.Data.Seeders
           Published = true,
           PostedDate = new DateTime(2021,9,30,10,20,0),
           ModifiedDate = null,
-          ViewCount = 10, Author = authors[0],
+          ViewCount = 10,
+          Author = authors[0],
           Category = categories[0],
           Tags = new List<Tag>(){tags[0]}
+        },
+        new() {
+          Title = "ASP .NET CORE With Razor Page and Blazor",
+          ShortDescription = "Long and friends has a great repository",
+          Description = "This's the wonderful day",
+          Meta = "Long and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-razor-blazor",
+          Published = true,
+          PostedDate = new DateTime(2022,10,30,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 100,
+          Author = authors[1],
+          Category = categories[0],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3]}
         },
       };
 
