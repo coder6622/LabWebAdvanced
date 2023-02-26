@@ -12,7 +12,7 @@ namespace TatBlog.Data.Seeders
   {
     private readonly BlogDbContext _dbContext;
 
-    private DataSeeder(BlogDbContext dbContext)
+    public DataSeeder(BlogDbContext dbContext)
     {
       _dbContext = dbContext;
     }
