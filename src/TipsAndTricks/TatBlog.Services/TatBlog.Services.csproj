@@ -15,7 +15,6 @@
     <Folder Include="Media\" />
     <Folder Include="Rss\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Blogs\" />
   </ItemGroup>
 
 </Project>
