@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
+using TatBlog.Services.Extensions;
 
 namespace TatBlog.Services.Blogs
 {
@@ -91,6 +93,24 @@ namespace TatBlog.Services.Blogs
           PostCount = c.Posts.Count(p => p.Published)
         })
         .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IPagedList<TagItem>> GetPagedTagsAsync(
+      IPagingParams pagingParams,
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<TagItem> tagQuery = _context.Set<Tag>()
+        .Select(t => new TagItem()
+        {
+          Id = t.Id,
+          Name = t.Name,
+          UrlSlug = t.UrlSlug,
+          Description = t.Description,
+          PostCount = t.Posts.Count(p => p.Published)
+        });
+
+      return await tagQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
     }
   }
 }

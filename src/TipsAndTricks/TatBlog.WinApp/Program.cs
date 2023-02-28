@@ -3,6 +3,7 @@ using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
+using TatBlog.WinApp;
 
 var context = new BlogDbContext();
 var seeder = new DataSeeder(context);
@@ -54,14 +55,34 @@ IBlogRepository blogRepo = new BlogRepository(context);
 //}
 
 #region section 7
-var categories = await blogRepo.GetCategoriesAsync();
+//var categories = await blogRepo.GetCategoriesAsync();
 
-Console.WriteLine("{0,-5}{1,-50}{2,10}", "ID", "Name", "Count");
+//Console.WriteLine("{0,-5}{1,-50}{2,10}", "ID", "Name", "Count");
 
-foreach (var category in categories)
+//foreach (var category in categories)
+//{
+//  Console.WriteLine("{0,-5}{1,-50}{2,10}",
+//    category.Id, category.Name, category.PostCount);
+//}
+#endregion
+
+#region section 8
+var pagingParams = new PagingParams()
+{
+  PageNumber = 1,
+  PageSize = 5,
+  SortColumn = "Name",
+  SortOrder = "DESC"
+};
+
+var tags = await blogRepo.GetPagedTagsAsync(pagingParams);
+Console.WriteLine("{0,-5}{1,-50}{2,10}",
+  "ID", "Name", "Count");
+
+foreach (var tag in tags)
 {
   Console.WriteLine("{0,-5}{1,-50}{2,10}",
-    category.Id, category.Name, category.PostCount);
+    tag.Id, tag.Name, tag.PostCount);
 }
 #endregion
 
