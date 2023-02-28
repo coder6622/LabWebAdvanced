@@ -10,7 +10,6 @@
 		<Folder Include="Collections\" />
 		<Folder Include="Constants\" />
 		<Folder Include="Settings\" />
-		<Folder Include="DTO\" />
 	</ItemGroup>
 
 </Project>

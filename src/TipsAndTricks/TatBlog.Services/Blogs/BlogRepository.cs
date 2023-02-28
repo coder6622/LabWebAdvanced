@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 
@@ -18,7 +19,7 @@ namespace TatBlog.Services.Blogs
       _context = context;
     }
 
-    public async Task<Post> GetPostAsync(int year, int month, string slug, CancellationToken cancellationToken = default)
+    public async Task<Post> GetPostsAsync(int year, int month, string slug, CancellationToken cancellationToken = default)
     {
       IQueryable<Post> postsQuery = _context.Set<Post>()
         .Include(p => p.Category)
@@ -67,6 +68,29 @@ namespace TatBlog.Services.Blogs
     {
       return await _context.Set<Post>()
         .AnyAsync(p => p.Id != postId && p.UrlSlug == slug, cancellationToken);
+    }
+
+    public async Task<IList<CategoryItem>> GetCategoriesAsync(bool showOnMenu = false, CancellationToken cancellationToken = default)
+    {
+      IQueryable<Category> categories = _context.Set<Category>();
+
+      if (showOnMenu)
+      {
+        categories = categories.Where(c => c.ShowOnMenu);
+      }
+
+      return await categories
+        .OrderBy(c => c.Name)
+        .Select(c => new CategoryItem()
+        {
+          Id = c.Id,
+          Name = c.Name,
+          UrlSlug = c.UrlSlug,
+          Description = c.Description,
+          ShowOnMenu = c.ShowOnMenu,
+          PostCount = c.Posts.Count(p => p.Published)
+        })
+        .ToListAsync(cancellationToken);
     }
   }
 }
