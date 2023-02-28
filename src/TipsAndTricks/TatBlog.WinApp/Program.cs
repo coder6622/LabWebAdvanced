@@ -9,7 +9,7 @@ var seeder = new DataSeeder(context);
 
 seeder.Initialize();
 
-#region phan4
+#region section 4 
 //var authors = context.Authors.ToList();
 
 //Console.WriteLine("{0,-4}{1,-30}{2,-30}{3,12}", "ID", "Full Name", "Email", "Joined Date");
@@ -22,7 +22,7 @@ seeder.Initialize();
 #endregion
 
 
-#region phan 5
+#region section 5 
 //var posts = context.Posts
 //  .Where(p => p.Published)
 //  .OrderBy(p => p.Title)
@@ -37,7 +37,7 @@ seeder.Initialize();
 //  }).ToList();
 #endregion
 
-#region phan6
+#region section 6 
 IBlogRepository blogRepo = new BlogRepository(context);
 //var posts = await blogRepo.GetPopularArticlesAsync(3);
 #endregion
