@@ -15,5 +15,11 @@ namespace TatBlog.Core.Entities
     public string Description { get; set; }
 
     public IList<Post> Posts { get; set; }
+
+    // tag1(post1, post2), tag2(post1, post3)
+
+    // post1 (tag1,tag2)
+    // post2 tag1
+    // post3 tag2
   }
 }

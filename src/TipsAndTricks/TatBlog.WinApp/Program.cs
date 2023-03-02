@@ -3,6 +3,7 @@ using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
+using TatBlog.Services.Tags;
 using TatBlog.WinApp;
 
 var context = new BlogDbContext();
@@ -75,14 +76,27 @@ var pagingParams = new PagingParams()
   SortOrder = "DESC"
 };
 
-var tags = await blogRepo.GetPagedTagsAsync(pagingParams);
-Console.WriteLine("{0,-5}{1,-50}{2,10}",
-  "ID", "Name", "Count");
+//var tags = await blogRepo.GetPagedTagsAsync(pagingParams);
+//Console.WriteLine("{0,-5}{1,-50}{2,10}",
+//  "ID", "Name", "Count");
 
-foreach (var tag in tags)
-{
-  Console.WriteLine("{0,-5}{1,-50}{2,10}",
-    tag.Id, tag.Name, tag.PostCount);
-}
+//foreach (var tag in tags)
+//{
+//  Console.WriteLine("{0,-5}{1,-50}{2,10}",
+//    tag.Id, tag.Name, tag.PostCount);
+//}
 #endregion
 
+
+ITagRepository tagRepository = new TagRepository(context);
+
+//var tag = await tagRepository.GetTagBySlug("google-apps");
+//Console.WriteLine("{0,-5}{1,-10}{2,-20}{3,-40}{4,-5}",
+//    tag.Id, tag.Name, tag.UrlSlug, tag.Description, tag.Posts.Count(
+//    p => p.Published));
+//foreach (var post in tag.Posts)
+//{
+//    Console.WriteLine(post.UrlSlug);
+//}
+
+await tagRepository.RemoveTagById(4);

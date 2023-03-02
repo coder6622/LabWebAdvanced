@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Media\" />
+    <Folder Include="Categories\" />
     <Folder Include="Rss\" />
   </ItemGroup>
 
