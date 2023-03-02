@@ -10,12 +10,10 @@ namespace TatBlog.Services.Tags
 {
   public interface ITagRepository
   {
-    Task<Tag> GetTagBySlug(string slug, CancellationToken cancellationToken = default);
+    Task<Tag> GetTagBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
+    Task<IList<TagItem>> GetAllTagsAsync(CancellationToken cancellationToken = default);
 
-    Task<IList<TagItem>> GetAllTags(CancellationToken cancellationToken = default);
-
-    Task<bool> RemoveTagById(int id, CancellationToken cancellationToken = default);
-
+    Task<bool> RemoveTagByIdAsync(int id, CancellationToken cancellationToken = default);
   }
 }

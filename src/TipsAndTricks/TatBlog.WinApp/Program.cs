@@ -3,6 +3,7 @@ using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
+using TatBlog.Services.Categories;
 using TatBlog.Services.Tags;
 using TatBlog.WinApp;
 
@@ -99,4 +100,12 @@ ITagRepository tagRepository = new TagRepository(context);
 //    Console.WriteLine(post.UrlSlug);
 //}
 
-//await tagRepository.RemoveTagById(4);
+//await tagRepository.RemoveTagByIdAsync(2);
+
+ICategoriesRepository categoriesRepository = new CategoriesRepository(context);
+
+var categoryById = await categoriesRepository.FindCategoryByIdAsync(1);
+//Console.WriteLine(categoryById);
+
+Console.WriteLine(await categoriesRepository.FindCategoryBySlugAsync("architecture"));
+
