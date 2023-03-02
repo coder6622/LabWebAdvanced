@@ -99,4 +99,4 @@ ITagRepository tagRepository = new TagRepository(context);
 //    Console.WriteLine(post.UrlSlug);
 //}
 
-await tagRepository.RemoveTagById(4);
+//await tagRepository.RemoveTagById(4);

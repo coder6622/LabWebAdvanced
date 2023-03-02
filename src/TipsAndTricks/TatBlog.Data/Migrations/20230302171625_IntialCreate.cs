@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TatBlog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class IntialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -97,7 +97,7 @@ namespace TatBlog.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Post Tags",
+                name: "PostMap",
                 columns: table => new
                 {
                     PostsId = table.Column<int>(type: "int", nullable: false),
@@ -105,15 +105,15 @@ namespace TatBlog.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Post Tags", x => new { x.PostsId, x.TagsId });
+                    table.PrimaryKey("PK_PostMap", x => new { x.PostsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_Post Tags_Posts_PostsId",
+                        name: "FK_PostMap_Posts_PostsId",
                         column: x => x.PostsId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Post Tags_Tags_TagsId",
+                        name: "FK_PostMap_Tags_TagsId",
                         column: x => x.TagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
@@ -121,8 +121,8 @@ namespace TatBlog.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Post Tags_TagsId",
-                table: "Post Tags",
+                name: "IX_PostMap_TagsId",
+                table: "PostMap",
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
@@ -140,7 +140,7 @@ namespace TatBlog.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Post Tags");
+                name: "PostMap");
 
             migrationBuilder.DropTable(
                 name: "Posts");

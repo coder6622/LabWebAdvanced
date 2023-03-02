@@ -12,7 +12,7 @@ using TatBlog.Data.Contexts;
 namespace TatBlog.Data.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20230226161656_InitialCreate")]
+    [Migration("20230302171754_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,7 +37,7 @@ namespace TatBlog.Data.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("Post Tags", (string)null);
+                    b.ToTable("PostTags", (string)null);
                 });
 
             modelBuilder.Entity("TatBlog.Core.Entities.Author", b =>

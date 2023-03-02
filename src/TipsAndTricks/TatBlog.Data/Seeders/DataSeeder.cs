@@ -21,8 +21,8 @@ namespace TatBlog.Data.Seeders
     {
       _dbContext.Database.EnsureCreated();
 
-      if (_dbContext.Posts.Any())
-        return;
+      //if (_dbContext.Posts.Any())
+      //  return;
 
       var authors = AddAuthors();
       var categories = AddCategories();
@@ -33,6 +33,7 @@ namespace TatBlog.Data.Seeders
 
     private IList<Author> AddAuthors()
     {
+
       var authors = new List<Author>()
       {
         new()
@@ -47,11 +48,25 @@ namespace TatBlog.Data.Seeders
           FullName = "Jessica Wonder",
           UrlSlug = "jessica-wonder",
           Email = "jessica65@motip.com",
-          JoinedDate = new DateTime( 2020, 4, 19)
+          JoinedDate = new DateTime(2020, 4, 19)
+        },
+        new()
+        {
+          FullName = "Hoang Long",
+          UrlSlug = "Hoang-long",
+          Email = "hoanglong@motip.com",
+          JoinedDate = new DateTime(2022, 4, 19)
         }
       };
 
-      _dbContext.Authors.AddRange(authors);
+      foreach (var author in authors)
+      {
+        if (!_dbContext.Authors.Any(a => a.UrlSlug == author.UrlSlug))
+        {
+          _dbContext.Authors.Add(author);
+        }
+      }
+
       _dbContext.SaveChanges();
 
       return authors;
@@ -67,7 +82,14 @@ namespace TatBlog.Data.Seeders
         new(){Name = "Design Patterns", Description = "Design Patterns", UrlSlug="design-patterns"},
       };
 
-      _dbContext.Categories.AddRange(categories);
+      foreach (var category in categories)
+      {
+        if (!_dbContext.Categories.Any(c => c.UrlSlug == category.UrlSlug))
+        {
+          _dbContext.Categories.Add(category);
+        }
+      }
+
       _dbContext.SaveChanges();
       return categories;
     }
@@ -84,7 +106,15 @@ namespace TatBlog.Data.Seeders
         new(){Name = "Neural Network", Description = "Neural Network", UrlSlug="neural-network"},
       };
 
-      _dbContext.Tags.AddRange(tags);
+
+      foreach (var tag in tags)
+      {
+        if (!_dbContext.Categories.Any(t => t.UrlSlug == tag.UrlSlug))
+        {
+          _dbContext.Tags.Add(tag);
+        }
+      }
+
       _dbContext.SaveChanges();
       return tags;
     }
@@ -120,9 +150,29 @@ namespace TatBlog.Data.Seeders
           Category = categories[0],
           Tags = new List<Tag>(){tags[1], tags[2], tags[3]}
         },
+        new() {
+          Title = "ASP .NET CORE Reactjs",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs",
+          Published = true,
+          PostedDate = new DateTime(2022,9,30,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 200,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
       };
 
-      _dbContext.Posts.AddRange(posts);
+      foreach (var post in posts)
+      {
+        if (!_dbContext.Posts.Any(p => p.UrlSlug == p.UrlSlug))
+        {
+          _dbContext.Posts.Add(post);
+        }
+      }
       _dbContext.SaveChanges();
       return posts;
     }
