@@ -16,5 +16,9 @@ namespace TatBlog.Core.DTO
     public bool ShowOnMenu { get; set; }
     public int PostCount { get; set; }
 
+    public override string ToString()
+    {
+      return String.Format("{0,-5}{1,-20}{2,-20}{3, -40}{4,-8}{5, -10}", Id, Name, UrlSlug, Description, ShowOnMenu, PostCount);
+    }
   }
 }

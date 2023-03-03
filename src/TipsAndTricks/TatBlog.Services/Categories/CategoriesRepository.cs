@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core.Contracts;
+using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
+using TatBlog.Services.Extensions;
 
 namespace TatBlog.Services.Categories
 {
@@ -18,14 +21,47 @@ namespace TatBlog.Services.Categories
     {
       _context = context;
     }
-    public Task<bool> AddOrUpdateCategoryAsync(int id, CancellationToken cancellationToken = default)
+
+    public async Task AddOrUpdateCategoryAsync(Category category, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      Category categoryEdited = await _context.Set<Category>()
+        .Where(c => c.UrlSlug == category.UrlSlug)
+        .FirstOrDefaultAsync(cancellationToken);
+
+      if (categoryEdited != null)
+      {
+        if (category.Id <= 0)
+        {
+          //category.Id = categoryEdited.Id;
+          await Console.Out.WriteLineAsync("Url slug exists");
+          return;
+        }
+
+        _context.Entry(categoryEdited).CurrentValues.SetValues(category);
+      }
+      else
+      {
+        _context.Set<Category>().Add(category);
+      }
+
+      await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<bool> DeleteCategoryByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteCategoryByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      var categoryToDelete = await _context
+        .Set<Category>()
+        .Where(c => c.Id == id)
+        .FirstOrDefaultAsync(cancellationToken);
+
+      if (categoryToDelete == null)
+      {
+        return false;
+      }
+
+      _context.Set<Category>().Remove(categoryToDelete);
+      await _context.SaveChangesAsync(cancellationToken);
+      return true;
     }
 
     public async Task<Category> FindCategoryByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -48,9 +84,28 @@ namespace TatBlog.Services.Categories
       return await categoriesQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
-    public Task<bool> IsCategoryExistBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    public async Task<IPagedList<CategoryItem>> GetPagedCategoriesAsync(IPagingParams pagingParams, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      IQueryable<CategoryItem> categoriesQuery = _context.Set<Category>()
+        .Select(c => new CategoryItem()
+        {
+          Id = c.Id,
+          Description = c.Description,
+          Name = c.Name,
+          ShowOnMenu = c.ShowOnMenu,
+          UrlSlug = c.UrlSlug,
+          PostCount = c.Posts.Count(p => p.Published),
+        });
+
+      return await categoriesQuery.ToPagedListAsync(pagingParams, cancellationToken);
     }
+
+    public async Task<bool> IsCategoryExistBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Category>()
+        .AnyAsync(c => c.UrlSlug == slug, cancellationToken);
+    }
+
+
   }
 }

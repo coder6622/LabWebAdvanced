@@ -89,6 +89,8 @@ var pagingParams = new PagingParams()
 #endregion
 
 
+// ================= Section C ===============
+#region Tag test
 ITagRepository tagRepository = new TagRepository(context);
 
 //var tag = await tagRepository.GetTagBySlug("google-apps");
@@ -99,13 +101,59 @@ ITagRepository tagRepository = new TagRepository(context);
 //{
 //    Console.WriteLine(post.UrlSlug);
 //}
+#endregion
 
-//await tagRepository.RemoveTagByIdAsync(2);
+await tagRepository.RemoveTagByIdAsync(3);
 
+
+
+#region category test
 ICategoriesRepository categoriesRepository = new CategoriesRepository(context);
-
-var categoryById = await categoriesRepository.FindCategoryByIdAsync(1);
+//var categoryById = await categoriesRepository.FindCategoryByIdAsync(1);
 //Console.WriteLine(categoryById);
 
-Console.WriteLine(await categoriesRepository.FindCategoryBySlugAsync("architecture"));
+//Console.WriteLine(await categoriesRepository.FindCategoryBySlugAsync("architecture"));
 
+
+//Console.WriteLine(await categoriesRepository.IsCategoryExistBySlugAsync( "architectures"));
+//Console.WriteLine(await categoriesRepository.IsCategoryExistBySlugAsync( "architecture"));
+
+//Console.WriteLine(await categoriesRepository.DeleteCategoryByIdAsync(1));
+
+
+//Category categoryAdd = new()
+//{
+//  Name = "Do an co so",
+//  Description = "Do an co so ne nha",
+//  UrlSlug = "do-an-co-so"
+//};
+
+//Category categoryUpdate = new()
+//{
+//  //Id = 4,
+//  UrlSlug = "oop",
+//  Name = "OOP",
+//  Description = "Object Orient Programming  ha",
+//};
+
+//await categoriesRepository.AddOrUpdateCategoryAsync(categoryAdd);
+
+
+
+
+
+var pagingParamsCategories = new PagingParams()
+{
+  PageNumber = 2,
+  PageSize = 5,
+  SortColumn = "UrlSlug",
+  SortOrder = "ASC"
+};
+
+var categories = await categoriesRepository.GetPagedCategoriesAsync(pagingParamsCategories);
+
+foreach (var category in categories)
+{
+  Console.WriteLine(category);
+}
+#endregion
