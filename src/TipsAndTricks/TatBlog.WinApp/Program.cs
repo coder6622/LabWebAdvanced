@@ -150,10 +150,18 @@ var pagingParamsCategories = new PagingParams()
   SortOrder = "ASC"
 };
 
-var categories = await categoriesRepository.GetPagedCategoriesAsync(pagingParamsCategories);
+//var categories = await categoriesRepository.GetPagedCategoriesAsync(pagingParamsCategories);
 
-foreach (var category in categories)
+//foreach (var category in categories)
+//{
+//  Console.WriteLine(category);
+//}
+#endregion
+
+#region post test
+var amountOfPosts = await blogRepo.CountPostsInNMonthsAsync(3);
+foreach (var item in amountOfPosts)
 {
-  Console.WriteLine(category);
+  Console.WriteLine(item);
 }
 #endregion

@@ -112,5 +112,42 @@ namespace TatBlog.Services.Blogs
       return await tagQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
+
+    public async Task<IList<AmountPostItem>> CountPostsInNMonthsAsync(int month, CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Post>()
+        .Select(p => new AmountPostItem()
+        {
+          Year = p.PostedDate.Year,
+          Month = p.PostedDate.Month,
+          PostCount = _context.Set<Post>()
+            .Where(x => x.PostedDate == p.PostedDate)
+            .Count()
+        })
+        .Distinct()
+        .OrderByDescending(p => p.Year).ThenByDescending(p => p.Month)
+        .Take(3)
+        .ToListAsync(cancellationToken);
+    }
+
+    public Task<Post> FindPostByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task AddOrUpdatePostAsync(Post post, CancellationToken cancellationToken = default)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task ChangePostPusblishedStateAsync(int id, bool pusblished, CancellationToken cancellationToken = default)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Task<IList<Post>> GetRandomNPosts(int n, CancellationToken cancellationToken = default)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

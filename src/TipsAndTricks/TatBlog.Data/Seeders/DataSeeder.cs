@@ -165,6 +165,76 @@ namespace TatBlog.Data.Seeders
           Category = categories[2],
           Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
         },
+        new() {
+          Title = "ASP .NET CORE Reactjs1",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs1",
+          Published = true,
+          PostedDate = new DateTime(2021,5,30,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 200,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
+        new() {
+          Title = "ASP .NET CORE Reactjs2",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs2",
+          Published = true,
+          PostedDate = new DateTime(2022,9,30,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 250,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
+        new() {
+          Title = "ASP .NET CORE Reactjs3",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs3",
+          Published = true,
+          PostedDate = new DateTime(2021,2,20,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 200,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
+        new() {
+          Title = "ASP .NET CORE Reactjs4",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs4",
+          Published = true,
+          PostedDate = new DateTime(2022,6,30,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 200,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
+        new() {
+          Title = "ASP .NET CORE Reactjs5",
+          ShortDescription = "Duat and friends has a great repository",
+          Description = "This's good day",
+          Meta = "Duat and friends has a greate repository filled",
+          UrlSlug = "aspnet-core-reactjs5",
+          Published = true,
+          PostedDate = new DateTime(2022,5,12,10,20,0),
+          ModifiedDate = null,
+          ViewCount = 200,
+          Author = authors[2],
+          Category = categories[2],
+          Tags = new List<Tag>(){tags[1], tags[2], tags[3], tags[4], tags[5] }
+        },
       };
 
       foreach (var post in posts)
