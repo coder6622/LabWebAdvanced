@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,24 +131,67 @@ namespace TatBlog.Services.Blogs
         .ToListAsync(cancellationToken);
     }
 
-    public Task<Post> FindPostByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Post> FindPostByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      return await _context.Set<Post>()
+        .Where(p => p.Id == id)
+        .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public Task AddOrUpdatePostAsync(Post post, CancellationToken cancellationToken = default)
+    public async Task AddOrUpdatePostAsync(Post post, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+
+      if (IsPostSlugExistedAsync(post.Id, post.UrlSlug).Result)
+      {
+        await Console.Out.WriteLineAsync("Url slug exists, input id to edit");
+      }
+      else
+      {
+        if (post.Id > 0)
+        {
+          Post postEditted = await _context.Set<Post>()
+            .Include(p => p.Tags)
+            .Where(p => p.Id == post.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+          foreach (var tag in post.Tags.Except(postEditted.Tags).ToList())
+          {
+            postEditted.Tags.Add(tag);
+          }
+
+          foreach (var tag in postEditted.Tags.Except(post.Tags).ToList())
+          {
+            postEditted.Tags.Remove(tag);
+          }
+
+          //postEditted.Tags = post.Tags;
+
+          _context.Entry(postEditted).CurrentValues.SetValues(post);
+        }
+        else
+        {
+          _context.Set<Post>().Add(post);
+        }
+        await _context.SaveChangesAsync(cancellationToken);
+      }
     }
 
-    public Task ChangePostPusblishedStateAsync(int id, bool pusblished, CancellationToken cancellationToken = default)
+    public async Task ChangePostPusblishedStateAsync(int id, bool isPublished, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      await _context.Set<Post>()
+       .Where(p => p.Id == id)
+       .ExecuteUpdateAsync(p =>
+         p.SetProperty(p => p.Published, isPublished), cancellationToken
+       );
+      ;
     }
 
-    public Task<IList<Post>> GetRandomNPosts(int n, CancellationToken cancellationToken = default)
+    public async Task<IList<Post>> GetRandomNPosts(int n, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      return await _context.Set<Post>()
+        .OrderBy(p => p.Id)
+        .Take(n)
+        .ToListAsync(cancellationToken);
     }
   }
 }

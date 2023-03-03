@@ -103,7 +103,7 @@ ITagRepository tagRepository = new TagRepository(context);
 //}
 #endregion
 
-await tagRepository.RemoveTagByIdAsync(3);
+//await tagRepository.RemoveTagByIdAsync(4);
 
 
 
@@ -130,13 +130,13 @@ ICategoriesRepository categoriesRepository = new CategoriesRepository(context);
 
 //Category categoryUpdate = new()
 //{
-//  //Id = 4,
+//  Id = 4,
 //  UrlSlug = "oop",
 //  Name = "OOP",
-//  Description = "Object Orient Programming  ha",
+//  Description = "Object Orient Programming",
 //};
 
-//await categoriesRepository.AddOrUpdateCategoryAsync(categoryAdd);
+//await categoriesRepository.AddOrUpdateCategoryAsync(categoryUpdate);
 
 
 
@@ -159,9 +159,52 @@ var pagingParamsCategories = new PagingParams()
 #endregion
 
 #region post test
-var amountOfPosts = await blogRepo.CountPostsInNMonthsAsync(3);
-foreach (var item in amountOfPosts)
-{
-  Console.WriteLine(item);
-}
+//var amountOfPosts = await blogRepo.CountPostsInNMonthsAsync(4);
+//foreach (var item in amountOfPosts)
+//{
+//  Console.WriteLine(item);
+//}
+
+
+//var postFindById = await blogRepo.FindPostByIdAsync(1);
+//Console.WriteLine("{0,-5}{1,-40}{2,-50}{3,-20}",
+//  postFindById.Id,
+//  postFindById.Title,
+//  postFindById.ShortDescription,
+//  postFindById.UrlSlug
+//);
+
+//Post postAddOrUpdate =
+//        new Post()
+//        {
+//          Id = 11,
+//          Title = "ASP .NET CORE Reactjs9",
+//          ShortDescription = "Duat and friends has a great repository",
+//          Description = "This's bad bad bad day",
+//          Meta = "Duat and friends has a greate repository filled",
+//          UrlSlug = "aspnet-core-reactj9",
+//          Published = true,
+//          PostedDate = new DateTime(2022, 5, 25, 10, 20, 0),
+//          ModifiedDate = null,
+//          AuthorId = context.Authors.ToList()[1].Id,
+//          CategoryId = context.Categories.ToList()[0].Id,
+//          Tags = new List<Tag>()
+//          {
+
+//            context.Tags.ToList()[0],
+//            context.Tags.ToList()[2],
+//            context.Tags.ToList()[5],
+//          },
+//          ViewCount = 200,
+//        };
+
+//await blogRepo.AddOrUpdatePostAsync(postAddOrUpdate);
+//await blogRepo.ChangePostPusblishedStateAsync(4, false);
+
+//var nPostsRandom = await blogRepo.GetRandomNPosts(5);
+
+//foreach (var post in nPostsRandom)
+//{
+//  Console.WriteLine(post);
+//}
 #endregion

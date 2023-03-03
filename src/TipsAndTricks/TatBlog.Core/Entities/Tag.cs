@@ -16,10 +16,9 @@ namespace TatBlog.Core.Entities
 
     public IList<Post> Posts { get; set; }
 
-    // tag1(post1, post2), tag2(post1, post3)
-
-    // post1 (tag1,tag2)
-    // post2 tag1
-    // post3 tag2
+    public override string ToString()
+    {
+      return String.Format("{0, -10}{1,-20}{2,-30}{3,-60}", Id, Name, UrlSlug, Description);
+    }
   }
 }

@@ -52,7 +52,7 @@ namespace TatBlog.Services.Tags
 
     public async Task<bool> RemoveTagByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-      // find -> delete 
+      //c1: find->delete
       var tagToDelete = await _context.Set<Tag>()
          .Include(t => t.Posts)
          .Where(t => t.Id == id)
@@ -64,17 +64,20 @@ namespace TatBlog.Services.Tags
 
       _context.Set<Tag>().Remove(tagToDelete);
       await _context.SaveChangesAsync(cancellationToken);
+      return true;
 
 
-      // dung cau lenh sql 
+      // c2:  dung cau lenh sql 
       //await _context.Database
       //       .ExecuteSqlRawAsync($"DELETE FROM PostTags WHERE TagsId={id}", cancellationToken);
 
-      //await _context.Set<Tag>()
-      //    .Where(t => t.Id == id)
-      //    .ExecuteDeleteAsync(cancellationToken);
 
-      return true;
+      // c3: 
+      //return await _context.Set<Tag>()
+      //           .Where(t => t.Id == id)
+      //           .ExecuteDeleteAsync(cancellationToken) > 0;
+
+
     }
 
   }
