@@ -80,6 +80,7 @@ namespace TatBlog.Data.Seeders
         new(){Name = "Messaging", Description = "Messaging", UrlSlug="messaging"},
         new(){Name = "OOP", Description = "Object-Oriented Programming", UrlSlug="oop"},
         new(){Name = "Design Patterns", Description = "Design Patterns", UrlSlug="design-patterns"},
+        new(){Name = "Web Advanced", Description = "Web advanced", UrlSlug="web-advanced"},
       };
 
       foreach (var category in categories)
@@ -109,7 +110,7 @@ namespace TatBlog.Data.Seeders
 
       foreach (var tag in tags)
       {
-        if (!_dbContext.Categories.Any(t => t.UrlSlug == tag.UrlSlug))
+        if (!_dbContext.Tags.Any(t => t.UrlSlug == tag.UrlSlug))
         {
           _dbContext.Tags.Add(tag);
         }
