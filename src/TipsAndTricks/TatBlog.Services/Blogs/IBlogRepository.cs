@@ -19,6 +19,30 @@ namespace TatBlog.Services.Blogs
     Task<IPagedList<TagItem>> GetPagedTagsAsync(IPagingParams pagingParams, CancellationToken cancellationToken = default);
 
     // ==== Section C ====
+
+    // Category
+    Task<Category> FindCategoryBySlugAsync(string slug, CancellationToken cancellationToken = default);
+
+    Task<Category> FindCategoryByIdAsync(int id, CancellationToken cancellationToken = default);
+
+    Task AddOrUpdateCategoryAsync(Category category, CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteCategoryByIdAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<bool> IsCategoryExistBySlugAsync(string slug, CancellationToken cancellationToken = default);
+
+    Task<IPagedList<CategoryItem>> GetPagedCategoriesAsync(
+      IPagingParams pagingParams,
+      CancellationToken cancellationToken = default);
+
+    // Tag
+    Task<Tag> GetTagBySlugAsync(string slug, CancellationToken cancellationToken = default);
+
+    Task<IList<TagItem>> GetAllTagsAsync(CancellationToken cancellationToken = default);
+
+    Task<bool> RemoveTagByIdAsync(int id, CancellationToken cancellationToken = default);
+
+    //Post
     Task<IList<AmountPostItem>> CountPostsInNMonthsAsync(int month, CancellationToken cancellationToken = default);
 
     Task<Post> FindPostByIdAsync(int id, CancellationToken cancellationToken = default);
