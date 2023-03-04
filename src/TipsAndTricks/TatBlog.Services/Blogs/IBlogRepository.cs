@@ -47,7 +47,7 @@ namespace TatBlog.Services.Blogs
 
     Task<Post> FindPostByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    Task AddOrUpdatePostAsync(Post post, CancellationToken cancellationToken = default);
+    Task AddOrUpdatePostAsync(Post post, IList<Tag> tags, CancellationToken cancellationToken = default);
 
     Task ChangePostPusblishedStateAsync(int id, bool pusblished, CancellationToken cancellationToken = default);
 

@@ -3,8 +3,6 @@ using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
-using TatBlog.Services.Categories;
-using TatBlog.Services.Tags;
 using TatBlog.WinApp;
 
 var context = new BlogDbContext();
@@ -91,44 +89,41 @@ var pagingParams = new PagingParams()
 
 // ================= Section C ===============
 #region Tag test
-ITagRepository tagRepository = new TagRepository(context);
-
-//var tag = await tagRepository.GetTagBySlug("google-apps");
+//var tagFindBySlug = await blogRepo.GetTagBySlugAsync("google-apps");
 //Console.WriteLine("{0,-5}{1,-10}{2,-20}{3,-40}{4,-5}",
-//    tag.Id, tag.Name, tag.UrlSlug, tag.Description, tag.Posts.Count(
-//    p => p.Published));
-//foreach (var post in tag.Posts)
+//    tagFindBySlug.Id, tagFindBySlug.Name, tagFindBySlug.UrlSlug, tagFindBySlug.Description,
+//    tagFindBySlug.Posts.Count(p => p.Published));
+//foreach (var post in tagFindBySlug.Posts)
 //{
-//    Console.WriteLine(post.UrlSlug);
+//  Console.WriteLine(post.UrlSlug);
 //}
+//await blogRepo.RemoveTagByIdAsync(4);
 #endregion
 
-//await tagRepository.RemoveTagByIdAsync(4);
 
 
 
 #region category test
-ICategoriesRepository categoriesRepository = new CategoriesRepository(context);
-//var categoryById = await categoriesRepository.FindCategoryByIdAsync(1);
-//Console.WriteLine(categoryById);
+//var categoryFindById = await blogRepo.FindCategoryByIdAsync(1);
+//Console.WriteLine(categoryFindById);
 
-//Console.WriteLine(await categoriesRepository.FindCategoryBySlugAsync("architecture"));
-
-
-//Console.WriteLine(await categoriesRepository.IsCategoryExistBySlugAsync( "architectures"));
-//Console.WriteLine(await categoriesRepository.IsCategoryExistBySlugAsync( "architecture"));
-
-//Console.WriteLine(await categoriesRepository.DeleteCategoryByIdAsync(1));
+//Console.WriteLine(await blogRepo.FindCategoryBySlugAsync("architecture"));
 
 
-//Category categoryAdd = new()
+//Console.WriteLine(await blogRepo.IsCategoryExistBySlugAsync("architectures"));
+//Console.WriteLine(await blogRepo.IsCategoryExistBySlugAsync("architecture"));
+
+//Console.WriteLine(await blogRepo.DeleteCategoryByIdAsync(8));
+
+
+//Category categoryToAdd = new()
 //{
 //  Name = "Do an co so",
-//  Description = "Do an co so ne nha",
+//  Description = "Do an co so",
 //  UrlSlug = "do-an-co-so"
 //};
 
-//Category categoryUpdate = new()
+//Category categoryToUpdate = new()
 //{
 //  Id = 4,
 //  UrlSlug = "oop",
@@ -136,21 +131,18 @@ ICategoriesRepository categoriesRepository = new CategoriesRepository(context);
 //  Description = "Object Orient Programming",
 //};
 
-//await categoriesRepository.AddOrUpdateCategoryAsync(categoryUpdate);
+//await blogRepo.AddOrUpdateCategoryAsync(categoryToAdd);
 
 
+//var pagingParamsCategories = new PagingParams()
+//{
+//  PageNumber = 2,
+//  PageSize = 5,
+//  SortColumn = "UrlSlug",
+//  SortOrder = "ASC"
+//};
 
-
-
-var pagingParamsCategories = new PagingParams()
-{
-  PageNumber = 2,
-  PageSize = 5,
-  SortColumn = "UrlSlug",
-  SortOrder = "ASC"
-};
-
-//var categories = await categoriesRepository.GetPagedCategoriesAsync(pagingParamsCategories);
+//var categories = await blogRepo.GetPagedCategoriesAsync(pagingParamsCategories);
 
 //foreach (var category in categories)
 //{
@@ -177,34 +169,36 @@ var pagingParamsCategories = new PagingParams()
 //Post postAddOrUpdate =
 //        new Post()
 //        {
-//          Id = 11,
-//          Title = "ASP .NET CORE Reactjs9",
+//          Id = 12,
+//          Title = "ASP .NET CORE Reactjs12",
 //          ShortDescription = "Duat and friends has a great repository",
 //          Description = "This's bad bad bad day",
 //          Meta = "Duat and friends has a greate repository filled",
-//          UrlSlug = "aspnet-core-reactj9",
+//          UrlSlug = "aspnet-core-reactj12",
 //          Published = true,
 //          PostedDate = new DateTime(2022, 5, 25, 10, 20, 0),
 //          ModifiedDate = null,
 //          AuthorId = context.Authors.ToList()[1].Id,
 //          CategoryId = context.Categories.ToList()[0].Id,
-//          Tags = new List<Tag>()
-//          {
-
-//            context.Tags.ToList()[0],
-//            context.Tags.ToList()[2],
-//            context.Tags.ToList()[5],
-//          },
 //          ViewCount = 200,
 //        };
 
-//await blogRepo.AddOrUpdatePostAsync(postAddOrUpdate);
-//await blogRepo.ChangePostPusblishedStateAsync(4, false);
 
-//var nPostsRandom = await blogRepo.GetRandomNPosts(5);
-
-//foreach (var post in nPostsRandom)
+//var tagForPost = new List<Tag>()
 //{
-//  Console.WriteLine(post);
-//}
+//  context.Tags.ToList()[0],
+//  context.Tags.ToList()[2],
+//  context.Tags.ToList()[5],
+//};
+
+//await blogRepo.AddOrUpdatePostAsync(postAddOrUpdate, tagForPost);
+
+//await blogRepo.ChangePostPusblishedStateAsync(12, false);
+
+var nPostsRandom = await blogRepo.GetRandomNPosts(5);
+
+foreach (var post in nPostsRandom)
+{
+  Console.WriteLine(post);
+}
 #endregion
