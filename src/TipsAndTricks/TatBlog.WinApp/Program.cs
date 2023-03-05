@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
@@ -195,10 +196,60 @@ var pagingParams = new PagingParams()
 
 //await blogRepo.ChangePostPusblishedStateAsync(12, false);
 
-var nPostsRandom = await blogRepo.GetRandomNPosts(5);
+//var nPostsRandom = await blogRepo.GetRandomNPosts(5);
 
-foreach (var post in nPostsRandom)
+//foreach (var post in nPostsRandom)
+//{
+//  Console.WriteLine(post);
+//}
+
+
+PostQuery postQuery = new PostQuery()
 {
-  Console.WriteLine(post);
+  Keyword = "reactjs",
+  //PostedMonth = 6,
+  SelectedTags = "ASP .NET MVC;Razor Page",
+  //AuthorId = 1
+};
+
+var postFindByQuery = await blogRepo.FindPostsByQueryAsync(postQuery);
+
+foreach (var post in postFindByQuery)
+{
+  Console.Write(post + "||");
+  foreach (var tag in post.Tags)
+  {
+    Console.Write($"{tag.Name}|");
+  }
+  Console.WriteLine();
 }
+
+var countPostsFindByQuery = await blogRepo.CountPostsSatisfyQueryAsync(postQuery);
+Console.WriteLine(countPostsFindByQuery);
+
+
+var pagingParamsFindPost = new PagingParams()
+{
+  PageNumber = 1,
+  PageSize = 5,
+  SortColumn = "Title",
+  SortOrder = "ASc"
+};
+
+var postFindByQueryWithPaginate = await blogRepo
+  .FindAndPaginatePostByQuery(postQuery, pagingParamsFindPost);
+
+Console.WriteLine("\n======================================\n");
+foreach (var post in postFindByQueryWithPaginate)
+{
+  Console.Write(post + "||");
+  foreach (var tag in post.Tags)
+  {
+    Console.Write($"{tag.Name}|");
+  }
+  Console.WriteLine();
+}
+
+
+
 #endregion

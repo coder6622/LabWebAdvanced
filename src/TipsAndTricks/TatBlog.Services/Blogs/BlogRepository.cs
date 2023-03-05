@@ -3,6 +3,7 @@ using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using TatBlog.Core.Contracts;
@@ -412,6 +413,86 @@ namespace TatBlog.Services.Blogs
         .OrderBy(p => Guid.NewGuid())
         .Take(n)
         .ToListAsync(cancellationToken);
+    }
+
+    private IQueryable<Post> FindPostsByQueryToQueryable(PostQuery query)
+    {
+      IQueryable<Post> postsQuery = _context.Set<Post>();
+
+      if (!string.IsNullOrEmpty(query.Keyword))
+      {
+        postsQuery = postsQuery
+          .Where(p => p.Title.Contains(query.Keyword)
+            || p.Description.Contains(query.Keyword)
+            || p.ShortDescription.Contains(query.Keyword)
+            || p.UrlSlug.Contains(query.Keyword)
+          );
+      }
+
+      if (query.PostedMonth > 0)
+      {
+        postsQuery = postsQuery
+          .Where(p => p.PostedDate.Month == query.PostedMonth);
+      }
+
+      if (query.CategoryId > 0)
+      {
+        postsQuery = postsQuery
+          .Where(p => p.CategoryId == query.CategoryId);
+      }
+
+      if (query.AuthorId > 0)
+      {
+        postsQuery = postsQuery
+          .Where(p => p.AuthorId == query.AuthorId);
+      }
+
+      if (!string.IsNullOrEmpty(query.CategoryName))
+      {
+        postsQuery = postsQuery
+            .Where(p => p.Category.Name == query.CategoryName);
+      }
+
+
+      var selectedTags = query.GetSelectedTags();
+      if (selectedTags.Count > 0)
+      {
+        foreach (var tag in selectedTags)
+        {
+          postsQuery = postsQuery.Include(p => p.Tags)
+            .Where(p => p.Tags.Any(t => t.Name == tag));
+        }
+      }
+
+      return postsQuery;
+    }
+
+    public async Task<IList<Post>> FindPostsByQueryAsync(
+      PostQuery query,
+      CancellationToken cancellationToken = default
+    )
+    {
+      IQueryable<Post> postsFindResult = FindPostsByQueryToQueryable(query);
+      return await postsFindResult.ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> CountPostsSatisfyQueryAsync(
+      PostQuery query,
+      CancellationToken cancellationToken = default
+    )
+    {
+      var postsFindResult = await Task.Run(() => FindPostsByQueryAsync(query));
+      return postsFindResult.Count;
+    }
+
+    public async Task<IPagedList<Post>> FindAndPaginatePostByQuery(
+      PostQuery query,
+      IPagingParams pagingParams,
+      CancellationToken cancellationToken = default
+    )
+    {
+      IQueryable<Post> postsFindResult = FindPostsByQueryToQueryable(query);
+      return await postsFindResult.ToPagedListAsync(pagingParams, cancellationToken);
     }
   }
 }

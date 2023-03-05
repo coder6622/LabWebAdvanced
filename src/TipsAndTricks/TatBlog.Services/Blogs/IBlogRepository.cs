@@ -52,5 +52,15 @@ namespace TatBlog.Services.Blogs
     Task ChangePostPusblishedStateAsync(int id, bool pusblished, CancellationToken cancellationToken = default);
 
     Task<IList<Post>> GetRandomNPosts(int n, CancellationToken cancellationToken = default);
+
+    Task<IList<Post>> FindPostsByQueryAsync(PostQuery query, CancellationToken cancellationToken = default);
+
+    Task<int> CountPostsSatisfyQueryAsync(PostQuery query, CancellationToken cancellationToken = default);
+
+    Task<IPagedList<Post>> FindAndPaginatePostByQuery(
+      PostQuery query,
+      IPagingParams pagingParams,
+      CancellationToken cancellationToken = default
+    );
   }
 }
