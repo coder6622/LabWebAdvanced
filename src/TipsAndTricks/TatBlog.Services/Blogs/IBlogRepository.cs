@@ -62,5 +62,12 @@ namespace TatBlog.Services.Blogs
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default
     );
+
+    Task<IPagedList<T>> FindAndPaginatePostAsync<T>(
+      PostQuery query,
+      IPagingParams pagingParams,
+      Func<IQueryable<Post>, IQueryable<T>> mapper,
+      CancellationToken cancellationToken = default
+    );
   }
 }

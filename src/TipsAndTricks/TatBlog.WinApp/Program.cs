@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Data.Contexts;
@@ -204,6 +208,7 @@ var pagingParams = new PagingParams()
 //}
 
 
+// tim voi query
 PostQuery postQuery = new PostQuery()
 {
   Keyword = "reactjs",
@@ -239,7 +244,7 @@ var pagingParamsFindPost = new PagingParams()
 var postFindByQueryWithPaginate = await blogRepo
   .FindAndPaginatePostByQuery(postQuery, pagingParamsFindPost);
 
-Console.WriteLine("\n======================================\n");
+Console.WriteLine("\n=================TIM CO PHAN TRANG=====================\n");
 foreach (var post in postFindByQueryWithPaginate)
 {
   Console.Write(post + "||");
@@ -248,6 +253,19 @@ foreach (var post in postFindByQueryWithPaginate)
     Console.Write($"{tag.Name}|");
   }
   Console.WriteLine();
+}
+
+Console.WriteLine("\n====================ANH XA SANG POST MAPPER TEST==================\n");
+IPagedList<PostMapperTest> postMapperTestFindByQueryWithPaginate = await blogRepo
+  .FindAndPaginatePostAsync<PostMapperTest>(
+  postQuery,
+  pagingParamsFindPost,
+  posts => posts.ProjectToType<PostMapperTest>()
+  );
+
+foreach (var post in postMapperTestFindByQueryWithPaginate)
+{
+  Console.WriteLine(post);
 }
 
 

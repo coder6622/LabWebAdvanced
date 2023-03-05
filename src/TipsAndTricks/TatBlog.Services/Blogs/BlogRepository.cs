@@ -426,6 +426,7 @@ namespace TatBlog.Services.Blogs
             || p.Description.Contains(query.Keyword)
             || p.ShortDescription.Contains(query.Keyword)
             || p.UrlSlug.Contains(query.Keyword)
+            || p.Tags.Any(t => t.Name.Contains(query.Keyword))
           );
       }
 
@@ -472,8 +473,8 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResult = FindPostsByQueryToQueryable(query);
-      return await postsFindResult.ToListAsync(cancellationToken);
+      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      return await postsFindResultQuery.ToListAsync(cancellationToken);
     }
 
     public async Task<int> CountPostsSatisfyQueryAsync(
@@ -481,8 +482,8 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      var postsFindResult = await Task.Run(() => FindPostsByQueryAsync(query));
-      return postsFindResult.Count;
+      var postsFindResultQuery = await Task.Run(() => FindPostsByQueryAsync(query));
+      return postsFindResultQuery.Count;
     }
 
     public async Task<IPagedList<Post>> FindAndPaginatePostByQuery(
@@ -491,8 +492,22 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResult = FindPostsByQueryToQueryable(query);
-      return await postsFindResult.ToPagedListAsync(pagingParams, cancellationToken);
+      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      return await postsFindResultQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<IPagedList<T>> FindAndPaginatePostAsync<T>(
+      PostQuery query,
+      IPagingParams pagingParams,
+      Func<IQueryable<Post>, IQueryable<T>> mapper,
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      IQueryable<T> tResultQuery = mapper(postsFindResultQuery);
+
+      return await tResultQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
     }
   }
 }
