@@ -242,7 +242,7 @@ var pagingParamsFindPost = new PagingParams()
 };
 
 var postFindByQueryWithPaginate = await blogRepo
-  .FindAndPaginatePostByQuery(postQuery, pagingParamsFindPost);
+  .FindAndPaginatePostByQueryAsync(postQuery, pagingParamsFindPost);
 
 Console.WriteLine("\n=================TIM CO PHAN TRANG=====================\n");
 foreach (var post in postFindByQueryWithPaginate)

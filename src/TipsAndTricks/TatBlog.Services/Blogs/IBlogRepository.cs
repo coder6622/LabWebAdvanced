@@ -57,7 +57,7 @@ namespace TatBlog.Services.Blogs
 
     Task<int> CountPostsSatisfyQueryAsync(PostQuery query, CancellationToken cancellationToken = default);
 
-    Task<IPagedList<Post>> FindAndPaginatePostByQuery(
+    Task<IPagedList<Post>> FindAndPaginatePostByQueryAsync(
       PostQuery query,
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default

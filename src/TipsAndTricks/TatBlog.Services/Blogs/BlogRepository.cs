@@ -486,7 +486,7 @@ namespace TatBlog.Services.Blogs
       return postsFindResultQuery.Count;
     }
 
-    public async Task<IPagedList<Post>> FindAndPaginatePostByQuery(
+    public async Task<IPagedList<Post>> FindAndPaginatePostByQueryAsync(
       PostQuery query,
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default
