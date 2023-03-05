@@ -89,7 +89,7 @@ namespace TatBlog.Services.Blogs
         .AnyAsync(
           p => p.Id != postId && p.UrlSlug == slug,
           cancellationToken
-        );
+      );
     }
 
     public async Task<IList<CategoryItem>> GetCategoriesAsync(
@@ -144,16 +144,19 @@ namespace TatBlog.Services.Blogs
       if (category.Id > 0)
       {
         Category categoryEdited = await _context.Set<Category>()
-          .Where(c => c.UrlSlug == category.UrlSlug)
+          .Where(c => c.Id == category.Id)
           .FirstOrDefaultAsync(cancellationToken);
 
-        if (categoryEdited.UrlSlug != category.UrlSlug)
+        if (categoryEdited == null)
         {
-          if (IsPostSlugExistedAsync(category.Id, category.UrlSlug).Result)
-          {
-            await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-            return;
-          }
+          return;
+        }
+
+        if (categoryEdited.UrlSlug != category.UrlSlug
+            && IsCategoryExistBySlugAsync(category.Id, category.UrlSlug).Result)
+        {
+          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
+          return;
         }
 
         _context.Entry(categoryEdited).CurrentValues.SetValues(category);
@@ -364,13 +367,12 @@ namespace TatBlog.Services.Blogs
           .Where(p => p.Id == post.Id)
           .FirstOrDefaultAsync(cancellationToken);
 
-        if (postEditted.UrlSlug != post.UrlSlug)
+        if (postEditted.UrlSlug != post.UrlSlug
+          && IsPostSlugExistedAsync(post.Id, post.UrlSlug).Result
+        )
         {
-          if (IsPostSlugExistedAsync(post.Id, post.UrlSlug).Result)
-          {
-            await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-            return;
-          }
+          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
+          return;
         }
 
         postEditted.Tags = tags;

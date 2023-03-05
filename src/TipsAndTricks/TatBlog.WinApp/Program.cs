@@ -207,67 +207,106 @@ var pagingParams = new PagingParams()
 //  Console.WriteLine(post);
 //}
 
-
+//=====================================================TIM POST VOI QUERY=========================================
 // tim voi query
-PostQuery postQuery = new PostQuery()
-{
-  Keyword = "reactjs",
-  //PostedMonth = 6,
-  SelectedTags = "ASP .NET MVC;Razor Page",
-  //AuthorId = 1
-};
+//PostQuery postQuery = new PostQuery()
+//{
+//  Keyword = "reactjs",
+//  //PostedMonth = 6,
+//  SelectedTags = "ASP .NET MVC;Razor Page",
+//  //AuthorId = 1
+//};
 
-var postFindByQuery = await blogRepo.FindPostsByQueryAsync(postQuery);
+//var postFindByQuery = await blogRepo.FindPostsByQueryAsync(postQuery);
 
-foreach (var post in postFindByQuery)
-{
-  Console.Write(post + "||");
-  foreach (var tag in post.Tags)
-  {
-    Console.Write($"{tag.Name}|");
-  }
-  Console.WriteLine();
-}
+//foreach (var post in postFindByQuery)
+//{
+//  Console.Write(post + "||");
+//  foreach (var tag in post.Tags)
+//  {
+//    Console.Write($"{tag.Name}|");
+//  }
+//  Console.WriteLine();
+//}
 
-var countPostsFindByQuery = await blogRepo.CountPostsSatisfyQueryAsync(postQuery);
-Console.WriteLine(countPostsFindByQuery);
+//var countPostsFindByQuery = await blogRepo.CountPostsSatisfyQueryAsync(postQuery);
+//Console.WriteLine(countPostsFindByQuery);
 
 
-var pagingParamsFindPost = new PagingParams()
+//var pagingParamsFindPost = new PagingParams()
+//{
+//  PageNumber = 1,
+//  PageSize = 5,
+//  SortColumn = "Title",
+//  SortOrder = "ASc"
+//};
+
+//var postFindByQueryWithPaginate = await blogRepo
+//  .FindAndPaginatePostByQueryAsync(postQuery, pagingParamsFindPost);
+
+//Console.WriteLine("\n=================TIM CO PHAN TRANG=====================\n");
+//foreach (var post in postFindByQueryWithPaginate)
+//{
+//  Console.Write(post + "||");
+//  foreach (var tag in post.Tags)
+//  {
+//    Console.Write($"{tag.Name}|");
+//  }
+//  Console.WriteLine();
+//}
+
+//Console.WriteLine("\n====================ANH XA SANG POST MAPPER TEST==================\n");
+//IPagedList<PostMapperTest> postMapperTestFindByQueryWithPaginate = await blogRepo
+//  .FindAndPaginatePostAsync<PostMapperTest>(
+//  postQuery,
+//  pagingParamsFindPost,
+//  posts => posts.ProjectToType<PostMapperTest>()
+//  );
+
+//foreach (var post in postMapperTestFindByQueryWithPaginate)
+//{
+//  Console.WriteLine(post);
+//}
+#endregion
+
+#region author test
+IAuthorRepository authorRepository = new AuthorRepository(context);
+
+//Author authorFindById = await authorRepository.FindAuthorByIdAsync(3);
+//Console.WriteLine(authorFindById);
+
+//Author authorFindBySlug = await authorRepository.FindAuthorBySlugAsync("Hoang-long");
+//Console.WriteLine(authorFindBySlug);
+
+//Author authorTestUpdateaOrAdd = new Author()
+//{
+//  Id = 4,
+//  FullName = "Nguyen Xuan Hung",
+//  UrlSlug = "xuan-hung",
+//  Email = "xuanhung@gmail.com",
+//  JoinedDate = new DateTime(2023, 2, 21)
+//};
+
+//await authorRepository.AddOrUpdateAuthor(authorTestUpdateaOrAdd);
+
+IPagingParams pagingParamsAuthor = new PagingParams()
 {
   PageNumber = 1,
   PageSize = 5,
-  SortColumn = "Title",
-  SortOrder = "ASc"
+  SortColumn = "FullName",
+  SortOrder = "ASC"
 };
 
-var postFindByQueryWithPaginate = await blogRepo
-  .FindAndPaginatePostByQueryAsync(postQuery, pagingParamsFindPost);
+//var authorTopPosts = await authorRepository.GetNAuthorTopPosts(3, pagingParamsAuthor);
+//foreach (var author in authorTopPosts)
+//{
+//  Console.WriteLine(author);
+//}
 
-Console.WriteLine("\n=================TIM CO PHAN TRANG=====================\n");
-foreach (var post in postFindByQueryWithPaginate)
+
+var allAuthors = await authorRepository.GetAllAuthor(pagingParamsAuthor);
+foreach (var author in allAuthors)
 {
-  Console.Write(post + "||");
-  foreach (var tag in post.Tags)
-  {
-    Console.Write($"{tag.Name}|");
-  }
-  Console.WriteLine();
+  Console.WriteLine(author);
 }
-
-Console.WriteLine("\n====================ANH XA SANG POST MAPPER TEST==================\n");
-IPagedList<PostMapperTest> postMapperTestFindByQueryWithPaginate = await blogRepo
-  .FindAndPaginatePostAsync<PostMapperTest>(
-  postQuery,
-  pagingParamsFindPost,
-  posts => posts.ProjectToType<PostMapperTest>()
-  );
-
-foreach (var post in postMapperTestFindByQueryWithPaginate)
-{
-  Console.WriteLine(post);
-}
-
-
-
 #endregion
