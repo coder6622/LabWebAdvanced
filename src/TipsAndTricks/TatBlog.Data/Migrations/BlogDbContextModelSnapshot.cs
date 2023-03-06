@@ -172,6 +172,43 @@ namespace TatBlog.Data.Migrations
                     b.ToTable("Posts", (string)null);
                 });
 
+            modelBuilder.Entity("TatBlog.Core.Entities.Subscriber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("FlagIsBlockSubByAdmin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("SubscribedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UnsubscribedCausal")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UnsubscribedDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subscribers", (string)null);
+                });
+
             modelBuilder.Entity("TatBlog.Core.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")

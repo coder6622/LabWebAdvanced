@@ -17,7 +17,7 @@ namespace TatBlog.Services.Blogs
   public class AuthorRepository : IAuthorRepository
   {
 
-    private BlogDbContext _context;
+    private readonly BlogDbContext _context;
     public AuthorRepository(BlogDbContext context)
     {
       _context = context;

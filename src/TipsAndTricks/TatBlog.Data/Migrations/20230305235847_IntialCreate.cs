@@ -97,7 +97,7 @@ namespace TatBlog.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostMap",
+                name: "PostTags",
                 columns: table => new
                 {
                     PostsId = table.Column<int>(type: "int", nullable: false),
@@ -105,25 +105,20 @@ namespace TatBlog.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostMap", x => new { x.PostsId, x.TagsId });
+                    table.PrimaryKey("PK_PostTags", x => new { x.PostsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_PostMap_Posts_PostsId",
+                        name: "FK_PostTags_Posts_PostsId",
                         column: x => x.PostsId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostMap_Tags_TagsId",
+                        name: "FK_PostTags_Tags_TagsId",
                         column: x => x.TagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostMap_TagsId",
-                table: "PostMap",
-                column: "TagsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorId",
@@ -134,13 +129,18 @@ namespace TatBlog.Data.Migrations
                 name: "IX_Posts_CategoryId",
                 table: "Posts",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostTags_TagsId",
+                table: "PostTags",
+                column: "TagsId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PostMap");
+                name: "PostTags");
 
             migrationBuilder.DropTable(
                 name: "Posts");

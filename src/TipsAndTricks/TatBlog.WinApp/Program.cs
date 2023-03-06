@@ -13,7 +13,7 @@ using TatBlog.WinApp;
 var context = new BlogDbContext();
 var seeder = new DataSeeder(context);
 
-seeder.Initialize();
+//seeder.Initialize();
 
 #region section 4 
 //var authors = context.Authors.ToList();
@@ -289,13 +289,13 @@ IAuthorRepository authorRepository = new AuthorRepository(context);
 
 //await authorRepository.AddOrUpdateAuthor(authorTestUpdateaOrAdd);
 
-IPagingParams pagingParamsAuthor = new PagingParams()
-{
-  PageNumber = 1,
-  PageSize = 5,
-  SortColumn = "FullName",
-  SortOrder = "ASC"
-};
+//IPagingParams pagingParamsAuthor = new PagingParams()
+//{
+//  PageNumber = 1,
+//  PageSize = 5,
+//  SortColumn = "FullName",
+//  SortOrder = "ASC"
+//};
 
 //var authorTopPosts = await authorRepository.GetNAuthorTopPosts(3, pagingParamsAuthor);
 //foreach (var author in authorTopPosts)
@@ -304,9 +304,49 @@ IPagingParams pagingParamsAuthor = new PagingParams()
 //}
 
 
-var allAuthors = await authorRepository.GetAllAuthor(pagingParamsAuthor);
-foreach (var author in allAuthors)
+//var allAuthors = await authorRepository.GetAllAuthor(pagingParamsAuthor);
+//foreach (var author in allAuthors)
+//{
+//  Console.WriteLine(author);
+//}
+#endregion
+#region Subscriber test
+ISubscriberRepository subscriberRepository = new SubscriberRepository(context);
+
+//var subscriberFindByEmail = await subscriberRepository
+//  .GetSubscriberByEmailAsync("hoanglong@gmail.com");
+
+//var subscriberFindById = await subscriberRepository
+//  .GetSubscriberByIdAsync(5);
+
+//Console.WriteLine(subscriberFindByEmail);
+//Console.WriteLine(subscriberFindById);
+
+var newSubscriber = await subscriberRepository.SubscribeAsync("nhattien@gmail.com");
+Console.WriteLine(newSubscriber);
+
+Console.WriteLine(await subscriberRepository
+  .UnsubscribeAsync("minhtien@gmail.com", "", true));
+
+Console.WriteLine(await subscriberRepository
+  .BlockSubscriberAsync(1004, "Tui khong thich thang nay", "Thong tin gia mao"));
+
+Console.WriteLine(await subscriberRepository.DeleteSubscriberAsync(1003));
+
+IPagingParams pagingParamsSubscriber = new PagingParams()
 {
-  Console.WriteLine(author);
+  PageNumber = 1,
+  PageSize = 5,
+  SortColumn = "Email",
+  SortOrder = "ASC"
+};
+
+var subscribersSearch = await subscriberRepository
+  .SearchSubscribersAsync(pagingParamsSubscriber, "tien", false, true);
+
+foreach (var subscriber in subscribersSearch)
+{
+  Console.WriteLine(subscriber);
 }
+
 #endregion

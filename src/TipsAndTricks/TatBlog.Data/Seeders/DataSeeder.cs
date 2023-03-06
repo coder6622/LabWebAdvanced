@@ -28,7 +28,7 @@ namespace TatBlog.Data.Seeders
       var categories = AddCategories();
       var tags = AddTags();
       var posts = AddPosts(authors, categories, tags);
-
+      var subscribers = AddSubscribers();
     }
 
     private IList<Author> AddAuthors()
@@ -246,6 +246,46 @@ namespace TatBlog.Data.Seeders
       }
       _dbContext.SaveChanges();
       return posts;
+    }
+
+    private IList<Subscriber> AddSubscribers()
+    {
+      var subscribers = new List<Subscriber>() {
+        new()
+        {
+          Email = "hoanglong@gmail.com",
+          SubscribedDate = new DateTime(2023,3,4,3,20,0),
+        },
+        new()
+        {
+          Email = "nhatduat@gmail.com",
+          SubscribedDate = new DateTime(2023,3,2,7,0,0),
+        },
+        new()
+        {
+          Email = "xuanhung@gmail.com",
+          SubscribedDate = new DateTime(2023,3,1,8,0,0),
+        },
+        new()
+        {
+          Email = "minhtien@gmail.com",
+          SubscribedDate = new DateTime(2023,2,28,9,15,0),
+        },
+        new()
+        {
+          Email = "trunghieu@gmail.com",
+          SubscribedDate = new DateTime(2023,2,28,20,05,0),
+        },
+      };
+      foreach (var subscriber in subscribers)
+      {
+        if (!_dbContext.Subscribers.Any(s => s.Email == subscriber.Email))
+        {
+          _dbContext.Subscribers.Add(subscriber);
+        }
+      }
+      _dbContext.SaveChanges();
+      return subscribers;
     }
   }
 }
