@@ -41,6 +41,8 @@ namespace TatBlog.Core.Entities
 
     public IList<Tag> Tags { get; set; }
 
+    public IList<Comment> Comments { get; set; }
+
     public override string ToString()
     {
       return String.Format("{0,-5}{1,-40}{2,-50}{3,-20}",
