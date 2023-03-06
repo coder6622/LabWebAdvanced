@@ -21,14 +21,15 @@ namespace TatBlog.Data.Seeders
     {
       _dbContext.Database.EnsureCreated();
 
-      //if (_dbContext.Posts.Any())
-      //  return;
+      if (_dbContext.Posts.Any())
+        return;
 
       var authors = AddAuthors();
       var categories = AddCategories();
       var tags = AddTags();
       var posts = AddPosts(authors, categories, tags);
       var subscribers = AddSubscribers();
+      var comments = AddComments(posts);
     }
 
     private IList<Author> AddAuthors()
@@ -239,7 +240,7 @@ namespace TatBlog.Data.Seeders
 
       foreach (var post in posts)
       {
-        if (!_dbContext.Posts.Any(p => p.UrlSlug == p.UrlSlug))
+        if (!_dbContext.Posts.Any(p => p.UrlSlug == post.UrlSlug))
         {
           _dbContext.Posts.Add(post);
         }
@@ -286,6 +287,55 @@ namespace TatBlog.Data.Seeders
       }
       _dbContext.SaveChanges();
       return subscribers;
+    }
+
+
+    private IList<Comment> AddComments(IList<Post> posts)
+    {
+      var comments = new List<Comment>() {
+        new()
+        {
+          Email = "nhatduat@gmail.com",
+          NameUserComment = "Nhat Duat",
+          Post = posts[3],
+          CommentedDate = new DateTime(2023,1,30,20,0,0),
+          Content = "Bai viet rat hay",
+        },
+        new()
+        {
+          Email = "xuanhung@gmail.com",
+          Post = posts[4],
+          CommentedDate = new DateTime(2023,1,30,20,0,0),
+          Content = "Bai viet rat hay",
+        },
+        new()
+        {
+          Email = "hoanglong@gmail.com",
+          NameUserComment = "Hoang Long",
+          Post = posts[3],
+          CommentedDate = new DateTime(2023,1,30,20,0,0),
+          Content = "Bai viet rat hay",
+        },
+        new()
+        {
+          Email = "coder6622@gmail.com",
+          Post = posts[4],
+          CommentedDate = new DateTime(2023,1,30,20,0,0),
+          Content = "Bai viet rat hay",
+        },
+      };
+      foreach (var comment in comments)
+      {
+        if (!_dbContext.Comments
+          .Any(c => c.Content == comment.Content
+            && c.Email == comment.Email
+            && c.PostId == comment.PostId))
+        {
+          _dbContext.Comments.Add(comment);
+        }
+      }
+      _dbContext.SaveChanges();
+      return comments;
     }
   }
 }
