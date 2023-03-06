@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TatBlog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class Intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,6 +43,24 @@ namespace TatBlog.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscribers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    SubscribedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    UnsubscribedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UnsubscribedCausal = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FlagIsBlockSubByAdmin = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    AdminNotes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscribers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,6 +115,31 @@ namespace TatBlog.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(1500)", maxLength: 1500, nullable: false),
+                    Feedback = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    NameUserComment = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CommentedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Posts",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostTags",
                 columns: table => new
                 {
@@ -121,6 +164,11 @@ namespace TatBlog.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_PostId",
+                table: "Comments",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorId",
                 table: "Posts",
                 column: "AuthorId");
@@ -140,7 +188,13 @@ namespace TatBlog.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
                 name: "PostTags");
+
+            migrationBuilder.DropTable(
+                name: "Subscribers");
 
             migrationBuilder.DropTable(
                 name: "Posts");

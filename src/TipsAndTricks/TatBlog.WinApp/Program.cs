@@ -13,7 +13,7 @@ using TatBlog.WinApp;
 var context = new BlogDbContext();
 var seeder = new DataSeeder(context);
 
-//seeder.Initialize();
+seeder.Initialize();
 
 #region section 4 
 //var authors = context.Authors.ToList();
@@ -348,5 +348,34 @@ foreach (var subscriber in subscribersSearch)
 {
   Console.WriteLine(subscriber);
 }
+
+#endregion
+
+#region comment test
+
+ICommentRepository commentRepository = new CommentRepository(context);
+
+var commentFindById = await commentRepository.GetCommentByIdAsync(1);
+Console.WriteLine(commentFindById);
+Console.WriteLine("=========");
+
+var commentFindByPostId = await commentRepository.GetCommentsByPostIdAsync(4);
+foreach (var comment in commentFindByPostId)
+{
+  Console.WriteLine(comment);
+}
+
+Console.WriteLine("=========");
+var commentFindByEmail = await commentRepository.GetCommentsByEmailAsync("hoanglong@gmail.com");
+foreach (var comment in commentFindByEmail)
+{
+  Console.WriteLine(comment);
+}
+
+Console.WriteLine("=======");
+await commentRepository.VerifyCommentAsync(1, true);
+Console.WriteLine(commentFindById);
+
+//await commentRepository.DeleteCommentAsync(2);
 
 #endregion
