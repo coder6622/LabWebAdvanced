@@ -33,11 +33,14 @@ namespace TatBlog.Services.Blogs
         .AnyAsync(a => a.Id != id && a.UrlSlug == slug, cancellationToken);
     }
 
-    public async Task AddOrUpdateAuthor(Author author, CancellationToken cancellationToken = default)
+    public async Task AddOrUpdateAuthor(
+      Author author,
+      CancellationToken cancellationToken = default)
     {
       if (author.Id > 0)
       {
-        Author authorEditted = await Task.Run(() => FindAuthorByIdAsync(author.Id));
+        Author authorEditted = await Task.Run(() =>
+          FindAuthorByIdAsync(author.Id, cancellationToken));
 
         if (authorEditted == null)
         {
@@ -45,7 +48,7 @@ namespace TatBlog.Services.Blogs
           return;
         }
         if (authorEditted.UrlSlug != author.UrlSlug
-          && await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug))
+          && await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
           return;
@@ -55,7 +58,7 @@ namespace TatBlog.Services.Blogs
       }
       else
       {
-        if (await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug))
+        if (await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
           return;
@@ -65,19 +68,25 @@ namespace TatBlog.Services.Blogs
       await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Author> FindAuthorByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Author> FindAuthorByIdAsync(
+      int id,
+      CancellationToken cancellationToken = default)
     {
       return await _context.Set<Author>().FindAsync(id, cancellationToken);
     }
 
-    public async Task<Author> FindAuthorBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    public async Task<Author> FindAuthorBySlugAsync(
+      string slug,
+      CancellationToken cancellationToken = default)
     {
       return await _context.Set<Author>()
         .Where(a => a.UrlSlug == slug)
         .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<IPagedList<AuthorItem>> GetAllAuthor(IPagingParams pagingParams, CancellationToken cancellationToken = default)
+    public async Task<IPagedList<AuthorItem>> GetAllAuthor(
+      IPagingParams pagingParams,
+      CancellationToken cancellationToken = default)
     {
       return await _context.Set<Author>()
         .Select(a => new AuthorItem()

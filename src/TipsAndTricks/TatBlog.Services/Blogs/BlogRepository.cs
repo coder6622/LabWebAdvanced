@@ -153,7 +153,7 @@ namespace TatBlog.Services.Blogs
         }
 
         if (categoryEdited.UrlSlug != category.UrlSlug
-            && IsCategoryExistBySlugAsync(category.Id, category.UrlSlug).Result)
+            && IsCategoryExistBySlugAsync(category.Id, category.UrlSlug, cancellationToken).Result)
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
           return;
@@ -163,7 +163,7 @@ namespace TatBlog.Services.Blogs
       }
       else
       {
-        if (await IsCategoryExistBySlugAsync(category.Id, category.UrlSlug))
+        if (await IsCategoryExistBySlugAsync(category.Id, category.UrlSlug, cancellationToken))
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
           return;
@@ -368,7 +368,7 @@ namespace TatBlog.Services.Blogs
           .FirstOrDefaultAsync(cancellationToken);
 
         if (postEditted.UrlSlug != post.UrlSlug
-          && IsPostSlugExistedAsync(post.Id, post.UrlSlug).Result
+          && IsPostSlugExistedAsync(post.Id, post.UrlSlug, cancellationToken).Result
         )
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
@@ -380,7 +380,7 @@ namespace TatBlog.Services.Blogs
       }
       else
       {
-        if (IsPostSlugExistedAsync(post.Id, post.UrlSlug).Result)
+        if (IsPostSlugExistedAsync(post.Id, post.UrlSlug, cancellationToken).Result)
         {
           await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
           return;
