@@ -68,7 +68,7 @@ namespace TatBlog.Data.Mappings
 
       builder.HasMany(p => p.Tags)
         .WithMany(t => t.Posts)
-        .UsingEntity(pt => pt.ToTable("Post Tags"));
+        .UsingEntity(pt => pt.ToTable("PostTags"));
     }
 
   }

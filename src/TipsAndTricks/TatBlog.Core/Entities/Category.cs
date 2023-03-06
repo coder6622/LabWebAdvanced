@@ -17,5 +17,9 @@ namespace TatBlog.Core.Entities
 
     public IList<Post> Posts { get; set; }
 
+    public override string ToString()
+    {
+      return $"{this.Id}\t{this.Name}\t{this.UrlSlug}\t{this.Description}\t{this.ShowOnMenu}";
+    }
   }
 }

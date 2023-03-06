@@ -18,5 +18,12 @@ namespace TatBlog.Core.Entities
     public string Notes { get; set; }
 
     public IList<Post> Posts { get; set; }
+
+    public override string ToString()
+    {
+      return String.Format("{0, -5}{1,-25}{2,-20}{3,-10}{4,-30}{5,-20}{6,-10}",
+        Id, FullName, UrlSlug, ImageUrl, JoinedDate, Email, Notes
+      );
+    }
   }
 }

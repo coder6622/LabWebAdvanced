@@ -15,5 +15,10 @@ namespace TatBlog.Core.Entities
     public string Description { get; set; }
 
     public IList<Post> Posts { get; set; }
+
+    public override string ToString()
+    {
+      return String.Format("{0, -10}{1,-20}{2,-30}{3,-60}", Id, Name, UrlSlug, Description);
+    }
   }
 }
