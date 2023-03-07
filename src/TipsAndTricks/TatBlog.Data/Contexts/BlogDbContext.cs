@@ -18,10 +18,17 @@ namespace TatBlog.Data.Contexts
     public DbSet<Subscriber> Subscribers { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public BlogDbContext(DbContextOptions<BlogDbContext> options) : base(options)
     {
-      optionsBuilder.UseSqlServer(@"Server=DESKTOP-Q1BKM2G;Database=TatBlog;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True");
     }
+    public BlogDbContext()
+    {
+    }
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //  optionsBuilder.UseSqlServer(@"Server=DESKTOP-Q1BKM2G;Database=TatBlog;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True");
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
