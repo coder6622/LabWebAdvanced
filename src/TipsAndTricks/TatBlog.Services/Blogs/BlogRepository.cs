@@ -417,9 +417,12 @@ namespace TatBlog.Services.Blogs
         .ToListAsync(cancellationToken);
     }
 
-    private IQueryable<Post> FindPostsByQueryToQueryable(PostQuery query)
+    private IQueryable<Post> GetPostsByQueryToQueryable(PostQuery query)
     {
-      IQueryable<Post> postsQuery = _context.Set<Post>();
+      IQueryable<Post> postsQuery = _context.Set<Post>()
+        .Include(p => p.Author)
+        .Include(p => p.Category)
+        .Include(p => p.Tags);
 
       if (!string.IsNullOrEmpty(query.Keyword))
       {
@@ -456,6 +459,15 @@ namespace TatBlog.Services.Blogs
             .Where(p => p.Category.Name == query.CategoryName);
       }
 
+      if (query.PublishedOnly)
+      {
+        postsQuery = postsQuery.Where(p => p.Published);
+      }
+
+      if (query.NotPublished)
+      {
+        postsQuery = postsQuery.Where(p => !p.Published);
+      }
 
       var selectedTags = query.GetSelectedTags();
       if (selectedTags.Count > 0)
@@ -470,12 +482,12 @@ namespace TatBlog.Services.Blogs
       return postsQuery;
     }
 
-    public async Task<IList<Post>> FindPostsByQueryAsync(
+    public async Task<IList<Post>> GetPostsByQueryAsync(
       PostQuery query,
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
       return await postsFindResultQuery.ToListAsync(cancellationToken);
     }
 
@@ -484,28 +496,28 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      var postsFindResultQuery = await Task.Run(() => FindPostsByQueryAsync(query));
+      var postsFindResultQuery = await Task.Run(() => GetPostsByQueryAsync(query));
       return postsFindResultQuery.Count;
     }
 
-    public async Task<IPagedList<Post>> FindAndPaginatePostByQueryAsync(
+    public async Task<IPagedList<Post>> GetPagedPostsAsync(
       PostQuery query,
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
       return await postsFindResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
 
-    public async Task<IPagedList<T>> FindAndPaginatePostAsync<T>(
+    public async Task<IPagedList<T>> GetPagedPostsAsync<T>(
       PostQuery query,
       IPagingParams pagingParams,
       Func<IQueryable<Post>, IQueryable<T>> mapper,
       CancellationToken cancellationToken = default)
     {
-      IQueryable<Post> postsFindResultQuery = FindPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
       IQueryable<T> tResultQuery = mapper(postsFindResultQuery);
 
       return await tResultQuery

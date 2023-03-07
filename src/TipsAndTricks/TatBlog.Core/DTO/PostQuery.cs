@@ -14,6 +14,8 @@ namespace TatBlog.Core.DTO
     public int AuthorId { get; set; }
     public int PostedMonth { get; set; }
     public string SelectedTags { get; set; }
+    public bool PublishedOnly { get; set; }
+    public bool NotPublished { get; set; }
 
     public List<string> GetSelectedTags()
     {
