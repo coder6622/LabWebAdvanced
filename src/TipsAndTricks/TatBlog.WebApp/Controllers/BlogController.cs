@@ -23,6 +23,7 @@ namespace TatBlog.WebApp.Controllers
 
     [HttpGet]
     public async Task<IActionResult> Index(
+      [FromQuery(Name = "k")] string keyword = null,
       [FromQuery(Name = "p")] int pageNumber = 1,
       [FromQuery(Name = "ps")] int pageSize = 5)
     {
@@ -30,6 +31,8 @@ namespace TatBlog.WebApp.Controllers
       var postQuery = new PostQuery()
       {
         PublishedOnly = true,
+
+        Keyword = keyword,
       };
 
 

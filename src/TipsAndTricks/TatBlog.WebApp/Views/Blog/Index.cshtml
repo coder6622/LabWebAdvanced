@@ -2,9 +2,17 @@
 
 @{
   ViewData["Title"] = "Trang chủ";
+
+  var postQuery = (ViewBag.PostQuery as PostQuery) ?? new PostQuery();
 }
 
 <div class="p-4">
+  @if (!string.IsNullOrWhiteSpace(postQuery.Keyword))
+  {
+    <h3 class="text-primary mb-3">
+      Những bài viết chứa từ khóa '@postQuery.Keyword'
+    </h3>
+  }
   @foreach (var post in Model)
   {
     <partial name="_PostItem" model="@post" />
