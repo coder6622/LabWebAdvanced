@@ -24,7 +24,7 @@ namespace TatBlog.WebApp.Controllers
     [HttpGet]
     public async Task<IActionResult> Index(
       [FromQuery(Name = "p")] int pageNumber = 1,
-      [FromQuery(Name = "ps")] int pageSize = 10)
+      [FromQuery(Name = "ps")] int pageSize = 5)
     {
 
       var postQuery = new PostQuery()

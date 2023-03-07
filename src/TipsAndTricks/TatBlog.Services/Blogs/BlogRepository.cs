@@ -459,6 +459,25 @@ namespace TatBlog.Services.Blogs
             .Where(p => p.Category.Name == query.CategoryName);
       }
 
+      if (!string.IsNullOrWhiteSpace(query.CategorySlug))
+      {
+        postsQuery = postsQuery
+          .Where(p => p.Category.UrlSlug == query.CategorySlug);
+      }
+
+      if (!string.IsNullOrWhiteSpace(query.AuthorSlug))
+      {
+        postsQuery = postsQuery
+          .Where(p => p.Author.UrlSlug == query.AuthorSlug);
+      }
+
+
+      if (!string.IsNullOrWhiteSpace(query.TagSlug))
+      {
+        postsQuery = postsQuery
+          .Where(p => p.Tags.Any(t => t.UrlSlug == query.TagSlug));
+      }
+
       if (query.PublishedOnly)
       {
         postsQuery = postsQuery.Where(p => p.Published);
