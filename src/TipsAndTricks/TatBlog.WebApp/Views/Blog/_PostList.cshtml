@@ -25,16 +25,16 @@
             @Model.Author.FullName
           </span>
           <small class="text-muted">
-            Chủ đề
+            Chủ đề:
           </small>
           <span class="text-primary">
             @Model.Category.Name
           </span>
           <small class="text-muted">
-            Ngày
+            Ngày:
           </small>
           <span class="text-primary">
-            @Model.PostedDate
+            @Model.PostedDate.ToString("dd/MM/yyyy hh:mm:ss tt")
           </span>
         </p>
 
@@ -52,7 +52,8 @@
              asp-route-year="@Model.PostedDate.Year"
              asp-route-month="@Model.PostedDate.Month"
              asp-route-day="@Model.PostedDate.Day"
-             asp-route-slug="@Model.UrlSlug">
+             asp-route-slug="@Model.UrlSlug"
+             class="btn btn-primary">
             Xem chi tiết
           </a>
         </div>
