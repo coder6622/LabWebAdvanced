@@ -103,6 +103,32 @@ namespace TatBlog.WebApp.Controllers
     }
 
 
+    public async Task<IActionResult> Tag(
+      string slug,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 5)
+    {
+      var tag = await _blogRepository
+        .GetTagBySlugAsync(slug);
+
+      var postQuery = new PostQuery()
+      {
+        PublishedOnly = true,
+        TagSlug = slug,
+        TagName = tag.Name
+      };
+
+      IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
+      var posts = await _blogRepository
+        .GetPagedPostsAsync(postQuery, pagingParams);
+
+
+      ViewBag.PostQuery = postQuery;
+      ViewBag.Title = $"Các bài viết của thẻ '{postQuery.TagName}'";
+
+      return View("Index", posts);
+    }
+
     public IActionResult About()
     {
       return View();
