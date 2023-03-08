@@ -10,6 +10,7 @@ namespace TatBlog.WebApp.Controllers
   {
 
     private readonly IBlogRepository _blogRepository;
+
     public BlogController(IBlogRepository blogRepository)
     {
       _blogRepository = blogRepository;
@@ -36,20 +37,42 @@ namespace TatBlog.WebApp.Controllers
       };
 
 
-      IPagingParams pagingParams = new PagingParams()
-      {
-        PageNumber = pageNumber,
-        PageSize = pageSize,
-        SortColumn = "PostedDate",
-        SortOrder = "DESC"
-      };
-
+      IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
       var posts = await _blogRepository
         .GetPagedPostsAsync(postQuery, pagingParams);
 
       ViewBag.PostQuery = postQuery;
+      ViewBag.Title = "Trang chủ";
 
       return View(posts);
+    }
+
+    public async Task<IActionResult> Category(
+      string slug,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 5)
+    {
+
+      var category = await _blogRepository
+        .FindCategoryBySlugAsync(slug);
+      var postQuery = new PostQuery()
+      {
+        PublishedOnly = true,
+        CategorySlug = slug,
+        CategoryName = category.Name
+      };
+
+
+
+      IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
+      var posts = await _blogRepository
+        .GetPagedPostsAsync(postQuery, pagingParams);
+
+
+      ViewBag.PostQuery = postQuery;
+      ViewBag.Title = $"Chủ đề {postQuery.CategoryName}";
+
+      return View("Index", posts);
     }
 
     public IActionResult About()
@@ -65,6 +88,21 @@ namespace TatBlog.WebApp.Controllers
     public IActionResult Rss()
     {
       return Content("Nội dung sẽ được cập nhật");
+    }
+
+    private IPagingParams CreatePagingParamsPost(
+      int pageNumber = 1,
+      int pageSize = 5,
+      string sortColumn = "PostedDate",
+      string sortOrder = "DESC")
+    {
+      return new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
     }
   }
 }
