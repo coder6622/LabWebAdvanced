@@ -25,6 +25,7 @@ namespace TatBlog.WebApp.Extensions
             .GetConnectionString("DefaultConnection")));
 
       builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+      builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
       builder.Services.AddScoped<IDataSeeder, DataSeeder>();
       return builder;
     }

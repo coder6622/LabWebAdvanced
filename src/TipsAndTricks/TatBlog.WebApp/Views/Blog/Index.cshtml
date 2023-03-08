@@ -5,7 +5,9 @@
 }
 
 <div class="p-4">
-  @if (postQuery.CategorySlug != null || !string.IsNullOrWhiteSpace(postQuery.Keyword))
+  @if (postQuery.CategorySlug != null
+  || postQuery.AuthorSlug != null
+  || !string.IsNullOrWhiteSpace(postQuery.Keyword))
   {
     <h3 class="text-primary mb-3">
       @ViewData["Title"]

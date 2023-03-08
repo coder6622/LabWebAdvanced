@@ -10,10 +10,13 @@ namespace TatBlog.WebApp.Controllers
   {
 
     private readonly IBlogRepository _blogRepository;
-
-    public BlogController(IBlogRepository blogRepository)
+    private readonly IAuthorRepository _authorRepository;
+    public BlogController(
+      IBlogRepository blogRepository,
+      IAuthorRepository authorRepository)
     {
       _blogRepository = blogRepository;
+      _authorRepository = authorRepository;
     }
     public IActionResult Index()
     {
@@ -62,8 +65,6 @@ namespace TatBlog.WebApp.Controllers
         CategoryName = category.Name
       };
 
-
-
       IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
       var posts = await _blogRepository
         .GetPagedPostsAsync(postQuery, pagingParams);
@@ -74,6 +75,33 @@ namespace TatBlog.WebApp.Controllers
 
       return View("Index", posts);
     }
+
+    public async Task<IActionResult> Author(
+      string slug,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 5)
+    {
+      var author = await _authorRepository
+        .FindAuthorBySlugAsync(slug);
+
+      var postQuery = new PostQuery()
+      {
+        PublishedOnly = true,
+        AuthorSlug = slug,
+        AuthorName = author?.FullName ?? ""
+      };
+
+      IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
+      var posts = await _blogRepository
+        .GetPagedPostsAsync(postQuery, pagingParams);
+
+
+      ViewBag.PostQuery = postQuery;
+      ViewBag.Title = $"Bài viết của tác giả {postQuery.AuthorName ?? "Ẩn danh"}";
+
+      return View("Index", posts);
+    }
+
 
     public IActionResult About()
     {

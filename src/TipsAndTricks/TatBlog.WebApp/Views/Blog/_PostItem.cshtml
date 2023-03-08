@@ -30,7 +30,7 @@
           </small>
           <a asp-controller="Blog"
              asp-action="Author"
-             asp-route-slug="@Model.UrlSlug"
+             asp-route-slug="@Model.Author.UrlSlug"
              class="text-decoration-none">
             @Model.Author.FullName
           </a>
@@ -39,7 +39,7 @@
           </small>
           <a asp-controller="Blog"
              asp-action="Category"
-             asp-route-slug="@Model.UrlSlug"
+             asp-route-slug="@Model.Category.UrlSlug"
              class="text-decoration-none">
             @Model.Category.Name
           </a>

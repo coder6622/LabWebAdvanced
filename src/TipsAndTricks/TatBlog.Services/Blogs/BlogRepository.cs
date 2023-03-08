@@ -471,6 +471,11 @@ namespace TatBlog.Services.Blogs
           .Where(p => p.Author.UrlSlug == query.AuthorSlug);
       }
 
+      if (!string.IsNullOrWhiteSpace(query.AuthorName))
+      {
+        postsQuery = postsQuery
+            .Where(p => p.Author.FullName.Contains(query.AuthorName));
+      }
 
       if (!string.IsNullOrWhiteSpace(query.TagSlug))
       {
