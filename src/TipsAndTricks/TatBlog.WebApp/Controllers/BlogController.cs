@@ -62,7 +62,6 @@ namespace TatBlog.WebApp.Controllers
       {
         PublishedOnly = true,
         CategorySlug = slug,
-        CategoryName = category.Name
       };
 
       IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
@@ -71,7 +70,7 @@ namespace TatBlog.WebApp.Controllers
 
 
       ViewBag.PostQuery = postQuery;
-      ViewBag.Title = $"Chủ đề {postQuery.CategoryName}";
+      ViewBag.Title = $"Các bài viết của chủ đề '{category.Name}'";
 
       return View("Index", posts);
     }
@@ -88,7 +87,6 @@ namespace TatBlog.WebApp.Controllers
       {
         PublishedOnly = true,
         AuthorSlug = slug,
-        AuthorName = author?.FullName ?? ""
       };
 
       IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
@@ -97,7 +95,7 @@ namespace TatBlog.WebApp.Controllers
 
 
       ViewBag.PostQuery = postQuery;
-      ViewBag.Title = $"Bài viết của tác giả {postQuery.AuthorName ?? "Ẩn danh"}";
+      ViewBag.Title = $"Các bài viết của tác giả '{author.FullName ?? "Ẩn danh"}'";
 
       return View("Index", posts);
     }
@@ -115,7 +113,6 @@ namespace TatBlog.WebApp.Controllers
       {
         PublishedOnly = true,
         TagSlug = slug,
-        TagName = tag.Name
       };
 
       IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
@@ -124,7 +121,7 @@ namespace TatBlog.WebApp.Controllers
 
 
       ViewBag.PostQuery = postQuery;
-      ViewBag.Title = $"Các bài viết của thẻ '{postQuery.TagName}'";
+      ViewBag.Title = $"Các bài viết của thẻ '{tag.Name}'";
 
       return View("Index", posts);
     }
