@@ -33,7 +33,6 @@ namespace TatBlog.WebApp.Controllers
         Keyword = keyword,
       };
 
-
       IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
       var posts = await _blogRepository
         .GetPagedPostsAsync(postQuery, pagingParams);
@@ -54,7 +53,6 @@ namespace TatBlog.WebApp.Controllers
         .FindCategoryBySlugAsync(slug);
       var postQuery = new PostQuery()
       {
-        PublishedOnly = true,
         CategorySlug = slug,
       };
 
@@ -92,7 +90,6 @@ namespace TatBlog.WebApp.Controllers
 
       return View("Index", posts);
     }
-
 
     public async Task<IActionResult> Tag(
       string slug,
@@ -138,6 +135,7 @@ namespace TatBlog.WebApp.Controllers
         return View("Error");
       }
 
+      ViewBag.Title = post.Title;
       ViewBag.Comments = await _commentRepository
         .GetAllCommentsIsApprovedByIdPost(post.Id);
       await _blogRepository.IncreaseViewCountAsync(post.Id);
@@ -145,15 +143,39 @@ namespace TatBlog.WebApp.Controllers
       return View("PostDetail", post);
     }
 
-    public IActionResult About()
+    public async Task<IActionResult> Archive(
+      [FromQuery(Name = "month")] int month,
+      [FromQuery(Name = "year")] int year,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 5)
     {
-      return View();
+
+      var postQuery = new PostQuery()
+      {
+        PostedMonth = month,
+        PostedYear = year
+      };
+
+      IPagingParams pagingParams = CreatePagingParamsPost(pageNumber, pageSize);
+      var posts = await _blogRepository
+        .GetPagedPostsAsync(postQuery, pagingParams);
+
+      ViewBag.PostQuery = postQuery;
+      ViewBag.Title = $"Các bài viết trong tháng {postQuery.PostedMonth} năm {postQuery.PostedYear}";
+
+      return View("Index", posts);
     }
 
     public IActionResult Contact()
     {
       return View();
     }
+
+    public IActionResult About()
+    {
+      return View();
+    }
+
 
     public IActionResult Rss()
     {

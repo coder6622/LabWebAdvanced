@@ -15,6 +15,7 @@ namespace TatBlog.Core.DTO
     public string AuthorSlug { get; set; }
     public string TagSlug { get; set; }
     public int PostedMonth { get; set; }
+    public int PostedYear { get; set; }
     public string SelectedTags { get; set; }
     public bool PublishedOnly { get; set; }
     public bool NotPublished { get; set; }

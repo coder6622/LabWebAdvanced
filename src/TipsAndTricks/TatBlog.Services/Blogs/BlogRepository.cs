@@ -115,7 +115,9 @@ namespace TatBlog.Services.Blogs
           UrlSlug = c.UrlSlug,
           Description = c.Description,
           ShowOnMenu = c.ShowOnMenu,
-          PostCount = c.Posts.Count(p => p.Published)
+          PostCount = c.Posts.Count()
+          //p => p.Published)
+
         })
         .ToListAsync(cancellationToken);
     }
@@ -441,6 +443,12 @@ namespace TatBlog.Services.Blogs
       {
         postsQuery = postsQuery
           .Where(p => p.PostedDate.Month == query.PostedMonth);
+      }
+
+      if (query.PostedYear > 0)
+      {
+        postsQuery = postsQuery
+          .Where(p => p.PostedDate.Year == query.PostedYear);
       }
 
       if (query.CategoryId > 0)

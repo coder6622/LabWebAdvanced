@@ -8,6 +8,7 @@
   @if (postQuery.CategorySlug != null
   || postQuery.AuthorSlug != null
   || postQuery.TagSlug != null
+  || (postQuery.PostedMonth > 0 && postQuery.PostedYear > 0)
   || !string.IsNullOrWhiteSpace(postQuery.Keyword))
   {
     <h3 class="text-primary mb-3">
