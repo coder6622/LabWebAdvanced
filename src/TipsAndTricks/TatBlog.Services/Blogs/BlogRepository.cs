@@ -32,7 +32,9 @@ namespace TatBlog.Services.Blogs
     {
       IQueryable<Post> postsQuery = _context.Set<Post>()
         .Include(p => p.Category)
-        .Include(p => p.Author);
+        .Include(p => p.Author)
+        .Include(p => p.Tags)
+        .Include(p => p.Comments);
 
       if (year > 0)
       {

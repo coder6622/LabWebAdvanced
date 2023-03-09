@@ -16,6 +16,14 @@ namespace TatBlog.Services.Blogs
     {
       _context = context;
     }
+
+
+    public async Task<int> CountCommentApprovedByIdPost(int postId, CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Comment>()
+        .CountAsync(c => c.PostId == postId & c.IsApproved ?? false, cancellationToken);
+    }
+
     //public async Task<Comment> AddOrUpdateCommentAsync(Comment comment, CancellationToken cancellationToken = default)
     //{
     //  if (comment.Id > 0)
@@ -44,6 +52,13 @@ namespace TatBlog.Services.Blogs
       return await _context.Set<Comment>()
         .Where(c => c.Id == id)
         .ExecuteDeleteAsync(cancellationToken) > 0;
+    }
+
+    public async Task<IList<Comment>> GetAllCommentsIsApprovedByIdPost(int postId, CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Comment>()
+        .Where(c => c.PostId == postId & c.IsApproved ?? false)
+        .ToListAsync(cancellationToken);
     }
 
     public async Task<Comment> GetCommentByIdAsync(

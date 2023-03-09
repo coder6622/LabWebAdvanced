@@ -11,21 +11,17 @@ namespace TatBlog.WebApp.Controllers
 
     private readonly IBlogRepository _blogRepository;
     private readonly IAuthorRepository _authorRepository;
+    private readonly ICommentRepository _commentRepository;
     public BlogController(
       IBlogRepository blogRepository,
-      IAuthorRepository authorRepository)
+      IAuthorRepository authorRepository,
+      ICommentRepository commentRepository)
     {
       _blogRepository = blogRepository;
       _authorRepository = authorRepository;
-    }
-    public IActionResult Index()
-    {
-      ViewBag.CurrentTime = DateTime.Now
-        .ToString("HH:mm:ss");
-      return View();
+      _commentRepository = commentRepository;
     }
 
-    [HttpGet]
     public async Task<IActionResult> Index(
       [FromQuery(Name = "k")] string keyword = null,
       [FromQuery(Name = "p")] int pageNumber = 1,
@@ -34,8 +30,6 @@ namespace TatBlog.WebApp.Controllers
 
       var postQuery = new PostQuery()
       {
-        PublishedOnly = true,
-
         Keyword = keyword,
       };
 
@@ -85,7 +79,6 @@ namespace TatBlog.WebApp.Controllers
 
       var postQuery = new PostQuery()
       {
-        PublishedOnly = true,
         AuthorSlug = slug,
       };
 
@@ -111,7 +104,6 @@ namespace TatBlog.WebApp.Controllers
 
       var postQuery = new PostQuery()
       {
-        PublishedOnly = true,
         TagSlug = slug,
       };
 
@@ -124,6 +116,33 @@ namespace TatBlog.WebApp.Controllers
       ViewBag.Title = $"Các bài viết của thẻ '{tag.Name}'";
 
       return View("Index", posts);
+    }
+
+    public async Task<IActionResult> Post(
+      int year,
+      int month,
+      int day,
+      string slug)
+    {
+      var post = await _blogRepository.GetPostsAsync(year, month, slug);
+
+      if (post == null)
+      {
+        ViewBag.Message = $"Không tìm thấy bài viết '{slug}'";
+        return View("Error");
+      }
+
+      if (!post.Published)
+      {
+        ViewBag.Message = $"Bài viết '{slug}' chưa công khai";
+        return View("Error");
+      }
+
+      ViewBag.Comments = await _commentRepository
+        .GetAllCommentsIsApprovedByIdPost(post.Id);
+      await _blogRepository.IncreaseViewCountAsync(post.Id);
+
+      return View("PostDetail", post);
     }
 
     public IActionResult About()
