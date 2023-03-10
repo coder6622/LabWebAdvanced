@@ -62,6 +62,7 @@ namespace TatBlog.Services.Blogs
       return await _context.Set<Post>()
         .Include(p => p.Author)
         .Include(p => p.Category)
+        .Where(p => p.Published)
         .OrderByDescending(p => p.ViewCount)
         .Take(numPosts)
         .ToListAsync(cancellationToken);
