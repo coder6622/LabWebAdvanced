@@ -16,7 +16,7 @@ namespace TatBlog.WebApp.Components
     {
 
       var monthsWithAmountPosts = await _blogRepository
-        .CountPostsInNMonthsAsync(10);
+        .CountPostsInNMonthsAsync(12);
 
       return View(monthsWithAmountPosts);
     }

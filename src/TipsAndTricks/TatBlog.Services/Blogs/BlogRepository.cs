@@ -329,13 +329,13 @@ namespace TatBlog.Services.Blogs
 
     }
 
-    public async Task<IList<AmountPostItem>> CountPostsInNMonthsAsync(
+    public async Task<IList<AmountPostItemByMonth>> CountPostsInNMonthsAsync(
       int n,
       CancellationToken cancellationToken = default
     )
     {
       return await _context.Set<Post>()
-        .Select(p => new AmountPostItem()
+        .Select(p => new AmountPostItemByMonth()
         {
           Year = p.PostedDate.Year,
           Month = p.PostedDate.Month,

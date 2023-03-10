@@ -72,7 +72,7 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default);
 
     //Post
-    Task<IList<AmountPostItem>> CountPostsInNMonthsAsync(
+    Task<IList<AmountPostItemByMonth>> CountPostsInNMonthsAsync(
       int month,
       CancellationToken cancellationToken = default);
 
