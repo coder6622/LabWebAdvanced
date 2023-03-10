@@ -2,6 +2,8 @@
 <div class="my-4">
   <partial name="_SearchForm" />
 
+  <partial name="_NewsletterForm" />
+
   @await Component.InvokeAsync("CategoriesWidget")
 
   @await Component.InvokeAsync("ArchivesWidget")
@@ -10,8 +12,8 @@
 
   @await Component.InvokeAsync("RandomPostsWidget")
 
-
   @await Component.InvokeAsync("TagCloudWidget")
 
   @await Component.InvokeAsync("BestAuthorsWidget")
+
 </div>
