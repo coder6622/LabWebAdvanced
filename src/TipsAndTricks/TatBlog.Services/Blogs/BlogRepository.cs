@@ -32,7 +32,9 @@ namespace TatBlog.Services.Blogs
     {
       IQueryable<Post> postsQuery = _context.Set<Post>()
         .Include(p => p.Category)
-        .Include(p => p.Author);
+        .Include(p => p.Author)
+        .Include(p => p.Tags)
+        .Include(p => p.Comments);
 
       if (year > 0)
       {
@@ -60,6 +62,7 @@ namespace TatBlog.Services.Blogs
       return await _context.Set<Post>()
         .Include(p => p.Author)
         .Include(p => p.Category)
+        .Where(p => p.Published)
         .OrderByDescending(p => p.ViewCount)
         .Take(numPosts)
         .ToListAsync(cancellationToken);
@@ -113,7 +116,9 @@ namespace TatBlog.Services.Blogs
           UrlSlug = c.UrlSlug,
           Description = c.Description,
           ShowOnMenu = c.ShowOnMenu,
-          PostCount = c.Posts.Count(p => p.Published)
+          PostCount = c.Posts.Count()
+          //p => p.Published)
+
         })
         .ToListAsync(cancellationToken);
     }
@@ -324,13 +329,13 @@ namespace TatBlog.Services.Blogs
 
     }
 
-    public async Task<IList<AmountPostItem>> CountPostsInNMonthsAsync(
+    public async Task<IList<AmountPostItemByMonth>> CountPostsInNMonthsAsync(
       int n,
       CancellationToken cancellationToken = default
     )
     {
       return await _context.Set<Post>()
-        .Select(p => new AmountPostItem()
+        .Select(p => new AmountPostItemByMonth()
         {
           Year = p.PostedDate.Year,
           Month = p.PostedDate.Month,
@@ -441,6 +446,12 @@ namespace TatBlog.Services.Blogs
           .Where(p => p.PostedDate.Month == query.PostedMonth);
       }
 
+      if (query.PostedYear > 0)
+      {
+        postsQuery = postsQuery
+          .Where(p => p.PostedDate.Year == query.PostedYear);
+      }
+
       if (query.CategoryId > 0)
       {
         postsQuery = postsQuery
@@ -451,12 +462,6 @@ namespace TatBlog.Services.Blogs
       {
         postsQuery = postsQuery
           .Where(p => p.AuthorId == query.AuthorId);
-      }
-
-      if (!string.IsNullOrEmpty(query.CategoryName))
-      {
-        postsQuery = postsQuery
-            .Where(p => p.Category.Name == query.CategoryName);
       }
 
       if (!string.IsNullOrWhiteSpace(query.CategorySlug))
@@ -470,7 +475,6 @@ namespace TatBlog.Services.Blogs
         postsQuery = postsQuery
           .Where(p => p.Author.UrlSlug == query.AuthorSlug);
       }
-
 
       if (!string.IsNullOrWhiteSpace(query.TagSlug))
       {

@@ -26,6 +26,14 @@ namespace TatBlog.Services.Blogs
       int id,
       CancellationToken cancellationToken = default);
 
+    Task<int> CountCommentApprovedByIdPost(
+      int postId,
+      CancellationToken cancellationToken = default);
+
+    Task<IList<Comment>> GetAllCommentsIsApprovedByIdPost(
+      int postId,
+      CancellationToken cancellationToken = default);
+
     Task<bool> VerifyCommentAsync(
       int id,
       bool isApprove = true,
