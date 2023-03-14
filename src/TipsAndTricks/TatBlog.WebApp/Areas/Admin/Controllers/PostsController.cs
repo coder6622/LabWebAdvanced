@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Services.Blogs;
+using TatBlog.Services.Media;
 using TatBlog.WebApp.Areas.Admin.Models;
+using TatBlog.WebApp.Components;
 
 namespace TatBlog.WebApp.Areas.Admin.Controllers
 {
@@ -13,14 +15,17 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
   {
     private readonly IBlogRepository _blogRepository;
     private readonly IAuthorRepository _authorRepository;
+    private readonly IMediaManager _mediaManager;
     private readonly IMapper _mapper;
     public PostsController(
       IBlogRepository blogRepository,
       IAuthorRepository authorRepository,
+      IMediaManager mediaManager,
       IMapper mapper)
     {
       _blogRepository = blogRepository;
       _authorRepository = authorRepository;
+      _mediaManager = mediaManager;
       _mapper = mapper;
     }
     public async Task<IActionResult> Index(PostFilterModel model)
@@ -42,14 +47,9 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         ? await _blogRepository.FindPostByIdAsync(id)
         : null;
 
-      PostEditModel model = new PostEditModel();
-      if (post != null)
-      {
-        model = _mapper.Map<PostEditModel>(post);
-      }
-      //var model = post == null
-      //  ? new PostEditModel()
-      //  :;
+      var model = post == null
+        ? new PostEditModel()
+        : _mapper.Map<PostEditModel>(post);
       await PopulatePosEditModelAsync(model);
 
       return View(model);
@@ -78,6 +78,20 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         _mapper.Map(model, post);
         post.Category = null;
         post.ModifiedDate = DateTime.Now;
+      }
+
+      if (model.ImageFile?.Length > 0)
+      {
+        var newImagePath = await _mediaManager.SaveFileAsync(
+          model.ImageFile.OpenReadStream(),
+          model.ImageFile.FileName,
+          model.ImageFile.ContentType);
+
+        if (!string.IsNullOrWhiteSpace(newImagePath))
+        {
+          await _mediaManager.DeleteFileAsync(post.ImageUrl);
+          post.ImageUrl = newImagePath;
+        }
       }
 
       await _blogRepository.AddOrUpdatePostAsync(
