@@ -80,9 +80,9 @@ namespace TatBlog.Services.Blogs
       int id,
       CancellationToken cancellationToken = default);
 
-    Task AddOrUpdatePostAsync(
+    Task<Post> AddOrUpdatePostAsync(
       Post post,
-      IList<Tag> tags,
+      IEnumerable<string> tags,
       CancellationToken cancellationToken = default);
 
     Task ChangePostPusblishedStateAsync(

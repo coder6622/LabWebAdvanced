@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using SlugGenerator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -356,45 +357,63 @@ namespace TatBlog.Services.Blogs
     )
     {
       return await _context.Set<Post>()
+        .Include(p => p.Tags)
+        .Include(p => p.Author)
+        .Include(p => p.Category)
         .Where(p => p.Id == id)
         .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task AddOrUpdatePostAsync(
+    public async Task<Post> AddOrUpdatePostAsync(
       Post post,
-      IList<Tag> tags,
+      IEnumerable<string> tags,
       CancellationToken cancellationToken = default
     )
     {
       if (post.Id > 0)
       {
-        Post postEditted = await _context.Set<Post>()
-          .Include(p => p.Tags)
-          .Where(p => p.Id == post.Id)
-          .FirstOrDefaultAsync(cancellationToken);
-
-        if (postEditted.UrlSlug != post.UrlSlug
-          && IsPostSlugExistedAsync(post.Id, post.UrlSlug, cancellationToken).Result
-        )
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
-
-        postEditted.Tags = tags;
-        _context.Entry(postEditted).CurrentValues.SetValues(post);
+        await _context.Entry(post).Collection(x => x.Tags).LoadAsync(cancellationToken);
       }
       else
       {
-        if (IsPostSlugExistedAsync(post.Id, post.UrlSlug, cancellationToken).Result)
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
-        post.Tags = tags;
-        _context.Set<Post>().Add(post);
+        post.Tags = new List<Tag>();
       }
+
+      var validTags = tags.Where(x => !string.IsNullOrWhiteSpace(x))
+        .Select(x => new
+        {
+          Name = x,
+          Slug = x.GenerateSlug()
+        })
+        .GroupBy(x => x.Slug)
+        .ToDictionary(g => g.Key, g => g.First().Name);
+
+
+      foreach (var kv in validTags)
+      {
+        if (post.Tags.Any(x => string.Compare(x.UrlSlug, kv.Key, StringComparison.InvariantCultureIgnoreCase) == 0))
+          continue;
+
+        var tag = await GetTagBySlugAsync(kv.Key, cancellationToken) ?? new Tag()
+        {
+          Name = kv.Value,
+          Description = kv.Value,
+          UrlSlug = kv.Key
+        };
+
+        post.Tags.Add(tag);
+      }
+
+      post.Tags = post.Tags.Where(t => validTags.ContainsKey(t.UrlSlug)).ToList();
+
+      if (post.Id > 0)
+        _context.Update(post);
+      else
+        _context.Add(post);
+
       await _context.SaveChangesAsync(cancellationToken);
+
+      return post;
     }
 
     public async Task ChangePostPusblishedStateAsync(

@@ -16,6 +16,17 @@ namespace TatBlog.WebApp.Mapster
 
       config.NewConfig<PostFilterModel, PostQuery>()
         .Map(dest => dest.PublishedOnly, src => false);
+
+      config.NewConfig<PostEditModel, Post>()
+        .Ignore(dest => dest.Id)
+        .Ignore(dest => dest.ImageUrl);
+
+      config.NewConfig<Post, PostEditModel>()
+        .Map(dest => dest.SelectedTags, src =>
+        string.Join("\r\n", src.Tags.Select(t => t.Name)))
+        .Ignore(dest => dest.Authors)
+        .Ignore(dest => dest.Categories)
+        .Ignore(dest => dest.ImageFile);
     }
   }
 }
