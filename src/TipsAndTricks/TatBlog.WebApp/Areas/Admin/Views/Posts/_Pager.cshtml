@@ -1,0 +1,60 @@
+﻿@model PostFilterModel
+
+@{
+  var posts = ViewBag.Posts as IPagedList<Post>;
+  var actionName = "Index";
+  var slug = "";
+
+
+  if (posts.PageCount > 1)
+  {
+    <div class="text-center my-4">
+      @if (posts.HasPreviousPage)
+      {
+        <a asp-area="Admin"
+     asp-controller="Blog"
+     asp-action="@actionName"
+     asp-route-slug="@slug"
+     asp-route-k="@Model.Keyword"
+     asp-route-p="@(posts.PageNumber -1)"
+     asp-route-ps="@posts.PageSize"
+         class="btn btn-info">
+          <i class="fa fa-arrow-left"></i>
+          Trang trước
+        </a>
+      }
+      else
+      {
+        <button type="button"
+                class="btn btn-outline-secondary"
+                disabled>
+          Trang trước
+        </button>
+      }
+
+      @if (posts.HasNextPage)
+      {
+        <a asp-asp-area="Admin"
+     asp-controller="Blog"
+     asp-action="@actionName"
+     asp-route-slug="@slug"
+     asp-route-k="@Model.Keyword"
+     asp-route-p="@(posts.PageNumber + 1)"
+     asp-route-ps="@posts.PageSize"
+         class="btn btn-info">
+          Trang sau
+          <i class="fa fa-arrow-right"></i>
+        </a>
+      }
+      else
+      {
+        <button type="button"
+                class="btn btn-outline-secondary"
+                disabled>
+          Trang sau
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      }
+    </div>
+  }
+}

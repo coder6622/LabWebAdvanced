@@ -108,6 +108,16 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     );
 
+
+    Task<IPagedList<Post>> GetPagedPostsAsync(
+      PostQuery query,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default
+    );
+
     Task<IPagedList<T>> GetPagedPostsAsync<T>(
       PostQuery query,
       IPagingParams pagingParams,

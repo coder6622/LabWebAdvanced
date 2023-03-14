@@ -1,0 +1,60 @@
+﻿@model PostFilterModel
+@{
+  ViewData["Title"] = "Danh sách bài viết";
+
+  var posts = ViewBag.Posts as IPagedList<Post>;
+}
+<h2>
+  Danh sách bài viết
+</h2>
+
+<partial name="_PostFilterPane" />
+
+@if (posts != null && posts.Count > 0)
+{
+  <table class="table table-responsive table-striped">
+    <thead>
+      <tr>
+        <th>Tiêu đề</th>
+        <th>Tác giả</th>
+        <th>Chủ đề</th>
+        <th>Xuất bản</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var post in posts)
+      {
+        <tr>
+          <td>
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="Edit"
+           asp-route-id="@post.Id"
+               class="text-bold">
+              @post.Title
+            </a>
+            <p class="text-muted">
+              @post.ShortDescription
+            </p>
+          </td>
+          <td>
+            @post.Author.FullName
+          </td>
+          <td>
+            @post.Category.Name
+          </td>
+          <td>
+            @(post.Published ? "Có" : "Không")
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+}
+else
+{
+  <h1 class="text-danget">
+    Không tìm thấy bài viết nào
+  </h1>
+}

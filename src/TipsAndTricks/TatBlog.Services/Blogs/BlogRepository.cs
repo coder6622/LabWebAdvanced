@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core;
 using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
@@ -544,6 +545,26 @@ namespace TatBlog.Services.Blogs
       IQueryable<T> tResultQuery = mapper(postsFindResultQuery);
 
       return await tResultQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<IPagedList<Post>> GetPagedPostsAsync(
+      PostQuery query,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      var pagingParams = new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
+      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
+      return await postsFindResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
   }
