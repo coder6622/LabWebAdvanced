@@ -1,4 +1,6 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -56,8 +58,17 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(PostEditModel model)
+    public async Task<IActionResult> Edit(
+    [FromServices] IValidator<PostEditModel> postValidator,
+      PostEditModel model)
     {
+      var validationResult = await postValidator.ValidateAsync(model);
+
+      if (!validationResult.IsValid)
+      {
+        validationResult.AddToModelState(ModelState);
+      }
+
       if (!ModelState.IsValid)
       {
         await PopulatePosEditModelAsync(model);
@@ -147,6 +158,5 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         Value = c.Id.ToString(),
       });
     }
-
   }
 }

@@ -3,6 +3,7 @@ using TatBlog.Data.Contexts;
 using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
 using TatBlog.Services.Media;
+using FluentValidation;
 
 namespace TatBlog.WebApp.Extensions
 {
