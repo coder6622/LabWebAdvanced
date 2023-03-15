@@ -4,6 +4,8 @@ using TatBlog.Data.Seeders;
 using TatBlog.Services.Blogs;
 using TatBlog.Services.Media;
 using FluentValidation;
+using NLog.Web;
+using TatBlog.WebApp.Middlewares;
 
 namespace TatBlog.WebApp.Extensions
 {
@@ -34,6 +36,16 @@ namespace TatBlog.WebApp.Extensions
       return builder;
     }
 
+    public static WebApplicationBuilder ConfigureNLog(
+        this WebApplicationBuilder builder)
+    {
+      builder.Logging.ClearProviders();
+      builder.Host.UseNLog();
+
+      return builder;
+    }
+
+
     public static WebApplication UseRequestPipeline(
       this WebApplication app)
     {
@@ -59,6 +71,8 @@ namespace TatBlog.WebApp.Extensions
 
       // lựa chọn endpoint phù hợp để xử lý http request
       app.UseRouting();
+
+      app.UseMiddleware<UserActivityMiddleware>();
       return app;
     }
 
