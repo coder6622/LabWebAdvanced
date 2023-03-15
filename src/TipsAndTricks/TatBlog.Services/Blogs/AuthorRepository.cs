@@ -84,7 +84,7 @@ namespace TatBlog.Services.Blogs
         .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<IPagedList<AuthorItem>> GetAllAuthor(
+    public async Task<IPagedList<AuthorItem>> GetAllAuthorsAsync(
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default)
     {
@@ -104,7 +104,7 @@ namespace TatBlog.Services.Blogs
 
     }
 
-    public async Task<IPagedList<Author>> GetNAuthorTopPosts(
+    public async Task<IPagedList<Author>> GetNAuthorTopPostsAsync(
       int n,
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default
@@ -122,6 +122,23 @@ namespace TatBlog.Services.Blogs
         .Where(a => a.Posts.Count(p => p.Published) == maxAmmountOfPost)
         .Take(n)
         .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<IList<AuthorItem>> GetAllAuthorsAsync(CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Author>()
+        .Select(a => new AuthorItem()
+        {
+          Id = a.Id,
+          FullName = a.FullName,
+          UrlSlug = a.UrlSlug,
+          ImageUrl = a.ImageUrl,
+          JoinedDate = a.JoinedDate,
+          Email = a.Email,
+          Notes = a.Notes,
+          PostsCount = a.Posts.Count(p => p.Published),
+        })
+        .ToListAsync(cancellationToken);
     }
   }
 }

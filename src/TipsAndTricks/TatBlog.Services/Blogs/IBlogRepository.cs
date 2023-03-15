@@ -80,9 +80,9 @@ namespace TatBlog.Services.Blogs
       int id,
       CancellationToken cancellationToken = default);
 
-    Task AddOrUpdatePostAsync(
+    Task<Post> AddOrUpdatePostAsync(
       Post post,
-      IList<Tag> tags,
+      IEnumerable<string> tags,
       CancellationToken cancellationToken = default);
 
     Task ChangePostPusblishedStateAsync(
@@ -105,6 +105,16 @@ namespace TatBlog.Services.Blogs
     Task<IPagedList<Post>> GetPagedPostsAsync(
       PostQuery query,
       IPagingParams pagingParams,
+      CancellationToken cancellationToken = default
+    );
+
+
+    Task<IPagedList<Post>> GetPagedPostsAsync(
+      PostQuery query,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
       CancellationToken cancellationToken = default
     );
 

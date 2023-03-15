@@ -22,7 +22,7 @@ namespace TatBlog.WebApp.Components
       };
 
       var authors = await _authorRepository
-        .GetNAuthorTopPosts(4, pagingParams);
+        .GetNAuthorTopPostsAsync(4, pagingParams);
 
       return View(authors);
     }
