@@ -14,7 +14,8 @@ namespace TatBlog.WebApp.Validations
 
       RuleFor(x => x.Title)
         .NotEmpty()
-        .MaximumLength(500);
+        .MaximumLength(500)
+        .WithMessage("Title không được để trống");
 
       RuleFor(x => x.ShortDescription)
         .NotEmpty();
@@ -34,7 +35,7 @@ namespace TatBlog.WebApp.Validations
         .MustAsync(async (postModel, slug, cancellationToken) =>
         !await blogRepository.IsPostSlugExistedAsync(
           postModel.Id, slug, cancellationToken))
-        .WithMessage($"Slug '' đã được sử dụng");
+        .WithMessage(x => $"Slug '{x.UrlSlug}' đã được sử dụng");
 
       RuleFor(x => x.CategoryId)
         .NotEmpty()
@@ -51,7 +52,7 @@ namespace TatBlog.WebApp.Validations
       When(x => x.Id <= 0, () =>
       {
         RuleFor(x => x.ImageFile)
-        .Must(x => x is { Length: > 0 })
+        .Must(i => i is { Length: > 0 })
         .WithMessage("Bạn phải chọn hình ảnh cho bài viết");
       })
       .Otherwise(() =>

@@ -370,6 +370,10 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
+      foreach (var tag in tags)
+      {
+        await Console.Out.WriteLineAsync("Hello world" + tag);
+      }
       if (post.Id > 0)
       {
         await _context.Entry(post).Collection(x => x.Tags).LoadAsync(cancellationToken);
@@ -383,7 +387,7 @@ namespace TatBlog.Services.Blogs
         .Select(x => new
         {
           Name = x,
-          Slug = x.GenerateSlug()
+          Slug = x.GenerateSlug(),
         })
         .GroupBy(x => x.Slug)
         .ToDictionary(g => g.Key, g => g.First().Name);
@@ -391,20 +395,32 @@ namespace TatBlog.Services.Blogs
 
       foreach (var kv in validTags)
       {
-        if (post.Tags.Any(x => string.Compare(x.UrlSlug, kv.Key, StringComparison.InvariantCultureIgnoreCase) == 0))
+        await Console.Out.WriteLineAsync("World" + kv);
+        if (post.Tags.Any(t => string.Compare(t.UrlSlug, kv.Key,
+            StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+          await Console.Out.WriteLineAsync("Trung goi" + kv);
           continue;
+        }
 
         var tag = await GetTagBySlugAsync(kv.Key, cancellationToken) ?? new Tag()
         {
           Name = kv.Value,
           Description = kv.Value,
-          UrlSlug = kv.Key
+          UrlSlug = kv.Key,
         };
+
+        await Console.Out.WriteLineAsync("Them vao ne" + tag.ToString());
 
         post.Tags.Add(tag);
       }
 
       post.Tags = post.Tags.Where(t => validTags.ContainsKey(t.UrlSlug)).ToList();
+
+      foreach (var tag in post.Tags)
+      {
+        await Console.Out.WriteLineAsync("Cai cuoi" + tag.ToString());
+      }
 
       if (post.Id > 0)
         _context.Update(post);
@@ -442,7 +458,7 @@ namespace TatBlog.Services.Blogs
         .ToListAsync(cancellationToken);
     }
 
-    private IQueryable<Post> GetPostsByQueryToQueryable(PostQuery query)
+    private IQueryable<Post> FilterPostsByQuery(PostQuery query)
     {
       IQueryable<Post> postsQuery = _context.Set<Post>()
         .Include(p => p.Author)
@@ -530,7 +546,7 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
       return await postsFindResultQuery.ToListAsync(cancellationToken);
     }
 
@@ -549,7 +565,7 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
       return await postsFindResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
@@ -560,7 +576,7 @@ namespace TatBlog.Services.Blogs
       Func<IQueryable<Post>, IQueryable<T>> mapper,
       CancellationToken cancellationToken = default)
     {
-      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
       IQueryable<T> tResultQuery = mapper(postsFindResultQuery);
 
       return await tResultQuery
@@ -582,7 +598,7 @@ namespace TatBlog.Services.Blogs
         SortColumn = sortColumn,
         SortOrder = sortOrder
       };
-      IQueryable<Post> postsFindResultQuery = GetPostsByQueryToQueryable(query);
+      IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
       return await postsFindResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }

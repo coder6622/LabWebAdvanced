@@ -14,7 +14,7 @@
 
   <div class="row mb-3">
     <label asp-for="Title"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -27,7 +27,7 @@
 
   <div class="row mb-3">
     <label asp-for="UrlSlug"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -40,7 +40,7 @@
 
   <div class="row mb-3">
     <label asp-for="ShortDescription"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -53,7 +53,7 @@
 
   <div class="row mb-3">
     <label asp-for="Description"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -66,7 +66,7 @@
 
   <div class="row mb-3">
     <label asp-for="Meta"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -79,7 +79,7 @@
 
   <div class="row mb-3">
     <label asp-for="AuthorId"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -94,7 +94,7 @@
 
   <div class="row mb-3">
     <label asp-for="CategoryId"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -109,7 +109,7 @@
 
   <div class="row mb-3">
     <label asp-for="SelectedTags"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
@@ -124,7 +124,7 @@
   {
     <div class="row mb-3">
       <label asp-for="ImageUrl"
-             class="colo-sm-2 col-form-label">
+             class="col-sm-2 col-form-label">
       </label>
       <div class="col-sm-10">
         <img src="/@Model.ImageUrl" />
@@ -134,13 +134,15 @@
 
   <div class="row mb-3">
     <label asp-for="ImageFile"
-           class="colo-sm-2 col-form-label">
+           class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
       <input type="file"
              class="form-control"
              asp-for="ImageFile" />
+      <span asp-validation-for="ImageFile"
+            class="text-danger"></span>
     </div>
   </div>
 

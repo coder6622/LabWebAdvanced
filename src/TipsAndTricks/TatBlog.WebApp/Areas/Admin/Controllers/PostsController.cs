@@ -107,6 +107,12 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
 
       await _blogRepository.AddOrUpdatePostAsync(
         post, model.GetSelectedTags());
+
+      foreach (var item in model.GetSelectedTags())
+      {
+        await Console.Out.WriteLineAsync(item);
+      }
+
       return RedirectToAction(nameof(Index));
     }
 
