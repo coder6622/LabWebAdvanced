@@ -36,14 +36,21 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(PostFilterModel model)
+    public async Task<IActionResult> Index(PostFilterModel model,
+      //[FromQuery(Name = "k")] string keyword = null,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 5
+      )
     {
       _logger.LogInformation("Tạo điều kiện truy vấn");
       var postQuery = _mapper.Map<PostQuery>(model);
 
       _logger.LogInformation("Lấy danh sách bài viết từ CSDL");
       ViewBag.Posts = await _blogRepository
-        .GetPagedPostsAsync(query: postQuery, pageNumber: 1, pageSize: 5);
+        .GetPagedPostsAsync(
+        query: postQuery,
+        pageNumber: pageNumber,
+        pageSize: pageSize);
 
       ViewBag.PostQuery = postQuery;
 
