@@ -288,7 +288,7 @@ namespace TatBlog.Services.Blogs
     )
     {
       IQueryable<Tag> tagsQuery = _context.Set<Tag>()
-        .Include(t => t.Posts);
+      .Include(t => t.Posts);
 
       if (!string.IsNullOrEmpty(slug))
       {
@@ -423,7 +423,9 @@ namespace TatBlog.Services.Blogs
       }
 
       if (post.Id > 0)
+      {
         _context.Update(post);
+      }
       else
         _context.Add(post);
 

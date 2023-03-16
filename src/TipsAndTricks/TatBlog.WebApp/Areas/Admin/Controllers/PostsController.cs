@@ -34,6 +34,8 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       _mediaManager = mediaManager;
       _mapper = mapper;
     }
+
+    [HttpGet]
     public async Task<IActionResult> Index(PostFilterModel model)
     {
       _logger.LogInformation("Tạo điều kiện truy vấn");
@@ -41,7 +43,9 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
 
       _logger.LogInformation("Lấy danh sách bài viết từ CSDL");
       ViewBag.Posts = await _blogRepository
-        .GetPagedPostsAsync(query: postQuery, pageNumber: 1, pageSize: 10);
+        .GetPagedPostsAsync(query: postQuery, pageNumber: 1, pageSize: 5);
+
+      ViewBag.PostQuery = postQuery;
 
       _logger.LogInformation("Chuẩn bị dữ liệu cho ViewModel");
       await PopulatePostFilterModelAsync(model);
@@ -65,6 +69,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
     [FromServices] IValidator<PostEditModel> postValidator,
       PostEditModel model)
