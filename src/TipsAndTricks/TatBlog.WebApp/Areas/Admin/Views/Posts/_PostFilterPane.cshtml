@@ -43,7 +43,22 @@
       <option value="" selected>-- Chọn tháng --</option>
     </select>
   </div>
+
   <div class="col-auto">
+    <div class="form-check">
+      <input class="form-check-input"
+             type="checkbox"
+             asp-for="NotPublished" />
+      <label class="form-check-label"
+             asp-for="NotPublished"></label>
+    </div>
+  </div>
+
+  <div class="col-auto">
+    <a asp-area="Admin"
+       asp-action="Index"
+       asp-controller="Posts"
+       class="btn btn-warning">Bỏ lọc</a>
     <button type="submit" class="btn btn-primary">Tìm/Lọc</button>
     <a asp-area="Admin"
        asp-controller="Posts"

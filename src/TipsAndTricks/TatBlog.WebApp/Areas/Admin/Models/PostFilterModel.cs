@@ -15,7 +15,7 @@ namespace TatBlog.WebApp.Areas.Admin.Models
     [DisplayName("Chủ đề")]
     public int? CategoryId { get; set; }
 
-    [DisplayName("Các bài viết chưa đăng")]
+    [DisplayName("Chưa đăng")]
     public bool NotPublished { get; set; }
 
     [DisplayName("Năm")]
