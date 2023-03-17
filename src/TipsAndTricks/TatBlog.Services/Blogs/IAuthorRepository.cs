@@ -34,5 +34,22 @@ namespace TatBlog.Services.Blogs
       int n,
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default);
+
+    Task<IPagedList<Author>> GetPagedAuthorAsync(
+      AuthorQuery authorQuery,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default);
+
+    public Task<IPagedList<T>> GetPagedPostsAsync<T>(
+     AuthorQuery query,
+     int pageNumber,
+     int pageSize,
+     Func<IQueryable<Author>, IQueryable<T>> mapper,
+     string sortColumn = "Id",
+     string sortOrder = "ASC",
+     CancellationToken cancellationToken = default);
   }
 }

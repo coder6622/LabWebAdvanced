@@ -1,6 +1,82 @@
-﻿@{
+﻿@model AuthorFilterModel
+@{
   ViewData["Title"] = "Danh sách tác giả";
+
+  var authors = ViewBag.Authors as IPagedList<Author>;
 }
 <h2>
   Danh sách tác giả
 </h2>
+
+<partial name="_AuthorFilterPane" />
+
+@if (authors != null && authors.Count > 0)
+{
+  <table id="#tbl" class="table table-responsive table-striped">
+    <thead>
+      <tr>
+        <th>Hình đại diện</th>
+        <th>Tên tác giả</th>
+        <th>Email</th>
+        <th>Thời gian tham gia</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var author in authors)
+      {
+        <tr>
+          <td>
+            @if (!string.IsNullOrWhiteSpace(author.ImageUrl))
+            {
+              <img src="@author.ImageUrl" />
+            }
+            else
+            {
+              <img src="~/images/user-default.png" />
+            }
+          </td>
+          <td>
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="Edit"
+           asp-route-id="@author.Id"
+               class="text-bold">
+              @author.FullName
+            </a>
+            <p class="text-muted">
+              @author.Notes
+            </p>
+          </td>
+
+          <td>
+            @author.Email
+          </td>
+          <td>
+            @author.JoinedDate.ToString("dd:MM:yyyy hh:mm:ss")
+          </td>
+          <td>
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="Delete"
+           asp-route-id="@author.Id"
+           asp-route-p="@authors.PageNumber"
+           asp-route-ps="@authors.PageSize"
+               class="btn btn-danger change-status-post align-content-start"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không??')">
+              Xóa
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <partial name="_Pager" />
+
+}
+else
+{
+  <h1 class="text-danget">
+    Không tìm thấy bài viết nào
+  </h1>
+}

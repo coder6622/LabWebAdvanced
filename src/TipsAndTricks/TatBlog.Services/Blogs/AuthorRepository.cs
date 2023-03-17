@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core;
 using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
@@ -139,6 +140,87 @@ namespace TatBlog.Services.Blogs
           PostsCount = a.Posts.Count(p => p.Published),
         })
         .ToListAsync(cancellationToken);
+    }
+
+    private IQueryable<Author> FilterAuthors(
+      AuthorQuery condition)
+    {
+      IQueryable<Author> authQueryable = _context.Set<Author>();
+
+      if (!string.IsNullOrWhiteSpace(condition.KeyWord))
+      {
+        authQueryable = authQueryable
+          .Where(a => a.FullName.Contains(condition.KeyWord)
+                  || a.Notes.Contains(condition.KeyWord)
+                  || a.Email.Contains(condition.KeyWord));
+      }
+
+      if (condition.JoinedYear > 0)
+      {
+        authQueryable = authQueryable
+           .Where(a => a.JoinedDate.Year == condition.JoinedYear);
+      }
+
+      if (condition.JoinedMonth > 0)
+      {
+        authQueryable = authQueryable
+         .Where(a => a.JoinedDate.Month == condition.JoinedMonth);
+      }
+
+      //authQueryable
+      //  .WhereIf(!string.IsNullOrWhiteSpace(condition.KeyWord),
+      //    a => a.FullName.Contains(condition.KeyWord)
+      //    || a.Notes.Contains(condition.KeyWord)
+      //    || a.Email.Contains(condition.KeyWord))
+      //  .WhereIf(condition.JoinedYear > 0,
+      //    a => a.JoinedDate.Year == condition.JoinedYear)
+      //  .WhereIf(condition.JoinedMonth > 0,
+      //    a => a.JoinedDate.Month == condition.JoinedMonth);
+
+      return authQueryable;
+
+    }
+
+    public Task<IPagedList<Author>> GetPagedAuthorAsync(
+      AuthorQuery authorQuery,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      var pagingParams = new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
+      return FilterAuthors(authorQuery)
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<IPagedList<T>> GetPagedPostsAsync<T>(
+      AuthorQuery query,
+      int pageNumber,
+      int pageSize,
+      Func<IQueryable<Author>, IQueryable<T>> mapper,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<Author> authorFilter = FilterAuthors(query);
+      IQueryable<T> tResultQuery = mapper(authorFilter);
+      var pagingParams = new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
+
+      return await tResultQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
     }
   }
 }

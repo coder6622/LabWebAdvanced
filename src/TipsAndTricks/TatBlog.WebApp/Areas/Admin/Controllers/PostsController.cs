@@ -13,7 +13,6 @@ using TatBlog.WebApp.Components;
 
 namespace TatBlog.WebApp.Areas.Admin.Controllers
 {
-  //[Area("Admin")]
   public class PostsController : Controller
   {
     private readonly ILogger<PostsController> _logger;
