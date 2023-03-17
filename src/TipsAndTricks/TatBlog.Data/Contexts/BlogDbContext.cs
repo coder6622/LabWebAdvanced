@@ -25,10 +25,10 @@ namespace TatBlog.Data.Contexts
     {
     }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //  optionsBuilder.UseSqlServer(@"Server=DESKTOP-Q1BKM2G;Database=TatBlog;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True");
-    //}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+      optionsBuilder.UseSqlServer(@"Server=DESKTOP-Q1BKM2G;Database=TatBlog;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True");
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

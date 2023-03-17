@@ -47,11 +47,24 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       var postQuery = _mapper.Map<PostQuery>(model);
 
       _logger.LogInformation("Lấy danh sách bài viết từ CSDL");
-      ViewBag.Posts = await _blogRepository
+      var posts = await _blogRepository
         .GetPagedPostsAsync(
         query: postQuery,
         pageNumber: pageNumber,
         pageSize: pageSize);
+      if (pageNumber > posts.PageCount)
+      {
+        pageNumber = pageNumber - 1;
+        ViewBag.Posts = await _blogRepository
+          .GetPagedPostsAsync(
+          query: postQuery,
+          pageNumber: pageNumber,
+          pageSize: pageSize);
+      }
+      else
+      {
+        ViewBag.Posts = posts;
+      }
 
       ViewBag.PostQuery = postQuery;
 

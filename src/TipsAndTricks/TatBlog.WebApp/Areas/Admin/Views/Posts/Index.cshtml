@@ -60,14 +60,15 @@
                 <span>Hiện</span>
               }
             </a>
-
+          </td>
+          <td>
             <a asp-area="Admin"
            asp-controller="Posts"
            asp-action="Delete"
            asp-route-id="@post.Id"
            asp-route-p="@posts.PageNumber"
            asp-route-ps="@posts.PageSize"
-               class="btn btn-info change-status-post"
+               class="btn btn-danger change-status-post align-content-start"
                onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không??')">
               Xóa
             </a>
@@ -86,21 +87,3 @@ else
     Không tìm thấy bài viết nào
   </h1>
 }
-
-@*@section scripts{
-  <script>
-    $(function () {
-      $("#tbl").on('click', '.change-status-post', function () {
-        var btn = $(this), id = btn.data('id'), status = btn.data('status');
-        if (confirm("Bạn có muốn thay đổi")) {
-          $.post('@Url.Action("ChangeStatusPost", "Posts")/' + id + "/" + status, function (reponse) {
-            console.log(reponse.message)
-          })
-        }
-      })
-
-    })
-
-  </script>
-}
-*@
