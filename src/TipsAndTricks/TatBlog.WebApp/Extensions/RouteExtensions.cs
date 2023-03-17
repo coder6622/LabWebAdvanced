@@ -5,11 +5,21 @@
     public static IEndpointRouteBuilder UseBlogRoutes(
       this IEndpointRouteBuilder endpoints)
     {
+      endpoints.MapControllerRoute(
+         name: "admin-posts",
+         pattern: "admin/Posts/{Keyword}/{AuthorId:int}/{CategoryId:int}/{PostedYear:int}/{PostedMonth:int}/",
+         defaults: new { area = "Admin", controller = "Posts", action = "Index" });
+
+      endpoints.MapControllerRoute(
+         name: "post-by-archive",
+         pattern: "blog/archive/{year:int}/{month:int}/",
+         defaults: new { controller = "Blog", action = "Archive" });
 
       endpoints.MapControllerRoute(
         name: "posts-by-author",
         pattern: "blog/author/{slug}",
         defaults: new { controller = "Blog", action = "Author" });
+
       endpoints.MapControllerRoute(
          name: "posts-by-category",
          pattern: "blog/category/{slug}",

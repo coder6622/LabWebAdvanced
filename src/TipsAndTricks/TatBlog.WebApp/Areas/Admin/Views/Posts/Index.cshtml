@@ -12,7 +12,7 @@
 
 @if (posts != null && posts.Count > 0)
 {
-  <table class="table table-responsive table-striped">
+  <table id="#tbl" class="table table-responsive table-striped">
     <thead>
       <tr>
         <th>Tiêu đề</th>
@@ -44,14 +44,40 @@
             @post.Category.Name
           </td>
           <td>
-            @(post.Published ? "Có" : "Không")
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="ToggleStatus"
+           asp-route-id="@post.Id"
+           asp-route-p="@posts.PageNumber"
+           asp-route-ps="@posts.PageSize"
+               class="btn btn-info change-status-post">
+              @if (post.Published)
+              {
+                <span>Ẩn</span>
+              }
+              else
+              {
+                <span>Hiện</span>
+              }
+            </a>
+
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="Delete"
+           asp-route-id="@post.Id"
+           asp-route-p="@posts.PageNumber"
+           asp-route-ps="@posts.PageSize"
+               class="btn btn-info change-status-post"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không??')">
+              Xóa
+            </a>
           </td>
         </tr>
       }
     </tbody>
   </table>
 
-  <partial name="_Pager" model="posts" />
+  <partial name="_Pager" model="@Model" />
 
 }
 else
@@ -60,3 +86,21 @@ else
     Không tìm thấy bài viết nào
   </h1>
 }
+
+@*@section scripts{
+  <script>
+    $(function () {
+      $("#tbl").on('click', '.change-status-post', function () {
+        var btn = $(this), id = btn.data('id'), status = btn.data('status');
+        if (confirm("Bạn có muốn thay đổi")) {
+          $.post('@Url.Action("ChangeStatusPost", "Posts")/' + id + "/" + status, function (reponse) {
+            console.log(reponse.message)
+          })
+        }
+      })
+
+    })
+
+  </script>
+}
+*@

@@ -337,15 +337,13 @@ namespace TatBlog.Services.Blogs
     )
     {
       return await _context.Set<Post>()
+        .GroupBy(x => new { x.PostedDate.Year, x.PostedDate.Month })
         .Select(p => new AmountPostItemByMonth()
         {
-          Year = p.PostedDate.Year,
-          Month = p.PostedDate.Month,
-          PostCount = _context.Set<Post>()
-            .Where(x => x.PostedDate == p.PostedDate)
-            .Count()
+          Year = p.Key.Year,
+          Month = p.Key.Month,
+          PostCount = p.Count()
         })
-        .Distinct()
         .OrderByDescending(p => p.Year).ThenByDescending(p => p.Month)
         .Take(n)
         .ToListAsync(cancellationToken);
@@ -353,9 +351,15 @@ namespace TatBlog.Services.Blogs
 
     public async Task<Post> FindPostByIdAsync(
       int id,
+      bool includeDetails = false,
       CancellationToken cancellationToken = default
     )
     {
+      if (!includeDetails)
+      {
+        return await _context.Set<Post>().FindAsync(id);
+      }
+
       return await _context.Set<Post>()
         .Include(p => p.Tags)
         .Include(p => p.Author)
@@ -370,10 +374,7 @@ namespace TatBlog.Services.Blogs
       CancellationToken cancellationToken = default
     )
     {
-      foreach (var tag in tags)
-      {
-        await Console.Out.WriteLineAsync("Hello world" + tag);
-      }
+
       if (post.Id > 0)
       {
         await _context.Entry(post).Collection(x => x.Tags).LoadAsync(cancellationToken);
@@ -436,14 +437,13 @@ namespace TatBlog.Services.Blogs
 
     public async Task ChangePostPusblishedStateAsync(
       int id,
-      bool isPublished,
       CancellationToken cancellationToken = default
     )
     {
       await _context.Set<Post>()
        .Where(p => p.Id == id)
        .ExecuteUpdateAsync(
-           p => p.SetProperty(p => p.Published, isPublished),
+           p => p.SetProperty(p => p.Published, p => !p.Published),
            cancellationToken
        );
       ;
@@ -603,6 +603,22 @@ namespace TatBlog.Services.Blogs
       IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
       return await postsFindResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<bool> DeletePostByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+      var postToDelete = await _context.Set<Post>()
+         .Include(p => p.Tags)
+         .Where(p => p.Id == id)
+         .FirstOrDefaultAsync(cancellationToken);
+      if (postToDelete == null)
+      {
+        return false;
+      }
+
+      _context.Set<Post>().Remove(postToDelete);
+      await _context.SaveChangesAsync(cancellationToken);
+      return true;
     }
   }
 }

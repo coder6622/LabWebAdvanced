@@ -13,6 +13,7 @@ using TatBlog.WebApp.Components;
 
 namespace TatBlog.WebApp.Areas.Admin.Controllers
 {
+  //[Area("Admin")]
   public class PostsController : Controller
   {
     private readonly ILogger<PostsController> _logger;
@@ -36,10 +37,10 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(PostFilterModel model,
-      //[FromQuery(Name = "k")] string keyword = null,
+    public async Task<IActionResult> Index(
+      PostFilterModel model,
       [FromQuery(Name = "p")] int pageNumber = 1,
-      [FromQuery(Name = "ps")] int pageSize = 5
+      [FromQuery(Name = "ps")] int pageSize = 2
       )
     {
       _logger.LogInformation("Tạo điều kiện truy vấn");
@@ -64,7 +65,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     public async Task<IActionResult> Edit(int id = 0)
     {
       Post post = id > 0
-        ? await _blogRepository.FindPostByIdAsync(id)
+        ? await _blogRepository.FindPostByIdAsync(id, true)
         : null;
 
       var model = post == null
@@ -146,6 +147,32 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         ? Json($"Slug '{urlSlug}' đã được sử dụng")
         : Json(true);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ToggleStatus(
+      int id,
+      [FromQuery(Name = "p")] int pageNumber,
+      [FromQuery(Name = "ps")] int pageSize
+      )
+    {
+      await _blogRepository.ChangePostPusblishedStateAsync(id);
+
+      return RedirectToAction(nameof(Index), new { p = pageNumber, ps = pageSize });
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(
+      int id,
+      [FromQuery(Name = "p")] int pageNumber,
+      [FromQuery(Name = "ps")] int pageSize
+      )
+    {
+      await _blogRepository.DeletePostByIdAsync(id);
+
+      return RedirectToAction(nameof(Index), new { p = pageNumber, ps = pageSize });
+    }
+
 
     private async Task PopulatePostFilterModelAsync(PostFilterModel model)
     {

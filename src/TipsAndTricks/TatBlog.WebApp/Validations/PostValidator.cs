@@ -75,7 +75,7 @@ namespace TatBlog.WebApp.Validations
       CancellationToken cancellationToken)
     {
       var post = await _blogRepository.FindPostByIdAsync(
-        postModel.Id, cancellationToken);
+        postModel.Id, false, cancellationToken);
 
       if (!string.IsNullOrWhiteSpace(post?.ImageUrl))
         return true;

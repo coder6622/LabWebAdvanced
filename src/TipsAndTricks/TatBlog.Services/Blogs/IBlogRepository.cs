@@ -78,6 +78,7 @@ namespace TatBlog.Services.Blogs
 
     Task<Post> FindPostByIdAsync(
       int id,
+      bool includeDetails = false,
       CancellationToken cancellationToken = default);
 
     Task<Post> AddOrUpdatePostAsync(
@@ -87,7 +88,6 @@ namespace TatBlog.Services.Blogs
 
     Task ChangePostPusblishedStateAsync(
       int id,
-      bool pusblished,
       CancellationToken cancellationToken = default);
 
     Task<IList<Post>> GetRandomNPosts(
@@ -124,5 +124,10 @@ namespace TatBlog.Services.Blogs
       Func<IQueryable<Post>, IQueryable<T>> mapper,
       CancellationToken cancellationToken = default
     );
+
+    Task<bool> DeletePostByIdAsync(
+       int id,
+       CancellationToken cancellationToken = default);
+
   }
 }
