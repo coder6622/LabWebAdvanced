@@ -5,6 +5,12 @@
 
   var posts = ViewBag.Items as IPagedList<Post>;
 
+  var queryFilter = "";
+  if (Model != null)
+  {
+    queryFilter = Model.GetQueryString();
+  }
+
 }
 <h2>
   Danh sách bài viết
@@ -50,6 +56,7 @@
            asp-controller="Posts"
            asp-action="ToggleStatus"
            asp-route-id="@post.Id"
+           asp-route-filter="@queryFilter"
            asp-route-p="@posts.PageNumber"
            asp-route-ps="@posts.PageSize"
                class="btn btn-info change-status-post">
@@ -67,6 +74,7 @@
             <a asp-area="Admin"
            asp-controller="Posts"
            asp-action="Delete"
+           asp-route-filter="@queryFilter"
            asp-route-id="@post.Id"
            asp-route-p="@posts.PageNumber"
            asp-route-ps="@posts.PageSize"

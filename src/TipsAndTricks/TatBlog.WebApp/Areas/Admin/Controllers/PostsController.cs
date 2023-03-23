@@ -168,26 +168,31 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     [HttpGet]
     public async Task<IActionResult> ToggleStatus(
       int id,
+      [FromQuery(Name = "filter")] string queryFilter,
       [FromQuery(Name = "p")] int pageNumber,
       [FromQuery(Name = "ps")] int pageSize
       )
     {
       await _blogRepository.ChangePostPusblishedStateAsync(id);
 
-      return RedirectToAction(nameof(Index), new { p = pageNumber, ps = pageSize });
+      return Redirect($"{Url.ActionLink("Index",
+        "Posts", new { p = pageNumber, ps = pageSize })}&{queryFilter}");
     }
 
 
     [HttpGet]
     public async Task<IActionResult> Delete(
       int id,
+      [FromQuery(Name = "filter")] string queryFilter,
       [FromQuery(Name = "p")] int pageNumber,
       [FromQuery(Name = "ps")] int pageSize
       )
     {
       await _blogRepository.DeletePostByIdAsync(id);
 
-      return RedirectToAction(nameof(Index), new { p = pageNumber, ps = pageSize });
+      return Redirect($"{Url.ActionLink("Index",
+            "Posts", new { p = pageNumber, ps = pageSize })}&{queryFilter}");
+
     }
 
 
