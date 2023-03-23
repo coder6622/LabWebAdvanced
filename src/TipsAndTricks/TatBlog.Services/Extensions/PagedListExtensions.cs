@@ -70,10 +70,10 @@ namespace TatBlog.Services.Extensions
       string sortOrder = "DESC",
       CancellationToken cancellationToken = default)
     {
-      if (source == null)
+      if (source.IsNullOrEmpty())
       {
         return new PagedList<T>(
-        new List<T>(),
+          new List<T>(),
           pageNumber,
           pageSize,
           0);
