@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using SlugGenerator;
 using System;
 using System.Collections.Generic;
@@ -601,8 +602,9 @@ namespace TatBlog.Services.Blogs
         SortOrder = sortOrder
       };
       IQueryable<Post> postsFindResultQuery = FilterPostsByQuery(query);
+      await Console.Out.WriteLineAsync(postsFindResultQuery.ToString());
       return await postsFindResultQuery
-        .ToPagedListAsync(pagingParams, cancellationToken);
+   .ToPagedListAsync(pagingParams, cancellationToken);
     }
 
     public async Task<bool> DeletePostByIdAsync(int id, CancellationToken cancellationToken = default)

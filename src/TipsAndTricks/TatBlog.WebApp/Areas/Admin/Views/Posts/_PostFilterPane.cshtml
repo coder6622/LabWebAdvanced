@@ -6,16 +6,16 @@
       method="get"
       class="row gy-2 gx-3 align-items-center">
   <div class="col-auto">
-    <label class="visually-hidden" asp-for="Keyword"></label>
+    <label class="visually-hidden" asp-for="@Model.Keyword"></label>
     <input type="text"
            class="form-control"
-           asp-for="Keyword"
+           asp-for="@Model.Keyword"
            placeholder="Nhập từ khóa ..." />
   </div>
   <div class="col-auto">
-    <label class="visually-hidden" asp-for="AuthorId"></label>
+    <label class="visually-hidden" asp-for="@Model.AuthorId"></label>
     <select class="form-control"
-            asp-for="AuthorId"
+            asp-for="@Model.AuthorId"
             asp-items="Model.Authors">
       <option value="" selected>-- Chọn tác giả --</option>
     </select>

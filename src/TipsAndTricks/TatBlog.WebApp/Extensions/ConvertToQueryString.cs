@@ -1,0 +1,21 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System.Text;
+using System.Web;
+
+namespace TatBlog.WebApp.Extensions
+{
+  public static class ConvertToQueryString
+  {
+    public static string GetQueryString(this object obj)
+    {
+      var properties = from p in obj
+                         .GetType().GetProperties()
+                       where p.GetValue(obj, null) != null && p.PropertyType
+                         != typeof(IEnumerable<SelectListItem>)
+                       select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null) == null ? "" : p.GetValue(obj, null).ToString());
+
+      return String.Join("&", properties.ToArray());
+    }
+  }
+}

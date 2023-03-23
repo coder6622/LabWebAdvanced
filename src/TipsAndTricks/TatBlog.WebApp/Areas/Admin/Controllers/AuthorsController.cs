@@ -1,6 +1,7 @@
 ﻿using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using TatBlog.Core.DTO;
+using TatBlog.Core.Entities;
 using TatBlog.Services.Blogs;
 using TatBlog.WebApp.Areas.Admin.Models;
 
@@ -43,6 +44,21 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
 
       ViewBag.Authors = authors;
       ViewBag.AuthorQuery = authorQuery;
+
+      return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id = 0)
+    {
+      Author author = id > 0
+     ? await _authorRepository.FindAuthorByIdAsync(id, true)
+     : null;
+
+      var model = author == null
+        ? new AuthorEditModel()
+        : _mapper.Map<AuthorEditModel>(author);
+      //await PopulatePosEditModelAsync(model);
 
       return View(model);
     }

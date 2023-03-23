@@ -40,8 +40,7 @@ namespace TatBlog.Services.Blogs
     {
       if (author.Id > 0)
       {
-        Author authorEditted = await Task.Run(() =>
-          FindAuthorByIdAsync(author.Id, cancellationToken));
+        Author authorEditted = await FindAuthorByIdAsync(author.Id);
 
         if (authorEditted == null)
         {
@@ -71,9 +70,19 @@ namespace TatBlog.Services.Blogs
 
     public async Task<Author> FindAuthorByIdAsync(
       int id,
+      bool includeDetail = false,
       CancellationToken cancellationToken = default)
     {
-      return await _context.Set<Author>().FindAsync(id, cancellationToken);
+      if (!includeDetail)
+      {
+        return await _context.Set<Author>()
+          .FindAsync(id, cancellationToken);
+      }
+
+      return await _context.Set<Author>()
+              .Include(a => a.Posts)
+              .Where(a => a.Id == id)
+              .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<Author> FindAuthorBySlugAsync(

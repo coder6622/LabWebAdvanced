@@ -1,0 +1,57 @@
+﻿@using TatBlog.WebApp.Extensions;
+@model PostFilterModel
+@{
+  var items = ViewBag.Items;
+  string actionName = ViewBag.ActionName;
+  string controllerName = ViewBag.ControllerName;
+
+  var queryFilter = "";
+  if (Model != null)
+  {
+    queryFilter = Model.GetQueryString();
+  }
+
+
+  if (items.PageCount > 1)
+  {
+    <div class="text-center my-4">
+      @if (items.HasPreviousPage)
+      {
+        <a href="@Url.Action(actionName, controllerName,new { p=items.PageNumber - 1, ps = items.PageSize})&@queryFilter"
+           class="btn btn-info">
+          <i class="fa fa-arrow-left"></i>
+          Trang trước
+        </a>
+      }
+      else
+      {
+        <button type="button"
+                class="btn btn-outline-secondary"
+                disabled>
+          Trang trước
+        </button>
+      }
+
+      @if (items.HasNextPage)
+      {
+        <a href="@Url.Action(actionName, controllerName,new { p=items.PageNumber + 1, ps = items.PageSize})&@queryFilter"
+           class="btn btn-info">
+          Trang sau
+          <i class="fa fa-arrow-right"></i>
+        </a>
+
+      }
+      else
+      {
+        <button type="button"
+                class="btn btn-outline-secondary"
+                disabled>
+          Trang sau
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      }
+
+    </div>
+  }
+
+}

@@ -13,6 +13,7 @@ namespace TatBlog.Services.Blogs
   {
     Task<Author> FindAuthorByIdAsync(
       int id,
+      bool includeDetail = false,
       CancellationToken cancellationToken = default);
 
     Task<Author> FindAuthorBySlugAsync(

@@ -1,8 +1,10 @@
-﻿@model PostFilterModel
+﻿@using TatBlog.WebApp.Extensions;
+@model PostFilterModel
 @{
   ViewData["Title"] = "Danh sách bài viết";
 
-  var posts = ViewBag.Posts as IPagedList<Post>;
+  var posts = ViewBag.Items as IPagedList<Post>;
+
 }
 <h2>
   Danh sách bài viết
@@ -79,6 +81,8 @@
   </table>
 
   <partial name="_Pager" model="@Model" />
+
+
 
 }
 else

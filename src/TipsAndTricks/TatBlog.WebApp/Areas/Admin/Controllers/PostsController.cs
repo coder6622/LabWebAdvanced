@@ -4,6 +4,7 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Services.Blogs;
@@ -50,22 +51,26 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         .GetPagedPostsAsync(
         query: postQuery,
         pageNumber: pageNumber,
-        pageSize: pageSize);
+        pageSize: pageSize
+        );
       if (pageNumber > posts.PageCount)
       {
         pageNumber = pageNumber - 1;
-        ViewBag.Posts = await _blogRepository
+        ViewBag.Items = await _blogRepository
           .GetPagedPostsAsync(
           query: postQuery,
           pageNumber: pageNumber,
-          pageSize: pageSize);
+          pageSize: pageSize
+          );
       }
       else
       {
-        ViewBag.Posts = posts;
+        ViewBag.Items = posts;
       }
 
       ViewBag.PostQuery = postQuery;
+      ViewBag.ActionName = RouteData.Values["action"];
+      ViewBag.ControllerName = RouteData.Values["controller"];
 
       _logger.LogInformation("Chuẩn bị dữ liệu cho ViewModel");
       await PopulatePostFilterModelAsync(model);
