@@ -27,7 +27,12 @@ namespace TatBlog.Services.Blogs
     Task<IList<AuthorItem>> GetAllAuthorsAsync(
       CancellationToken cancellationToken = default);
 
-    Task AddOrUpdateAuthor(
+    Task<bool> IsAuthorSlugExist(
+      int id,
+      string slug,
+      CancellationToken cancellationToken = default);
+
+    Task<Author> AddOrUpdateAuthor(
       Author author,
       CancellationToken cancellationToken = default);
 
@@ -36,7 +41,7 @@ namespace TatBlog.Services.Blogs
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default);
 
-    Task<IPagedList<Author>> GetPagedAuthorAsync(
+    Task<IPagedList<Author>> GetPagedAuthorsAsync(
       AuthorQuery authorQuery,
       int pageNumber,
       int pageSize,
@@ -44,7 +49,7 @@ namespace TatBlog.Services.Blogs
       string sortOrder = "ASC",
       CancellationToken cancellationToken = default);
 
-    public Task<IPagedList<T>> GetPagedPostsAsync<T>(
+    public Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
      AuthorQuery query,
      int pageNumber,
      int pageSize,
@@ -52,5 +57,9 @@ namespace TatBlog.Services.Blogs
      string sortColumn = "Id",
      string sortOrder = "ASC",
      CancellationToken cancellationToken = default);
+
+    public Task<bool> DeleteAuthorAsync(
+      int id,
+      CancellationToken cancellationToken = default);
   }
 }

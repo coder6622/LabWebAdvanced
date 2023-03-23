@@ -6,8 +6,6 @@ namespace TatBlog.WebApp.Areas.Admin.Models
 {
   public class AuthorFilterModel
   {
-    public int Id { get; set; }
-
     [DisplayName("Từ khóa ...")]
     public string KeyWord { get; set; }
 

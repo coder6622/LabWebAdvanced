@@ -34,38 +34,21 @@ namespace TatBlog.Services.Blogs
         .AnyAsync(a => a.Id != id && a.UrlSlug == slug, cancellationToken);
     }
 
-    public async Task AddOrUpdateAuthor(
+    public async Task<Author> AddOrUpdateAuthor(
       Author author,
       CancellationToken cancellationToken = default)
     {
       if (author.Id > 0)
       {
-        Author authorEditted = await FindAuthorByIdAsync(author.Id);
-
-        if (authorEditted == null)
-        {
-          await Console.Out.WriteLineAsync("Author not found");
-          return;
-        }
-        if (authorEditted.UrlSlug != author.UrlSlug
-          && await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
-
-        _context.Entry(authorEditted).CurrentValues.SetValues(author);
+        _context.Set<Author>().Update(author);
       }
       else
       {
-        if (await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
         _context.Set<Author>().Add(author);
       }
       await _context.SaveChangesAsync(cancellationToken);
+
+      return author;
     }
 
     public async Task<Author> FindAuthorByIdAsync(
@@ -159,9 +142,10 @@ namespace TatBlog.Services.Blogs
       if (!string.IsNullOrWhiteSpace(condition.KeyWord))
       {
         authQueryable = authQueryable
-          .Where(a => a.FullName.Contains(condition.KeyWord)
-                  || a.Notes.Contains(condition.KeyWord)
-                  || a.Email.Contains(condition.KeyWord));
+          .Where(a =>
+               a.Email.Contains(condition.KeyWord)
+            || a.FullName.Contains(condition.KeyWord));
+
       }
 
       if (condition.JoinedYear > 0)
@@ -190,7 +174,7 @@ namespace TatBlog.Services.Blogs
 
     }
 
-    public Task<IPagedList<Author>> GetPagedAuthorAsync(
+    public Task<IPagedList<Author>> GetPagedAuthorsAsync(
       AuthorQuery authorQuery,
       int pageNumber,
       int pageSize,
@@ -209,7 +193,7 @@ namespace TatBlog.Services.Blogs
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
 
-    public async Task<IPagedList<T>> GetPagedPostsAsync<T>(
+    public async Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
       AuthorQuery query,
       int pageNumber,
       int pageSize,
@@ -230,6 +214,27 @@ namespace TatBlog.Services.Blogs
 
       return await tResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<bool> IsAuthorSlugExist(
+      int id,
+      string slug,
+      CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Author>()
+        .AnyAsync(a => a.Id != id && a.UrlSlug == slug, cancellationToken);
+    }
+
+    public async Task<bool> DeleteAuthorAsync(int id, CancellationToken cancellationToken = default)
+    {
+      var author = await _context.Set<Author>().FindAsync(id);
+      if (author is null)
+        return false;
+
+      _context.Set<Author>().Remove(author);
+      var rowsCount = await _context.SaveChangesAsync(cancellationToken);
+
+      return rowsCount > 0;
     }
   }
 }

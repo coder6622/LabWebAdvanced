@@ -1,11 +1,11 @@
-﻿@model PostEditModel
+﻿@model AuthorEditModel
 @{
   ViewData["Title"] = "Thêm/Cập nhật bài viết";
 }
 
-<h1>Thêm/Cập nhật bài viết</h1>
+<h1>Thêm/Cập nhật tác giả</h1>
 <form asp-area="Admin"
-      asp-controller="Posts"
+      asp-controller="Authors"
       asp-action="Edit"
       enctype="multipart/form-data"
       method="post">
@@ -13,14 +13,14 @@
   <input type="hidden" asp-for="Id" />
 
   <div class="row mb-3">
-    <label asp-for="Title"
+    <label asp-for="FullName"
            class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
       <input type="text" class="form-control"
-             asp-for="Title" />
-      <span asp-validation-for="Title"
+             asp-for="FullName" />
+      <span asp-validation-for="FullName"
             class="text-danger"></span>
     </div>
   </div>
@@ -39,83 +39,27 @@
   </div>
 
   <div class="row mb-3">
-    <label asp-for="ShortDescription"
-           class="col-sm-2 col-form-label">
-    </label>
-
-    <div class="col-sm-10">
-      <textarea type="text" class="form-control"
-                asp-for="ShortDescription"></textarea>
-      <span asp-validation-for="ShortDescription"
-            class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <label asp-for="Description"
-           class="col-sm-2 col-form-label">
-    </label>
-
-    <div class="col-sm-10">
-      <textarea type="text" class="form-control"
-                asp-for="Description" rows="10"></textarea>
-      <span asp-validation-for="Description"
-            class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <label asp-for="Meta"
+    <label asp-for="Email"
            class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
       <input type="text" class="form-control"
-             asp-for="Meta" />
-      <span asp-validation-for="Meta"
+             asp-for="Email" />
+      <span asp-validation-for="Email"
             class="text-danger"></span>
     </div>
   </div>
 
   <div class="row mb-3">
-    <label asp-for="AuthorId"
-           class="col-sm-2 col-form-label">
-    </label>
-
-    <div class="col-sm-10">
-      <select asp-for="AuthorId"
-              asp-items="Model.Authors">
-        <option value="">-- Chọn tác giả --</option>
-      </select>
-      <span asp-validation-for="AuthorId"
-            class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <label asp-for="CategoryId"
-           class="col-sm-2 col-form-label">
-    </label>
-
-    <div class="col-sm-10">
-      <select asp-for="CategoryId"
-              asp-items="Model.Categories">
-        <option value="">-- Chọn chủ đề --</option>
-      </select>
-      <span asp-validation-for="CategoryId"
-            class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <label asp-for="SelectedTags"
+    <label asp-for="Notes"
            class="col-sm-2 col-form-label">
     </label>
 
     <div class="col-sm-10">
       <textarea type="text" class="form-control"
-                asp-for="SelectedTags" rows="5"></textarea>
-      <span asp-validation-for="SelectedTags"
+                asp-for="Notes" rows="5"></textarea>
+      <span asp-validation-for="Notes"
             class="text-danger"></span>
     </div>
   </div>
@@ -127,7 +71,7 @@
              class="col-sm-2 col-form-label">
       </label>
       <div class="col-sm-10">
-        <img src="/@Model.ImageUrl" />
+        <img style="width:200px;" src="/@Model.ImageUrl" />
       </div>
     </div>
   }
@@ -143,18 +87,6 @@
              asp-for="ImageFile" />
       <span asp-validation-for="ImageFile"
             class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <div class="col-sm-10 offset-sm-2">
-      <div class="form-check">
-        <input class="form-check-input"
-               type="checkbox"
-               asp-for="Published" />
-        <label class="form-check-label"
-               asp-for="Published"></label>
-      </div>
     </div>
   </div>
 
@@ -177,7 +109,7 @@
   <script src="~/lib/speakingurl/speakingurl.min.js"></script>
   <script>
     $(function () {
-      $('#Title').change(function () {
+      $('#FullName').change(function () {
         var slug = getSlug(this.value);
         $('#UrlSlug').val(slug).trigger('blur')
       })

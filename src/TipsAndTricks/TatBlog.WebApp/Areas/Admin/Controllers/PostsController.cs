@@ -145,11 +145,6 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       await _blogRepository.AddOrUpdatePostAsync(
         post, model.GetSelectedTags());
 
-      foreach (var item in model.GetSelectedTags())
-      {
-        await Console.Out.WriteLineAsync(item);
-      }
-
       return RedirectToAction(nameof(Index));
     }
 
@@ -176,7 +171,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       await _blogRepository.ChangePostPusblishedStateAsync(id);
 
       return Redirect($"{Url.ActionLink("Index",
-        "Posts", new { p = pageNumber, ps = pageSize })}&{queryFilter}");
+        "Posts", new { p = pageNumber, ps = pageSize })}{queryFilter}");
     }
 
 
@@ -191,7 +186,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       await _blogRepository.DeletePostByIdAsync(id);
 
       return Redirect($"{Url.ActionLink("Index",
-            "Posts", new { p = pageNumber, ps = pageSize })}&{queryFilter}");
+            "Posts", new { p = pageNumber, ps = pageSize })}{queryFilter}");
 
     }
 

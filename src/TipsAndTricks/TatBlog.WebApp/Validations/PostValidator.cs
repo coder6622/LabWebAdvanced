@@ -14,8 +14,9 @@ namespace TatBlog.WebApp.Validations
 
       RuleFor(x => x.Title)
         .NotEmpty()
+        .WithMessage("Tiêu đề không được để trống")
         .MaximumLength(500)
-        .WithMessage("Title không được để trống");
+        .WithMessage("Độ dài tiêu đề nhỏ hơn 500 ký tự");
 
       RuleFor(x => x.ShortDescription)
         .NotEmpty();

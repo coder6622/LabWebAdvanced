@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Text;
 using System.Web;
@@ -15,7 +16,11 @@ namespace TatBlog.WebApp.Extensions
                          != typeof(IEnumerable<SelectListItem>)
                        select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null) == null ? "" : p.GetValue(obj, null).ToString());
 
-      return String.Join("&", properties.ToArray());
+      if (properties.IsNullOrEmpty())
+      {
+        return "";
+      }
+      return "&" + String.Join("&", properties.ToArray());
     }
   }
 }
