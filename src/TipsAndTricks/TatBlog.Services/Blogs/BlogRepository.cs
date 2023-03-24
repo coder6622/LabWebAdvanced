@@ -126,6 +126,24 @@ namespace TatBlog.Services.Blogs
         .ToListAsync(cancellationToken);
     }
 
+
+    public async Task<Tag> GetTagByIdAsync(
+       int id,
+       bool isDetail = false,
+       CancellationToken cancellationToken = default)
+    {
+      if (isDetail)
+      {
+        return await _context.Set<Tag>()
+          .Include(t => t.Posts)
+          .Where(t => t.Id == id)
+          .FirstOrDefaultAsync(cancellationToken);
+      }
+      return await _context.Set<Tag>()
+        .FindAsync(id, cancellationToken);
+    }
+
+
     public async Task<IPagedList<TagItem>> GetPagedTagsAsync(
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default)
@@ -142,6 +160,48 @@ namespace TatBlog.Services.Blogs
 
       return await tagQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public IQueryable<Tag> FilterTags(
+      TagQuery condition)
+    {
+      return _context.Set<Tag>()
+        .Include(t => t.Posts)
+        .WhereIf(!string.IsNullOrWhiteSpace(condition.Keyword), t =>
+            t.Name.Contains(condition.Keyword)
+            || t.Description.Contains(condition.Keyword)
+            || t.UrlSlug.Contains(condition.Keyword));
+    }
+
+    public async Task<IPagedList<T>> GetPagedTagsAsync<T>(
+        TagQuery query,
+        int pageNumber,
+        int pageSize,
+        Func<IQueryable<Tag>, IQueryable<T>> mapper,
+        string sortColumn = "Id",
+        string sortOrder = "ASC",
+        CancellationToken cancellationToken = default)
+    {
+      IQueryable<Tag> tagsQuery = FilterTags(query);
+
+      IQueryable<T> resultQuery = mapper(tagsQuery);
+
+      return await resultQuery.ToPagedListAsync<T>(
+        pageNumber,
+        pageSize,
+        sortColumn,
+        sortOrder,
+        cancellationToken);
+    }
+
+
+    public async Task<bool> IsTagSlugExistAsync(
+       int id,
+       string slug,
+       CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Tag>()
+        .AnyAsync(t => t.Id != id && t.UrlSlug == slug);
     }
 
     public async Task<Category> AddOrUpdateCategoryAsync(
@@ -302,16 +362,32 @@ namespace TatBlog.Services.Blogs
       return await tagsQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+
+    public async Task<Tag> AddOrUpdateTagAsync(
+       Tag tag,
+       CancellationToken cancellationToken = default)
+    {
+      if (tag.Id > 0)
+      {
+        _context.Set<Tag>().Update(tag);
+      }
+      else
+      {
+        _context.Set<Tag>().Add(tag);
+      }
+
+      await _context.SaveChangesAsync(cancellationToken);
+
+      return tag;
+    }
+
     public async Task<bool> RemoveTagByIdAsync(
       int id,
       CancellationToken cancellationToken = default
     )
     {
       //c1: find->delete
-      var tagToDelete = await _context.Set<Tag>()
-         .Include(t => t.Posts)
-         .Where(t => t.Id == id)
-         .FirstOrDefaultAsync(cancellationToken);
+      var tagToDelete = await GetTagByIdAsync(id, true, cancellationToken);
       if (tagToDelete == null)
       {
         return false;
@@ -400,11 +476,9 @@ namespace TatBlog.Services.Blogs
 
       foreach (var kv in validTags)
       {
-        await Console.Out.WriteLineAsync("World" + kv);
         if (post.Tags.Any(t => string.Compare(t.UrlSlug, kv.Key,
             StringComparison.InvariantCultureIgnoreCase) == 0))
         {
-          await Console.Out.WriteLineAsync("Trung goi" + kv);
           continue;
         }
 
@@ -415,17 +489,11 @@ namespace TatBlog.Services.Blogs
           UrlSlug = kv.Key,
         };
 
-        await Console.Out.WriteLineAsync("Them vao ne" + tag.ToString());
 
         post.Tags.Add(tag);
       }
 
       post.Tags = post.Tags.Where(t => validTags.ContainsKey(t.UrlSlug)).ToList();
-
-      foreach (var tag in post.Tags)
-      {
-        await Console.Out.WriteLineAsync("Cai cuoi" + tag.ToString());
-      }
 
       if (post.Id > 0)
       {
