@@ -69,8 +69,6 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       }
 
       ViewBag.PostQuery = postQuery;
-      ViewBag.ActionName = RouteData.Values["action"];
-      ViewBag.ControllerName = RouteData.Values["controller"];
 
       _logger.LogInformation("Chuẩn bị dữ liệu cho ViewModel");
       await PopulatePostFilterModelAsync(model);

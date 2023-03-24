@@ -2,8 +2,12 @@
 @model string
 @{
   var items = ViewBag.Items;
-  string actionName = ViewBag.ActionName;
-  string controllerName = ViewBag.ControllerName;
+
+  //string actionName = ViewBag.ActionName;
+  //string controllerName = ViewBag.ControllerName;
+
+  string actionName = null;
+  string controllerName = null;
 
 
   if (items.PageCount > 1)

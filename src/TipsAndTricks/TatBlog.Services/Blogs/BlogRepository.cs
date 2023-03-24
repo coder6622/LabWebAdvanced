@@ -99,7 +99,7 @@ namespace TatBlog.Services.Blogs
     }
 
     public async Task<IList<CategoryItem>> GetCategoriesAsync(
-      bool showOnMenu = false,
+      bool showOnMenu = true,
       CancellationToken cancellationToken = default
     )
     {
@@ -144,41 +144,23 @@ namespace TatBlog.Services.Blogs
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
 
-    public async Task AddOrUpdateCategoryAsync(
+    public async Task<Category> AddOrUpdateCategoryAsync(
       Category category,
       CancellationToken cancellationToken = default
     )
     {
       if (category.Id > 0)
       {
-        Category categoryEdited = await _context.Set<Category>()
-          .Where(c => c.Id == category.Id)
-          .FirstOrDefaultAsync(cancellationToken);
-
-        if (categoryEdited == null)
-        {
-          return;
-        }
-
-        if (categoryEdited.UrlSlug != category.UrlSlug
-            && IsCategoryExistBySlugAsync(category.Id, category.UrlSlug, cancellationToken).Result)
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
-
-        _context.Entry(categoryEdited).CurrentValues.SetValues(category);
+        _context.Set<Category>().Update(category);
       }
       else
       {
-        if (await IsCategoryExistBySlugAsync(category.Id, category.UrlSlug, cancellationToken))
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
         _context.Set<Category>().Add(category);
       }
+
       await _context.SaveChangesAsync(cancellationToken);
+
+      return category;
     }
 
 
@@ -204,13 +186,22 @@ namespace TatBlog.Services.Blogs
 
     public async Task<Category> FindCategoryByIdAsync(
       int id,
+      bool isDetail = false,
       CancellationToken cancellationToken = default
     )
     {
+      if (isDetail)
+      {
+        return await _context
+          .Set<Category>()
+          .Include(c => c.Posts)
+          .Where(c => c.Id == id)
+          .FirstOrDefaultAsync(cancellationToken);
+      }
+
       return await _context
         .Set<Category>()
-        .Where(c => c.Id == id)
-        .FirstOrDefaultAsync(cancellationToken);
+        .FindAsync(id, cancellationToken);
     }
 
     public async Task<Category> FindCategoryBySlugAsync(
@@ -256,6 +247,18 @@ namespace TatBlog.Services.Blogs
       return _context.Set<Category>()
         .AnyAsync(c => c.UrlSlug == slug, cancellationToken);
     }
+
+    public async Task<bool> IsCategorySlugExistAsync(
+       int id,
+       string slug,
+       CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Category>()
+        .AnyAsync(c => c.Id != id
+          && c.UrlSlug == slug,
+          cancellationToken);
+    }
+
 
     public async Task<bool> IsCategoryExistBySlugAsync(
       int id,
@@ -623,6 +626,48 @@ namespace TatBlog.Services.Blogs
       _context.Remove(postToDelete);
       await _context.SaveChangesAsync(cancellationToken);
       return true;
+    }
+
+    public IQueryable<Category> FilterCategories(
+      CategoryQuery condition)
+    {
+
+      return _context.Set<Category>()
+        .Include(c => c.Posts)
+        .WhereIf(!string.IsNullOrWhiteSpace(condition.KeyWord),
+          c => c.Name.Contains(condition.KeyWord)
+            || c.UrlSlug.Contains(condition.KeyWord)
+            || c.Description.Contains(condition.KeyWord))
+        .WhereIf(condition.NotShowOnMenu,
+          c => !c.ShowOnMenu);
+    }
+
+    public async Task<IPagedList<T>> GetPagedCategoriesAsync<T>(
+      CategoryQuery query,
+      int pageNumber,
+      int pageSize,
+      Func<IQueryable<Category>, IQueryable<T>> mapper,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<Category> categoryFilter = FilterCategories(query);
+
+      IQueryable<T> resultQuery = mapper(categoryFilter);
+
+      return await resultQuery
+        .ToPagedListAsync<T>(pageNumber, pageSize, sortColumn, sortOrder, cancellationToken);
+    }
+
+    public async Task ChangeCategoriesShowOnMenu(int id, CancellationToken cancellationToken = default)
+    {
+      await _context.Set<Category>()
+       .Where(c => c.Id == id)
+       .ExecuteUpdateAsync(
+           c => c.SetProperty(c => c.ShowOnMenu, c => !c.ShowOnMenu),
+           cancellationToken
+       );
+      ;
     }
   }
 }
