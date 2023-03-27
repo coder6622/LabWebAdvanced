@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core;
 using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
@@ -33,46 +34,38 @@ namespace TatBlog.Services.Blogs
         .AnyAsync(a => a.Id != id && a.UrlSlug == slug, cancellationToken);
     }
 
-    public async Task AddOrUpdateAuthor(
+    public async Task<Author> AddOrUpdateAuthor(
       Author author,
       CancellationToken cancellationToken = default)
     {
       if (author.Id > 0)
       {
-        Author authorEditted = await Task.Run(() =>
-          FindAuthorByIdAsync(author.Id, cancellationToken));
-
-        if (authorEditted == null)
-        {
-          await Console.Out.WriteLineAsync("Author not found");
-          return;
-        }
-        if (authorEditted.UrlSlug != author.UrlSlug
-          && await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
-
-        _context.Entry(authorEditted).CurrentValues.SetValues(author);
+        _context.Set<Author>().Update(author);
       }
       else
       {
-        if (await IsAuthorExistBySlugAsync(author.Id, author.UrlSlug, cancellationToken))
-        {
-          await Console.Out.WriteLineAsync("Url slug exists, please change url slug");
-          return;
-        }
         _context.Set<Author>().Add(author);
       }
       await _context.SaveChangesAsync(cancellationToken);
+
+      return author;
     }
 
     public async Task<Author> FindAuthorByIdAsync(
       int id,
+      bool includeDetail = false,
       CancellationToken cancellationToken = default)
     {
-      return await _context.Set<Author>().FindAsync(id, cancellationToken);
+      if (!includeDetail)
+      {
+        return await _context.Set<Author>()
+          .FindAsync(id, cancellationToken);
+      }
+
+      return await _context.Set<Author>()
+              .Include(a => a.Posts)
+              .Where(a => a.Id == id)
+              .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<Author> FindAuthorBySlugAsync(
@@ -139,6 +132,109 @@ namespace TatBlog.Services.Blogs
           PostsCount = a.Posts.Count(p => p.Published),
         })
         .ToListAsync(cancellationToken);
+    }
+
+    private IQueryable<Author> FilterAuthors(
+      AuthorQuery condition)
+    {
+      IQueryable<Author> authQueryable = _context.Set<Author>();
+
+      if (!string.IsNullOrWhiteSpace(condition.KeyWord))
+      {
+        authQueryable = authQueryable
+          .Where(a =>
+               a.Email.Contains(condition.KeyWord)
+            || a.FullName.Contains(condition.KeyWord));
+
+      }
+
+      if (condition.JoinedYear > 0)
+      {
+        authQueryable = authQueryable
+           .Where(a => a.JoinedDate.Year == condition.JoinedYear);
+      }
+
+      if (condition.JoinedMonth > 0)
+      {
+        authQueryable = authQueryable
+         .Where(a => a.JoinedDate.Month == condition.JoinedMonth);
+      }
+
+      //authQueryable
+      //  .WhereIf(!string.IsNullOrWhiteSpace(condition.KeyWord),
+      //    a => a.FullName.Contains(condition.KeyWord)
+      //    || a.Notes.Contains(condition.KeyWord)
+      //    || a.Email.Contains(condition.KeyWord))
+      //  .WhereIf(condition.JoinedYear > 0,
+      //    a => a.JoinedDate.Year == condition.JoinedYear)
+      //  .WhereIf(condition.JoinedMonth > 0,
+      //    a => a.JoinedDate.Month == condition.JoinedMonth);
+
+      return authQueryable;
+
+    }
+
+    public Task<IPagedList<Author>> GetPagedAuthorsAsync(
+      AuthorQuery authorQuery,
+      int pageNumber,
+      int pageSize,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      var pagingParams = new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
+      return FilterAuthors(authorQuery)
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
+      AuthorQuery query,
+      int pageNumber,
+      int pageSize,
+      Func<IQueryable<Author>, IQueryable<T>> mapper,
+      string sortColumn = "Id",
+      string sortOrder = "ASC",
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<Author> authorFilter = FilterAuthors(query);
+      IQueryable<T> tResultQuery = mapper(authorFilter);
+      var pagingParams = new PagingParams()
+      {
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        SortColumn = sortColumn,
+        SortOrder = sortOrder
+      };
+
+      return await tResultQuery
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+    public async Task<bool> IsAuthorSlugExist(
+      int id,
+      string slug,
+      CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Author>()
+        .AnyAsync(a => a.Id != id && a.UrlSlug == slug, cancellationToken);
+    }
+
+    public async Task<bool> DeleteAuthorAsync(int id, CancellationToken cancellationToken = default)
+    {
+      var author = await _context.Set<Author>().FindAsync(id);
+      if (author is null)
+        return false;
+
+      _context.Set<Author>().Remove(author);
+      var rowsCount = await _context.SaveChangesAsync(cancellationToken);
+
+      return rowsCount > 0;
     }
   }
 }

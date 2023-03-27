@@ -12,15 +12,15 @@ using TatBlog.Data.Contexts;
 namespace TatBlog.Data.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20230306160557_Intial")]
-    partial class Intial
+    [Migration("20230317133326_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -304,7 +304,7 @@ namespace TatBlog.Data.Migrations
                     b.HasOne("TatBlog.Core.Entities.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Comments_Posts");
 

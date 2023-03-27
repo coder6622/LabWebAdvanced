@@ -111,7 +111,8 @@ namespace TatBlog.Data.Seeders
 
       foreach (var tag in tags)
       {
-        if (!_dbContext.Tags.Any(t => t.UrlSlug == tag.UrlSlug))
+        if (!_dbContext.Set<Tag>()
+          .Any(t => t.UrlSlug == tag.UrlSlug))
         {
           _dbContext.Tags.Add(tag);
         }

@@ -1,15 +1,24 @@
-﻿namespace TatBlog.WebApp.Extensions
+﻿using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using TatBlog.Core.Entities;
+using NuGet.ContentModel;
+
+namespace TatBlog.WebApp.Extensions
 {
   public static class RouteExtensions
   {
     public static IEndpointRouteBuilder UseBlogRoutes(
       this IEndpointRouteBuilder endpoints)
     {
+      endpoints.MapControllerRoute(
+         name: "post-by-archive",
+         pattern: "blog/archive/{year:int}/{month:int}/",
+         defaults: new { controller = "Blog", action = "Archive" });
 
       endpoints.MapControllerRoute(
         name: "posts-by-author",
         pattern: "blog/author/{slug}",
         defaults: new { controller = "Blog", action = "Author" });
+
       endpoints.MapControllerRoute(
          name: "posts-by-category",
          pattern: "blog/category/{slug}",

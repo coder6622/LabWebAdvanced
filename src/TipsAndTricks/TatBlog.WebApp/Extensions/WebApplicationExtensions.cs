@@ -73,6 +73,7 @@ namespace TatBlog.WebApp.Extensions
       app.UseRouting();
 
       app.UseMiddleware<UserActivityMiddleware>();
+
       return app;
     }
 

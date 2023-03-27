@@ -2,7 +2,14 @@
 @{
   ViewData["Title"] = "Danh sách bài viết";
 
-  var posts = ViewBag.Posts as IPagedList<Post>;
+  var posts = ViewBag.Items as IPagedList<Post>;
+
+  var queryFilter = "";
+  if (Model != null)
+  {
+    queryFilter = Model.GetQueryString();
+  }
+
 }
 <h2>
   Danh sách bài viết
@@ -12,7 +19,7 @@
 
 @if (posts != null && posts.Count > 0)
 {
-  <table class="table table-responsive table-striped">
+  <table id="#tbl" class="table table-responsive table-striped">
     <thead>
       <tr>
         <th>Tiêu đề</th>
@@ -44,12 +51,45 @@
             @post.Category.Name
           </td>
           <td>
-            @(post.Published ? "Có" : "Không")
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="ToggleStatus"
+           asp-route-id="@post.Id"
+           asp-route-filter="@queryFilter"
+           asp-route-p="@posts.PageNumber"
+           asp-route-ps="@posts.PageSize"
+               class="btn btn-info change-status-post">
+              @if (post.Published)
+              {
+                <span>Ẩn</span>
+              }
+              else
+              {
+                <span>Hiện</span>
+              }
+            </a>
+          </td>
+          <td>
+            <a asp-area="Admin"
+           asp-controller="Posts"
+           asp-action="Delete"
+           asp-route-filter="@queryFilter"
+           asp-route-id="@post.Id"
+           asp-route-p="@posts.PageNumber"
+           asp-route-ps="@posts.PageSize"
+               class="btn btn-danger change-status-post align-content-start"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không??')">
+              Xóa
+            </a>
           </td>
         </tr>
       }
     </tbody>
   </table>
+
+  <partial name="_Pager" model="@queryFilter" />
+
+
 
 }
 else

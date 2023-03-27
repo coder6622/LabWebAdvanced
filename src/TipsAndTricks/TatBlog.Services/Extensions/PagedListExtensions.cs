@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Linq.Dynamic.Core;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TatBlog.Core;
 using TatBlog.Core.Collections;
 using TatBlog.Core.Contracts;
 
@@ -38,6 +40,14 @@ namespace TatBlog.Services.Extensions
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default)
     {
+      if (source.IsNullOrEmpty())
+      {
+        return new PagedList<T>(
+          new List<T>(),
+          pagingParams.PageNumber,
+          pagingParams.PageSize,
+          0);
+      }
       var totalCount = await source.CountAsync(cancellationToken);
       var items = await source
         .OrderBy(pagingParams.GetOrderExpression())
@@ -60,6 +70,14 @@ namespace TatBlog.Services.Extensions
       string sortOrder = "DESC",
       CancellationToken cancellationToken = default)
     {
+      if (source.IsNullOrEmpty())
+      {
+        return new PagedList<T>(
+          new List<T>(),
+          pageNumber,
+          pageSize,
+          0);
+      }
       var totalCount = await source.CountAsync(cancellationToken);
       var items = await source
         .OrderBy($"{sortColumn} {sortOrder}")

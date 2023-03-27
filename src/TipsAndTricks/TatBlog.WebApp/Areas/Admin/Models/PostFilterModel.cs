@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 using System.Globalization;
+using TatBlog.Core;
+using TatBlog.WebApp.Extensions;
 
 namespace TatBlog.WebApp.Areas.Admin.Models
 {
@@ -15,7 +18,7 @@ namespace TatBlog.WebApp.Areas.Admin.Models
     [DisplayName("Chủ đề")]
     public int? CategoryId { get; set; }
 
-    [DisplayName("Các bài viết chưa đăng")]
+    [DisplayName("Chưa đăng")]
     public bool NotPublished { get; set; }
 
     [DisplayName("Năm")]
@@ -29,15 +32,7 @@ namespace TatBlog.WebApp.Areas.Admin.Models
     public IEnumerable<SelectListItem> Months { get; set; }
     public PostFilterModel()
     {
-      Months = Enumerable.Range(1, 12)
-              .Select(m => new SelectListItem()
-              {
-                Value = m.ToString(),
-                Text = CultureInfo.CurrentCulture
-                    .DateTimeFormat.GetMonthName(m)
-              })
-              .ToList();
+      Months = Months.PopulateMonthNames();
     }
-
   }
 }

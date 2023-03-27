@@ -4,6 +4,8 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting;
+using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
 using TatBlog.Core.Entities;
 using TatBlog.Services.Blogs;
@@ -34,14 +36,40 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       _mediaManager = mediaManager;
       _mapper = mapper;
     }
-    public async Task<IActionResult> Index(PostFilterModel model)
+
+    [HttpGet]
+    public async Task<IActionResult> Index(
+      PostFilterModel model,
+      [FromQuery(Name = "p")] int pageNumber = 1,
+      [FromQuery(Name = "ps")] int pageSize = 2
+      )
     {
       _logger.LogInformation("Tạo điều kiện truy vấn");
       var postQuery = _mapper.Map<PostQuery>(model);
 
       _logger.LogInformation("Lấy danh sách bài viết từ CSDL");
-      ViewBag.Posts = await _blogRepository
-        .GetPagedPostsAsync(query: postQuery, pageNumber: 1, pageSize: 10);
+      var posts = await _blogRepository
+        .GetPagedPostsAsync(
+        query: postQuery,
+        pageNumber: pageNumber,
+        pageSize: pageSize
+        );
+      if (pageNumber > posts.PageCount)
+      {
+        pageNumber = pageNumber - 1;
+        ViewBag.Items = await _blogRepository
+          .GetPagedPostsAsync(
+          query: postQuery,
+          pageNumber: pageNumber,
+          pageSize: pageSize
+          );
+      }
+      else
+      {
+        ViewBag.Items = posts;
+      }
+
+      ViewBag.PostQuery = postQuery;
 
       _logger.LogInformation("Chuẩn bị dữ liệu cho ViewModel");
       await PopulatePostFilterModelAsync(model);
@@ -53,7 +81,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     public async Task<IActionResult> Edit(int id = 0)
     {
       Post post = id > 0
-        ? await _blogRepository.FindPostByIdAsync(id)
+        ? await _blogRepository.FindPostByIdAsync(id, true)
         : null;
 
       var model = post == null
@@ -65,6 +93,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
     [FromServices] IValidator<PostEditModel> postValidator,
       PostEditModel model)
@@ -115,11 +144,6 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       await _blogRepository.AddOrUpdatePostAsync(
         post, model.GetSelectedTags());
 
-      foreach (var item in model.GetSelectedTags())
-      {
-        await Console.Out.WriteLineAsync(item);
-      }
-
       return RedirectToAction(nameof(Index));
     }
 
@@ -134,6 +158,37 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         ? Json($"Slug '{urlSlug}' đã được sử dụng")
         : Json(true);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ToggleStatus(
+      int id,
+      [FromQuery(Name = "filter")] string queryFilter,
+      [FromQuery(Name = "p")] int pageNumber,
+      [FromQuery(Name = "ps")] int pageSize
+      )
+    {
+      await _blogRepository.ChangePostPusblishedStateAsync(id);
+
+      return Redirect($"{Url.ActionLink("Index",
+        "Posts", new { p = pageNumber, ps = pageSize })}{queryFilter}");
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(
+      int id,
+      [FromQuery(Name = "filter")] string queryFilter,
+      [FromQuery(Name = "p")] int pageNumber,
+      [FromQuery(Name = "ps")] int pageSize
+      )
+    {
+      await _blogRepository.DeletePostByIdAsync(id);
+
+      return Redirect($"{Url.ActionLink("Index",
+            "Posts", new { p = pageNumber, ps = pageSize })}{queryFilter}");
+
+    }
+
 
     private async Task PopulatePostFilterModelAsync(PostFilterModel model)
     {

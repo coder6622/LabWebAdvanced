@@ -373,7 +373,7 @@ foreach (var comment in commentFindByEmail)
 }
 
 Console.WriteLine("=======");
-await commentRepository.VerifyCommentAsync(1, true);
+await commentRepository.AprroveCommentAsync(1, true);
 Console.WriteLine(commentFindById);
 
 //await commentRepository.DeleteCommentAsync(2);
