@@ -6,6 +6,7 @@ using TatBlog.Services.Media;
 using FluentValidation;
 using NLog.Web;
 using TatBlog.WebApp.Middlewares;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace TatBlog.WebApp.Extensions
 {
@@ -23,10 +24,13 @@ namespace TatBlog.WebApp.Extensions
     public static WebApplicationBuilder ConfigureServices(
       this WebApplicationBuilder builder)
     {
+      builder.Services.AddMemoryCache();
       builder.Services.AddDbContext<BlogDbContext>(options =>
         options.UseSqlServer(
           builder.Configuration
             .GetConnectionString("DefaultConnection")));
+
+
 
       builder.Services.AddScoped<IMediaManager, LocalFileSystemMediaManager>();
       builder.Services.AddScoped<IBlogRepository, BlogRepository>();

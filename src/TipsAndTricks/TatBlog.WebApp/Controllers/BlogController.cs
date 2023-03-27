@@ -82,7 +82,7 @@ namespace TatBlog.WebApp.Controllers
       [FromQuery(Name = "ps")] int pageSize = 5)
     {
       var author = await _authorRepository
-        .FindAuthorBySlugAsync(slug);
+        .GetAuthorBySlugAsync(slug);
 
       var postQuery = new PostQuery()
       {

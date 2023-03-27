@@ -56,7 +56,7 @@ namespace TatBlog.WebApp.Validations
     IFormFile imageFile,
     CancellationToken cancellationToken)
     {
-      var post = await _authorRepository.FindAuthorByIdAsync(
+      var post = await _authorRepository.GetAuthorByIdAsync(
         authorModel.Id, false, cancellationToken);
 
       if (!string.IsNullOrWhiteSpace(post?.ImageUrl))
