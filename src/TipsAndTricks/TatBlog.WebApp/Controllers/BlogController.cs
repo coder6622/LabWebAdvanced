@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using MapsterMapper;
+using Microsoft.AspNetCore.Mvc;
 using TatBlog.Core;
 using TatBlog.Core.Contracts;
 using TatBlog.Core.DTO;
+using TatBlog.Core.Entities;
 using TatBlog.Services.Blogs;
+using TatBlog.WebApp.Areas.Admin.Models;
+using TatBlog.WebApp.Models;
 
 namespace TatBlog.WebApp.Controllers
 {
@@ -12,14 +18,17 @@ namespace TatBlog.WebApp.Controllers
     private readonly IBlogRepository _blogRepository;
     private readonly IAuthorRepository _authorRepository;
     private readonly ICommentRepository _commentRepository;
+    private readonly IMapper _mapper;
     public BlogController(
       IBlogRepository blogRepository,
       IAuthorRepository authorRepository,
-      ICommentRepository commentRepository)
+      ICommentRepository commentRepository,
+      IMapper mapper)
     {
       _blogRepository = blogRepository;
       _authorRepository = authorRepository;
       _commentRepository = commentRepository;
+      _mapper = mapper;
     }
 
     public async Task<IActionResult> Index(
@@ -115,6 +124,43 @@ namespace TatBlog.WebApp.Controllers
       return View("Index", posts);
     }
 
+    public async Task<IActionResult> PostById(
+      int id)
+    {
+      var post = await _blogRepository.FindPostByIdAsync(id, true);
+
+      if (post == null)
+      {
+        ViewBag.Message = $"Không tìm thấy bài viết ";
+        return View("Error");
+      }
+
+      if (!post.Published)
+      {
+        ViewBag.Message = $"Bài viết '{post.UrlSlug}' chưa công khai";
+        return View("Error");
+      }
+      ViewBag.Title = post.Title;
+
+      ViewBag.Comments = await _commentRepository
+        .GetAllCommentsIsApprovedByIdPostAsync(post.Id);
+
+
+
+      var commentModel = new CommentEditModel()
+      {
+        PostId = post.Id
+      };
+
+      ViewBag.Post = post;
+
+
+      await _blogRepository.IncreaseViewCountAsync(post.Id);
+
+      return View("PostDetail", commentModel);
+
+    }
+
     public async Task<IActionResult> Post(
       int year,
       int month,
@@ -137,10 +183,63 @@ namespace TatBlog.WebApp.Controllers
 
       ViewBag.Title = post.Title;
       ViewBag.Comments = await _commentRepository
-        .GetAllCommentsIsApprovedByIdPost(post.Id);
+        .GetAllCommentsIsApprovedByIdPostAsync(post.Id);
+
+      var commentModel = new CommentEditModel()
+      {
+        PostId = post.Id
+      };
+      ViewBag.CommentModel = commentModel;
+      await Console.Out.WriteLineAsync(commentModel.ToString());
+
+
       await _blogRepository.IncreaseViewCountAsync(post.Id);
 
       return View("PostDetail", post);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PostById(
+        [FromServices] IValidator<CommentEditModel> commentValidator,
+        CommentEditModel model)
+    {
+
+      var validationResult = await commentValidator
+  .ValidateAsync(model);
+
+      if (!validationResult.IsValid)
+      {
+        validationResult.AddToModelState(ModelState);
+      }
+
+      if (!ModelState.IsValid)
+      {
+        //return RedirectToPage("/blog/post",
+        //  new { year, month, slug });
+        //return Redirect($"{Url.ActionLink("PostById",
+        //      "Blog", new { Area = "", id = model.PostId })}");
+        return View("PostDetail", model);
+      }
+
+      var comment = model.Id > 0
+              ? await _commentRepository.GetCommentByIdAsync(model.Id)
+              : null;
+
+      if (comment == null)
+      {
+        comment = _mapper.Map<Comment>(model);
+        comment.Id = 0;
+        comment.CommentedDate = DateTime.Now;
+      }
+      else
+      {
+        _mapper.Map(model, comment);
+      }
+
+      await _commentRepository.AddOrUpdateCommentAsync(comment);
+
+      return Redirect($"{Url.ActionLink("PostById",
+              "Blog", new { Area = "", id = model.PostId })}");
     }
 
     public async Task<IActionResult> Archive(

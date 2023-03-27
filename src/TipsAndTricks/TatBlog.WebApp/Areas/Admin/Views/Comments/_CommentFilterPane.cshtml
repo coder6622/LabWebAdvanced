@@ -1,0 +1,56 @@
+﻿@model CommentFilterModel
+
+<form asp-area="Admin"
+      asp-controller="Comments"
+      asp-action="Index"
+      method="get"
+      class="row gy-2 py-3 gx-3 align-items-center
+              justify-content-center">
+  <div class="col-auto">
+    <label class="visually-hidden" asp-for="@Model.Keyword"></label>
+    <input type="text"
+           class="form-control"
+           asp-for="@Model.Keyword"
+           placeholder="Nhập từ khóa ..." />
+  </div>
+
+  <div class="col-auto">
+    <label class="visually-hidden" asp-for="CommentedYear"></label>
+    <input type="text"
+           class="form-control"
+           asp-for="CommentedYear"
+           placeholder="Nhập năm ..." />
+  </div>
+  <div class="col-auto">
+    <label class="visually-hidden" asp-for="CommentedMonth"></label>
+    <select class="form-control"
+            asp-for="CommentedMonth"
+            asp-items="Model.Months">
+      <option value="" selected>-- Chọn tháng --</option>
+    </select>
+  </div>
+
+  <div class="col-auto">
+    <div class="form-check">
+      <input class="form-check-input"
+             type="checkbox"
+             asp-for="NotApprovedOnly" />
+      <label class="form-check-label"
+             asp-for="NotApprovedOnly"></label>
+    </div>
+  </div>
+
+  <div class="col-auto">
+    <a asp-area="Admin"
+       asp-action="Index"
+       asp-controller="Comments"
+       class="btn btn-warning">Bỏ lọc</a>
+    <button type="submit" class="btn btn-primary">Tìm/Lọc</button>
+    <a asp-area="Admin"
+       asp-controller="Comments"
+       asp-action="Edit"
+       class="btn btn-success">
+      Thêm mới
+    </a>
+  </div>
+</form>

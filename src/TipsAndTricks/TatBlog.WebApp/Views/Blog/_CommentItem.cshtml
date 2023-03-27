@@ -1,0 +1,13 @@
+﻿@model Comment
+
+<div class="comment px-3">
+  <div class="d-flex justify-content-between">
+    <p class="align-middle m-0">
+      <span class="h5">@Model.NameUserComment</span>
+    </p>
+    <p class="text-muted m-0">
+      @Model.CommentedDate
+    </p>
+  </div>
+  <div class="comment-body p-2">@Model.Content</div>
+</div>

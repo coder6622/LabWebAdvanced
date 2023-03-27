@@ -19,7 +19,7 @@ namespace TatBlog.WebApp.Areas.Admin.Models
 
     public AuthorFilterModel()
     {
-      Months = Months.GetMonthsNameSelectsItem();
+      Months = Months.PopulateMonthNames();
     }
   }
 }

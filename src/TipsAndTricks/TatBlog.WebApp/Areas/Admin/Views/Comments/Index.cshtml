@@ -1,6 +1,112 @@
-﻿@{
+﻿@model CommentFilterModel
+
+@{
   ViewData["Title"] = "Danh sách bình luận";
+
+  var comments = ViewBag.Items as IPagedList<CommentItem>;
+
+  var queryFilter = "";
+  if (Model != null)
+  {
+    queryFilter = Model.GetQueryString();
+  }
+
 }
 <h2>
   Danh sách bình luận
 </h2>
+
+<partial name="_CommentFilterPane" />
+
+@if (comments != null && comments.Count > 0)
+{
+  <table id="#tbl" class="table table-responsive table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th class="text-center">Tên</th>
+        <th class="text-center">Email</th>
+        <th class="text-center">Nội dung</th>
+        <th class="text-center">Ngày bình luận</th>
+        <th class="text-center">Bài viết</th>
+        <th class="text-center">Phê duyệt</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var comment in comments)
+      {
+        <tr>
+          <td class="align-middle">
+            @if (string.IsNullOrWhiteSpace(comment.NameUserComment))
+            {
+              <p>Ẩn danh</p>
+            }
+            else
+            {
+              <p>
+                @comment.NameUserComment
+              </p>
+            }
+          </td>
+          <td class="align-middle">
+            @comment.Email
+          </td>
+          <td align="center"
+              class="align-middle">
+            @comment.Content
+            <p class="text-muted">@comment.Feedback</p>
+          </td>
+          <td class="text-center align-middle">
+            @comment.CommentedDate.ToString("dd/MM/yyy hh:mm:ss")
+          </td>
+          <td class="align-middle">
+            @comment.TitlePost
+            <p class="text-muted">
+              @comment.NameAuthorPost
+            </p>
+          </td>
+          <td align="center" class="align-middle">
+            @if (comment.IsApproved)
+            {
+              <span>Đã duyệt</span>
+            }
+            else
+            {
+              <a asp-area="Admin"
+           asp-controller="Comments"
+           asp-action="Approve"
+           asp-route-id="@comment.Id"
+           asp-route-filter="@queryFilter"
+           asp-route-p="@comments.PageNumber"
+           asp-route-ps="@comments.PageSize"
+                 class="btn btn-info change-status-post">
+                <span>Duyệt</span>
+              </a>
+            }
+
+          </td>
+          <td align="center" class="align-middle">
+            <a asp-area="Admin"
+           asp-controller="Comments"
+           asp-action="Delete"
+           asp-route-filter="@queryFilter"
+           asp-route-id="@comment.Id"
+           asp-route-p="@comments.PageNumber"
+           asp-route-ps="@comments.PageSize"
+               class="btn btn-danger change-status-post align-content-start"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này không??')">
+              Xóa
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <partial name="_Pager" model="@queryFilter" />
+}
+else
+{
+  <h1 class="text-danger">
+    Không tìm thấy bình luận
+  </h1>
+}

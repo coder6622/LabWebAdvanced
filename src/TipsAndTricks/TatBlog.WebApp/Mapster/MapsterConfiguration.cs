@@ -42,6 +42,11 @@ namespace TatBlog.WebApp.Mapster
       config.NewConfig<Tag, TagItem>()
         .Map(dest => dest.PostCount, src => src.Posts.Count);
 
+      config.NewConfig<Comment, CommentItem>()
+        .Map(dest => dest.TitlePost,
+            src => src.Post.Title)
+        .Map(dest => dest.NameAuthorPost,
+            src => src.Post.Author.FullName);
     }
   }
 }

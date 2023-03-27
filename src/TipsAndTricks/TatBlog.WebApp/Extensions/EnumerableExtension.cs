@@ -6,7 +6,7 @@ namespace TatBlog.WebApp.Extensions
   public static class EnumerableExtension
   {
 
-    public static IEnumerable<SelectListItem> GetMonthsNameSelectsItem(
+    public static IEnumerable<SelectListItem> PopulateMonthNames(
       this IEnumerable<SelectListItem> enumerable)
     {
       return Enumerable.Range(1, 12)
