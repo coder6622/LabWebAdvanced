@@ -11,12 +11,21 @@ namespace TatBlog.Services.Blogs
 {
   public interface IAuthorRepository
   {
-    Task<Author> FindAuthorByIdAsync(
+    Task<Author> GetAuthorByIdAsync(
       int id,
       bool includeDetail = false,
       CancellationToken cancellationToken = default);
 
-    Task<Author> FindAuthorBySlugAsync(
+    Task<Author> GetcachedAuthorByIdAsync(
+      int id,
+      bool includeDetail = false,
+      CancellationToken cancellationToken = default);
+
+    Task<Author> GetAuthorBySlugAsync(
+      string slug,
+      CancellationToken cancellationToken = default);
+
+    Task<Author> GetCachedAuthorBySlugAsync(
       string slug,
       CancellationToken cancellationToken = default);
 
@@ -32,7 +41,7 @@ namespace TatBlog.Services.Blogs
       string slug,
       CancellationToken cancellationToken = default);
 
-    Task<Author> AddOrUpdateAuthor(
+    Task<bool> AddOrUpdateAuthor(
       Author author,
       CancellationToken cancellationToken = default);
 
@@ -41,12 +50,25 @@ namespace TatBlog.Services.Blogs
       IPagingParams pagingParams,
       CancellationToken cancellationToken = default);
 
+
+    Task<IPagedList<T>> GetNAuthorTopPostsAsync<T>(
+      int n,
+      IPagingParams pagingParams,
+      Func<IQueryable<Author>, IQueryable<T>> mapper,
+      CancellationToken cancellationToken = default);
+
     Task<IPagedList<Author>> GetPagedAuthorsAsync(
       AuthorQuery authorQuery,
       int pageNumber,
       int pageSize,
       string sortColumn = "Id",
       string sortOrder = "ASC",
+      CancellationToken cancellationToken = default);
+
+
+    Task<IPagedList<AuthorItem>> GetPagedAuthorsAsync(
+      IPagingParams pagingParams,
+      string name = null,
       CancellationToken cancellationToken = default);
 
     public Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
@@ -58,8 +80,19 @@ namespace TatBlog.Services.Blogs
      string sortOrder = "ASC",
      CancellationToken cancellationToken = default);
 
+    Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
+      Func<IQueryable<Author>, IQueryable<T>> mapper,
+      IPagingParams pagingParams,
+      string name = null,
+      CancellationToken cancellationToken = default);
+
     public Task<bool> DeleteAuthorAsync(
       int id,
       CancellationToken cancellationToken = default);
+
+    Task<bool> SetImageUrlAsync(
+      int authorId, string imageUrl,
+      CancellationToken cancellationToken = default);
+
   }
 }

@@ -16,12 +16,12 @@ namespace TatBlog.Core.DTO
     public DateTime JoinedDate { get; set; }
     public string Email { get; set; }
     public string Notes { get; set; }
-    public int PostsCount { get; set; }
+    public int PostCount { get; set; }
 
     public override string ToString()
     {
       return String.Format("{0, -5}{1,-25}{2,-20}{3,-10}{4,-30}{5,-20}{6,-10}{7,-20}",
-        Id, FullName, UrlSlug, ImageUrl, JoinedDate, Email, Notes, PostsCount
+        Id, FullName, UrlSlug, ImageUrl, JoinedDate, Email, Notes, PostCount
       );
     }
   }

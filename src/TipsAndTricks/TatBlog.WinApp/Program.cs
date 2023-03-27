@@ -270,7 +270,7 @@ var pagingParams = new PagingParams()
 #endregion
 
 #region author test
-IAuthorRepository authorRepository = new AuthorRepository(context);
+//IAuthorRepository authorRepository = new AuthorRepository(context);
 
 //Author authorFindById = await authorRepository.FindAuthorByIdAsync(3);
 //Console.WriteLine(authorFindById);

@@ -67,7 +67,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     public async Task<IActionResult> Edit(int id = 0)
     {
       Author author = id > 0
-     ? await _authorRepository.FindAuthorByIdAsync(id, true)
+     ? await _authorRepository.GetAuthorByIdAsync(id, true)
      : null;
 
       var model = author == null
@@ -96,7 +96,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       }
 
       var author = model.Id > 0
-        ? await _authorRepository.FindAuthorByIdAsync(model.Id)
+        ? await _authorRepository.GetAuthorByIdAsync(model.Id)
         : null;
 
       if (author == null)
