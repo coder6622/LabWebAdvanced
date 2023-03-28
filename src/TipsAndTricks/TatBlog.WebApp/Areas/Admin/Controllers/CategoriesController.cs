@@ -93,7 +93,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     {
       Category category = id > 0
         ? await _blogRepository
-        .FindCategoryByIdAsync(id)
+        .GetCategoryByIdAsync(id)
         : null;
 
       var model = category == null
@@ -124,7 +124,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
       }
 
       var category = model.Id > 0
-        ? await _blogRepository.FindCategoryByIdAsync(model.Id)
+        ? await _blogRepository.GetCategoryByIdAsync(model.Id)
         : null;
 
       if (category == null)

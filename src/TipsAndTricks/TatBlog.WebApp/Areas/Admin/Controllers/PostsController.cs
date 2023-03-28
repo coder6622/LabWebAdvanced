@@ -189,7 +189,6 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
 
     }
 
-
     private async Task PopulatePostFilterModelAsync(PostFilterModel model)
     {
       var authors = await _authorRepository.GetAllAuthorsAsync();

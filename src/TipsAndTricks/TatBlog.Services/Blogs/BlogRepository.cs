@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using SlugGenerator;
@@ -20,10 +21,14 @@ namespace TatBlog.Services.Blogs
   public class BlogRepository : IBlogRepository
   {
     private readonly BlogDbContext _context;
+    private readonly IMemoryCache _memoryCache;
 
-    public BlogRepository(BlogDbContext context)
+    public BlogRepository(
+      BlogDbContext context,
+      IMemoryCache memoryCache)
     {
       _context = context;
+      _memoryCache = memoryCache;
     }
 
     public async Task<Post> GetPostsAsync(
@@ -204,7 +209,7 @@ namespace TatBlog.Services.Blogs
         .AnyAsync(t => t.Id != id && t.UrlSlug == slug);
     }
 
-    public async Task<Category> AddOrUpdateCategoryAsync(
+    public async Task<bool> AddOrUpdateCategoryAsync(
       Category category,
       CancellationToken cancellationToken = default
     )
@@ -218,9 +223,7 @@ namespace TatBlog.Services.Blogs
         _context.Set<Category>().Add(category);
       }
 
-      await _context.SaveChangesAsync(cancellationToken);
-
-      return category;
+      return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 
 
@@ -244,7 +247,7 @@ namespace TatBlog.Services.Blogs
       return true;
     }
 
-    public async Task<Category> FindCategoryByIdAsync(
+    public async Task<Category> GetCategoryByIdAsync(
       int id,
       bool isDetail = false,
       CancellationToken cancellationToken = default
@@ -263,6 +266,21 @@ namespace TatBlog.Services.Blogs
         .Set<Category>()
         .FindAsync(id, cancellationToken);
     }
+
+    public Task<Category> GetCachedCategoryByIdAsync(
+            int id,
+            bool includeDetail = false,
+            CancellationToken cancellationToken = default)
+    {
+      return _memoryCache.GetOrCreateAsync(
+        $"category.by-id.{id})",
+        async (entry) =>
+        {
+          entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+          return await GetCategoryByIdAsync(id, includeDetail, cancellationToken);
+        });
+    }
+
 
     public async Task<Category> FindCategoryBySlugAsync(
       string slug,
@@ -726,6 +744,19 @@ namespace TatBlog.Services.Blogs
       return await resultQuery
         .ToPagedListAsync<T>(pageNumber, pageSize, sortColumn, sortOrder, cancellationToken);
     }
+
+    public async Task<IPagedList<T>> GetPagedCategoriesAsync<T>(
+        CategoryQuery query,
+        IPagingParams pagingParams,
+        Func<IQueryable<Category>, IQueryable<T>> mapper,
+        CancellationToken cancellationToken = default)
+    {
+      IQueryable<Category> categoryFilter = FilterCategories(query);
+
+      return await mapper(categoryFilter)
+        .ToPagedListAsync<T>(pagingParams, cancellationToken);
+    }
+
 
     public async Task ChangeCategoriesShowOnMenu(int id, CancellationToken cancellationToken = default)
     {

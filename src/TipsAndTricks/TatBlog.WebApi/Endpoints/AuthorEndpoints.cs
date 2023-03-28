@@ -11,10 +11,12 @@ using TatBlog.Services.Media;
 using TatBlog.WebApi.Extensions;
 using TatBlog.WebApi.Filters;
 using TatBlog.WebApi.Models;
+using TatBlog.WebApi.Models.Author;
+using TatBlog.WebApi.Models.Post;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class AuthorEndpoints
+    public static class AuthorEndpoints
   {
     public static WebApplication MapAuthorEndpoints(
     this WebApplication app)
@@ -97,7 +99,7 @@ namespace TatBlog.WebApi.Endpoints
       IMapper mapper,
       ILogger<IResult> logger)
     {
-      var author = await authorRepository.GetcachedAuthorByIdAsync(id);
+      var author = await authorRepository.GetCachedAuthorByIdAsync(id);
 
       return author == null
         ? Results.NotFound($"Không tìm thấy tác giả có mã số {id}")

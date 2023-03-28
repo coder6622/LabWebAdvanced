@@ -45,12 +45,17 @@ namespace TatBlog.Services.Blogs
       string slug,
       CancellationToken cancellationToken = default);
 
-    Task<Category> FindCategoryByIdAsync(
+    Task<Category> GetCategoryByIdAsync(
       int id,
       bool isDetail = false,
       CancellationToken cancellationToken = default);
 
-    Task<Category> AddOrUpdateCategoryAsync(
+    Task<Category> GetCachedCategoryByIdAsync(
+      int id,
+      bool includeDetail = false,
+      CancellationToken cancellationToken = default);
+
+    Task<bool> AddOrUpdateCategoryAsync(
       Category category,
       CancellationToken cancellationToken = default);
 
@@ -81,6 +86,13 @@ namespace TatBlog.Services.Blogs
       string sortColumn = "Id",
       string sortOrder = "ASC",
       CancellationToken cancellationToken = default);
+
+    Task<IPagedList<T>> GetPagedCategoriesAsync<T>(
+        CategoryQuery query,
+        IPagingParams pagingParams,
+        Func<IQueryable<Category>, IQueryable<T>> mapper,
+        CancellationToken cancellationToken = default);
+
 
 
     // Tag

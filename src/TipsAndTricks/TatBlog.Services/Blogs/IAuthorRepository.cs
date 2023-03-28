@@ -16,7 +16,7 @@ namespace TatBlog.Services.Blogs
       bool includeDetail = false,
       CancellationToken cancellationToken = default);
 
-    Task<Author> GetcachedAuthorByIdAsync(
+    Task<Author> GetCachedAuthorByIdAsync(
       int id,
       bool includeDetail = false,
       CancellationToken cancellationToken = default);
