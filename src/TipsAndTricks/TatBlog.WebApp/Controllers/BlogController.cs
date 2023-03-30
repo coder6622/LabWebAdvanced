@@ -127,7 +127,7 @@ namespace TatBlog.WebApp.Controllers
     public async Task<IActionResult> PostById(
       int id)
     {
-      var post = await _blogRepository.FindPostByIdAsync(id, true);
+      var post = await _blogRepository.GetPostByIdAsync(id, true);
 
       if (post == null)
       {

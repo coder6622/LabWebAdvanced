@@ -20,8 +20,6 @@ namespace TatBlog.WebApi.Extensions
           builder.Configuration
             .GetConnectionString("DefaultConnection")));
 
-
-
       builder.Services.AddScoped<ITimeProvider, LocalTimeProvider>();
       builder.Services.AddScoped<IMediaManager, LocalFileSystemMediaManager>();
       builder.Services.AddScoped<IBlogRepository, BlogRepository>();

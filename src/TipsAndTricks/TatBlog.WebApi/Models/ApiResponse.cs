@@ -30,6 +30,7 @@ namespace TatBlog.WebApi.Models
       };
     }
 
+
     public static ApiResponse<T> FailWithResult<T>(
       HttpStatusCode statusCode,
       T result,

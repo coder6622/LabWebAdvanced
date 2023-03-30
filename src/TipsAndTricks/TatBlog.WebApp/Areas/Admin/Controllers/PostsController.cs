@@ -81,7 +81,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
     public async Task<IActionResult> Edit(int id = 0)
     {
       Post post = id > 0
-        ? await _blogRepository.FindPostByIdAsync(id, true)
+        ? await _blogRepository.GetPostByIdAsync(id, true)
         : null;
 
       var model = post == null
@@ -111,7 +111,7 @@ namespace TatBlog.WebApp.Areas.Admin.Controllers
         return View(model);
       }
       var post = model.Id > 0
-        ? await _blogRepository.FindPostByIdAsync(model.Id)
+        ? await _blogRepository.GetPostByIdAsync(model.Id)
         : null;
 
       if (post == null)

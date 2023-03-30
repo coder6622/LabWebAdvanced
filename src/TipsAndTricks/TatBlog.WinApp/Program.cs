@@ -44,7 +44,7 @@ seeder.Initialize();
 #endregion
 
 #region section 6 
-IBlogRepository blogRepo = new BlogRepository(context);
+//IBlogRepository blogRepo = new BlogRepository(context);
 //var posts = await blogRepo.GetPopularArticlesAsync(3);
 #endregion
 
