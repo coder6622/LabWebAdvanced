@@ -27,7 +27,7 @@ namespace TatBlog.Services.Blogs
         .CountAsync(c => c.PostId == postId & c.IsApproved ?? false, cancellationToken);
     }
 
-    public async Task<Comment> AddOrUpdateCommentAsync(Comment comment, CancellationToken cancellationToken = default)
+    public async Task<bool> AddOrUpdateCommentAsync(Comment comment, CancellationToken cancellationToken = default)
     {
       if (comment.Id > 0)
       {
@@ -38,8 +38,7 @@ namespace TatBlog.Services.Blogs
         _context.Set<Comment>().Add(comment);
       }
 
-      await _context.SaveChangesAsync(cancellationToken);
-      return comment;
+      return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 
     public async Task<bool> DeleteCommentAsync(
@@ -60,8 +59,17 @@ namespace TatBlog.Services.Blogs
 
     public async Task<Comment> GetCommentByIdAsync(
       int id,
+      bool isDetail = false,
       CancellationToken cancellationToken = default)
     {
+
+      if (isDetail)
+      {
+        return await _context.Set<Comment>()
+          .Include(c => c.Post)
+          .Where(c => c.Id == id)
+          .FirstOrDefaultAsync(cancellationToken);
+      }
       return await _context.Set<Comment>().FindAsync(id, cancellationToken);
     }
 
@@ -93,6 +101,7 @@ namespace TatBlog.Services.Blogs
             || c.NameUserComment.Contains(condition.Keyword)
             || c.Feedback.Contains(condition.Keyword)
             || c.Email.Contains(condition.Keyword))
+        .WhereIf(condition.PostId != 0, c => c.PostId == condition.PostId)
         .WhereIf(condition.CommentedYear > 0, c =>
             c.CommentedDate.Year == condition.CommentedYear)
         .WhereIf(condition.CommentedMonth > 0, c =>
@@ -122,13 +131,26 @@ namespace TatBlog.Services.Blogs
         sortOrder);
     }
 
+    public async Task<IPagedList<T>> GetPagedCommentsAsync<T>(
+        CommentQuery query,
+        IPagingParams pagingParams,
+        Func<IQueryable<Comment>, IQueryable<T>> mapper,
+        CancellationToken cancellationToken = default)
+    {
+      IQueryable<Comment> commentQueryable = FilterComment(query);
+
+      return await mapper(commentQueryable)
+        .ToPagedListAsync(pagingParams, cancellationToken);
+    }
+
+
 
     public async Task<bool> AprroveCommentAsync(
       int id,
       bool isApprove = true,
       CancellationToken cancellationToken = default)
     {
-      Comment comment = await GetCommentByIdAsync(id, cancellationToken);
+      Comment comment = await GetCommentByIdAsync(id, cancellationToken: cancellationToken);
       if (comment == null)
       {
         return false;

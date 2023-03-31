@@ -9,6 +9,7 @@ namespace TatBlog.Core.DTO
   public class CommentQuery
   {
     public string Keyword { get; set; }
+    public int PostId { get; set; }
     public int CommentedMonth { get; set; }
     public int CommentedYear { get; set; }
     public bool NotApprovedOnly { get; set; }

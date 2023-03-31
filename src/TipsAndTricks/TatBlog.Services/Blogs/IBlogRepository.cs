@@ -29,6 +29,10 @@ namespace TatBlog.Services.Blogs
       string slug,
       CancellationToken cancellationToken = default);
 
+    Task<bool> IsPostIdExistedAsync(
+      int postId,
+      CancellationToken cancellationToken = default);
+
     Task ChangeCategoriesShowOnMenu(
     int id,
     CancellationToken cancellationToken = default);

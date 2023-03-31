@@ -103,6 +103,15 @@ namespace TatBlog.Services.Blogs
       );
     }
 
+    public async Task<bool> IsPostIdExistedAsync(
+        int postId,
+        CancellationToken cancellationToken = default)
+    {
+      return await _context.Set<Post>()
+        .AnyAsync(p => p.Id == postId, cancellationToken);
+    }
+
+
     public async Task<IList<CategoryItem>> GetCategoriesAsync(
       bool showOnMenu = true,
       CancellationToken cancellationToken = default
