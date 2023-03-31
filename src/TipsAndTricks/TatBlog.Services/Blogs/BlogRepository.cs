@@ -166,7 +166,6 @@ namespace TatBlog.Services.Blogs
       return await tagQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
-
     public IQueryable<Tag> FilterTags(
       TagQuery condition)
     {
@@ -197,6 +196,19 @@ namespace TatBlog.Services.Blogs
         sortColumn,
         sortOrder,
         cancellationToken);
+    }
+
+
+    public async Task<IPagedList<T>> GetPagedTagsAsync<T>(
+             TagQuery query,
+             IPagingParams pagingParams,
+             Func<IQueryable<Tag>, IQueryable<T>> mapper,
+             CancellationToken cancellationToken = default)
+    {
+      IQueryable<Tag> tagQueryable = FilterTags(query);
+
+      return await mapper(tagQueryable)
+        .ToPagedListAsync(pagingParams);
     }
 
 
@@ -366,22 +378,26 @@ namespace TatBlog.Services.Blogs
 
     public async Task<Tag> GetTagBySlugAsync(
       string slug,
+      bool includeDetail = false,
       CancellationToken cancellationToken = default
     )
     {
-      IQueryable<Tag> tagsQuery = _context.Set<Tag>()
-      .Include(t => t.Posts);
 
-      if (!string.IsNullOrEmpty(slug))
+      if (includeDetail)
       {
-        tagsQuery = tagsQuery.Where(t => t.UrlSlug == slug);
+        return await _context.Set<Tag>()
+          .Include(t => t.Posts)
+          .Where(t => t.UrlSlug == slug)
+          .FirstOrDefaultAsync(cancellationToken);
       }
 
-      return await tagsQuery.FirstOrDefaultAsync(cancellationToken);
+      return await _context.Set<Tag>()
+        .Where(t => t.UrlSlug == slug)
+        .FirstOrDefaultAsync(cancellationToken);
     }
 
 
-    public async Task<Tag> AddOrUpdateTagAsync(
+    public async Task<bool> AddOrUpdateTagAsync(
        Tag tag,
        CancellationToken cancellationToken = default)
     {
@@ -394,9 +410,7 @@ namespace TatBlog.Services.Blogs
         _context.Set<Tag>().Add(tag);
       }
 
-      await _context.SaveChangesAsync(cancellationToken);
-
-      return tag;
+      return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 
     public async Task<bool> RemoveTagByIdAsync(
@@ -522,7 +536,7 @@ namespace TatBlog.Services.Blogs
           continue;
         }
 
-        var tag = await GetTagBySlugAsync(kv.Key, cancellationToken) ?? new Tag()
+        var tag = await GetTagBySlugAsync(kv.Key, false, cancellationToken) ?? new Tag()
         {
           Name = kv.Value,
           Description = kv.Value,

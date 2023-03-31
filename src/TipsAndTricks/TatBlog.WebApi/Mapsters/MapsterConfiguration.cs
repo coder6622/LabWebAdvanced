@@ -29,6 +29,9 @@ namespace TatBlog.WebApi.Mapsters
       config.NewConfig<PostEditModel, Post>()
             .Ignore(dest => dest.ImageUrl);
 
+      config.NewConfig<Tag, TagItem>()
+        .Map(dest => dest.PostCount, src => src.Posts.Count);
+
     }
   }
 }

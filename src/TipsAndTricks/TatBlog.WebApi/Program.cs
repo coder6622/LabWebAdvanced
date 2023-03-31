@@ -27,6 +27,8 @@ var app = builder.Build();
 
   app.MapAuthorEndpoints();
 
+  app.MapTagEndpoints();
+
   app.Run();
 }
 

@@ -105,6 +105,7 @@ namespace TatBlog.Services.Blogs
 
     Task<Tag> GetTagBySlugAsync(
       string slug,
+      bool isDetail = true,
       CancellationToken cancellationToken = default);
 
     Task<IList<TagItem>> GetAllTagsAsync(CancellationToken cancellationToken = default);
@@ -118,7 +119,14 @@ namespace TatBlog.Services.Blogs
         string sortOrder = "ASC",
         CancellationToken cancellationToken = default);
 
-    Task<Tag> AddOrUpdateTagAsync(
+
+    Task<IPagedList<T>> GetPagedTagsAsync<T>(
+         TagQuery query,
+         IPagingParams pagingParams,
+         Func<IQueryable<Tag>, IQueryable<T>> mapper,
+         CancellationToken cancellationToken = default);
+
+    Task<bool> AddOrUpdateTagAsync(
       Tag category,
       CancellationToken cancellationToken = default);
 
