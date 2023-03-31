@@ -31,7 +31,6 @@ namespace TatBlog.WebApi.Mapsters
 
       config.NewConfig<Tag, TagItem>()
         .Map(dest => dest.PostCount, src => src.Posts.Count);
-
     }
   }
 }

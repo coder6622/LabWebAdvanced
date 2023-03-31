@@ -31,6 +31,8 @@ var app = builder.Build();
 
   app.MapCommentEndpoints();
 
+  app.MapStatisticalEndpoint();
+
   app.Run();
 }
 
