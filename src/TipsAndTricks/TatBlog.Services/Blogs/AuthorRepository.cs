@@ -72,7 +72,7 @@ namespace TatBlog.Services.Blogs
               .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public Task<Author> GetcachedAuthorByIdAsync(
+    public Task<Author> GetCachedAuthorByIdAsync(
        int id,
        bool includeDetail = false,
        CancellationToken cancellationToken = default)

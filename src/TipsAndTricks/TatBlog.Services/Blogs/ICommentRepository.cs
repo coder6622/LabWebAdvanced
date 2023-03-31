@@ -13,6 +13,7 @@ namespace TatBlog.Services.Blogs
   {
     Task<Comment> GetCommentByIdAsync(
       int id,
+      bool isDetail = false,
       CancellationToken cancellationToken = default);
     Task<IList<Comment>> GetCommentsByPostIdAsync(
       int postId,
@@ -22,7 +23,7 @@ namespace TatBlog.Services.Blogs
       string email,
       CancellationToken cancellationToken = default);
 
-    Task<Comment> AddOrUpdateCommentAsync(
+    Task<bool> AddOrUpdateCommentAsync(
       Comment comment,
       CancellationToken cancellationToken = default);
 
@@ -47,6 +48,11 @@ namespace TatBlog.Services.Blogs
     string sortOrder = "ASC",
     CancellationToken cancellationToken = default);
 
+    Task<IPagedList<T>> GetPagedCommentsAsync<T>(
+    CommentQuery query,
+    IPagingParams pagingParams,
+    Func<IQueryable<Comment>, IQueryable<T>> mapper,
+    CancellationToken cancellationToken = default);
 
     Task<bool> AprroveCommentAsync(
       int id,

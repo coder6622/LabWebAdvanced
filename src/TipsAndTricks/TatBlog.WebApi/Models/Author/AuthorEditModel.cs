@@ -1,4 +1,4 @@
-﻿namespace TatBlog.WebApi.Models
+﻿namespace TatBlog.WebApi.Models.Author
 {
   public class AuthorEditModel
   {
@@ -7,6 +7,5 @@
     public DateTime JoinedDate { get; set; }
     public string Email { get; set; }
     public string Notes { get; set; }
-
   }
 }

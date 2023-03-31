@@ -5,6 +5,7 @@ using TatBlog.Services.Blogs;
 using TatBlog.Services.Media;
 using NLog.Web;
 using TatBlog.Services.Timing;
+using Carter;
 
 namespace TatBlog.WebApi.Extensions
 {
@@ -14,19 +15,19 @@ namespace TatBlog.WebApi.Extensions
     public static WebApplicationBuilder ConfigureServices(
       this WebApplicationBuilder builder)
     {
+      builder.Services.AddCarter();
       builder.Services.AddMemoryCache();
       builder.Services.AddDbContext<BlogDbContext>(options =>
         options.UseSqlServer(
           builder.Configuration
             .GetConnectionString("DefaultConnection")));
 
-
-
       builder.Services.AddScoped<ITimeProvider, LocalTimeProvider>();
       builder.Services.AddScoped<IMediaManager, LocalFileSystemMediaManager>();
       builder.Services.AddScoped<IBlogRepository, BlogRepository>();
       builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
       builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+      builder.Services.AddScoped<IStatisticalRepository, StatisticalRepository>();
       builder.Services.AddScoped<IDataSeeder, DataSeeder>();
       return builder;
     }

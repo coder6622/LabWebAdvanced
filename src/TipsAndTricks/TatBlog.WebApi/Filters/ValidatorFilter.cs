@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System.Net;
 using TatBlog.WebApi.Extensions;
 using TatBlog.WebApi.Models;
 
@@ -23,19 +24,24 @@ namespace TatBlog.WebApi.Filters
 
       if (model == null)
       {
-        return Results.BadRequest(
-          new ValidationFailureResponse(
-            new[] {
-              "Could not create model object"
-            }));
+        return Results.Ok(
+          ApiResponse.FailWithResult(
+            HttpStatusCode.BadRequest,
+            new ValidationFailureResponse(
+              new[] {
+                "Could not create model object"
+              })));
+
       }
 
       var validationResult = await _validator.ValidateAsync(model);
 
       if (!validationResult.IsValid)
       {
-        return Results.BadRequest(
-          validationResult.Errors.ToResponse());
+        return Results.Ok(
+          ApiResponse.FailWithResult(
+            HttpStatusCode.BadRequest,
+            validationResult.Errors.ToResponse()));
       }
 
       return await next(context);
