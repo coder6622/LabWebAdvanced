@@ -5,6 +5,7 @@ using TatBlog.Services.Blogs;
 using TatBlog.Services.Media;
 using NLog.Web;
 using TatBlog.Services.Timing;
+using Carter;
 
 namespace TatBlog.WebApi.Extensions
 {
@@ -14,6 +15,7 @@ namespace TatBlog.WebApi.Extensions
     public static WebApplicationBuilder ConfigureServices(
       this WebApplicationBuilder builder)
     {
+      builder.Services.AddCarter();
       builder.Services.AddMemoryCache();
       builder.Services.AddDbContext<BlogDbContext>(options =>
         options.UseSqlServer(

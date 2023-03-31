@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Carter;
+using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,9 +18,9 @@ using TatBlog.WinApp;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class PostEndpoints
+  public class PostEndpoints : ICarterModule
   {
-    public static WebApplication MapPostEndpoints(this WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
       var routeGroupBuilder = app.MapGroup("/api/posts");
 
@@ -74,8 +75,6 @@ namespace TatBlog.WebApi.Endpoints
       routeGroupBuilder.MapGet("/{id:int}/comments", GetCommentsByPostId)
         .WithName("GetCommentsByPostId")
         .Produces<ApiResponse<IList<Comment>>>();
-
-      return app;
     }
 
     private static async Task<IResult> GetPosts(
@@ -319,5 +318,6 @@ namespace TatBlog.WebApi.Endpoints
 
       return Results.Ok(ApiResponse.Success(comments));
     }
+
   }
 }

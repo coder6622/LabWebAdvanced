@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Carter;
+using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,12 +16,10 @@ using TatBlog.WebApi.Models.Post;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class CategoryEndpoints
+  public class CategoryEndpoints : ICarterModule
   {
-    public static WebApplication MapCategoryEndpoints(
-      this WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-
       var routeGroupBuilder = app.MapGroup("/api/categories");
 
       routeGroupBuilder.MapGet("/", GetCategories)
@@ -50,10 +49,7 @@ namespace TatBlog.WebApi.Endpoints
       routeGroupBuilder.MapDelete("/{id:int}", DeleteAnCategory)
         .WithName("DeleteAnCategory")
         .Produces<ApiResponse<string>>();
-
-      return app;
     }
-
 
     private static async Task<IResult> GetCategories(
       [AsParameters] CategoryFilterModel model,

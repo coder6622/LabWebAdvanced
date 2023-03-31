@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Carter;
+using Mapster;
 using MapsterMapper;
 using System.Net;
 using TatBlog.Core.Collections;
@@ -11,9 +12,9 @@ using TatBlog.WebApi.Models.Comment;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class CommentEndpoint
+  public class CommentEndpoint : ICarterModule
   {
-    public static WebApplication MapCommentEndpoints(this WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
       var mapGroupBuilder = app.MapGroup("api/comments");
 
@@ -36,8 +37,6 @@ namespace TatBlog.WebApi.Endpoints
       mapGroupBuilder.MapDelete("/{id:int}", DeleteComment)
         .WithName("DeleteComment")
         .Produces<ApiResponse<string>>();
-
-      return app;
     }
 
     private static async Task<IResult> GetComments(

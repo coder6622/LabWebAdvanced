@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Carter;
+using FluentValidation;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Components;
@@ -17,10 +18,9 @@ using TatBlog.WebApi.Models.Post;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class AuthorEndpoints
+  public class AuthorEndpoints : ICarterModule
   {
-    public static WebApplication MapAuthorEndpoints(
-    this WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
       var routeGroupBuilder = app.MapGroup("/api/authors");
 
@@ -71,8 +71,6 @@ namespace TatBlog.WebApi.Endpoints
       routeGroupBuilder.MapGet("/best/{limit:int}", GetAuthorsBestPost)
         .WithName("GetAuthorsBestPost")
         .Produces<ApiResponse<PaginationResult<AuthorItem>>>();
-
-      return app;
     }
 
     private static async Task<IResult> GetAuthors(

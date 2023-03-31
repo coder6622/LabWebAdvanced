@@ -1,3 +1,4 @@
+using Carter;
 using TatBlog.WebApi.Endpoints;
 using TatBlog.WebApi.Extensions;
 using TatBlog.WebApi.Mapsters;
@@ -21,17 +22,19 @@ var app = builder.Build();
 {
   app.SetupRequestPipeline();
 
-  app.MapPostEndpoints();
+  //app.MapPostEndpoints();
 
-  app.MapCategoryEndpoints();
+  //app.MapCategoryEndpoints();
 
-  app.MapAuthorEndpoints();
+  //app.MapAuthorEndpoints();
 
-  app.MapTagEndpoints();
+  //app.MapTagEndpoints();
 
-  app.MapCommentEndpoints();
+  //app.MapCommentEndpoints();
 
-  app.MapStatisticalEndpoint();
+  //app.MapStatisticalEndpoint();
+
+  app.MapCarter();
 
   app.Run();
 }
