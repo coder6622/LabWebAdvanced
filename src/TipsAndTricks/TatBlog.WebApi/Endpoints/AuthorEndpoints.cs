@@ -210,6 +210,15 @@ namespace TatBlog.WebApi.Endpoints
       IAuthorRepository authorRepository,
       IMapper mapper)
     {
+      var author = await authorRepository
+        .GetAuthorByIdAsync(id);
+
+      if (author == null)
+      {
+        return Results.Ok(ApiResponse.Fail(
+                HttpStatusCode.NotFound,
+                $"Không tìm thấy tác giả có id = {id}"));
+      }
       if (await authorRepository
         .IsAuthorSlugExist(id, model.UrlSlug))
       {
@@ -219,7 +228,7 @@ namespace TatBlog.WebApi.Endpoints
             $"Slug '{model.UrlSlug}' đã được sử dụng"));
       }
 
-      var author = mapper.Map<Author>(model);
+      mapper.Map(model, author);
       author.Id = id;
 
       return await authorRepository.AddOrUpdateAuthor(author)

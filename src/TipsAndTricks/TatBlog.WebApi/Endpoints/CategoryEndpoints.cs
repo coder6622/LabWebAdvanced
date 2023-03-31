@@ -158,6 +158,16 @@ namespace TatBlog.WebApi.Endpoints
       IMapper mapper,
       ILogger<IResult> logger)
     {
+      var category = await blogRepository
+        .GetCategoryByIdAsync(id);
+
+      if (category == null)
+      {
+        return Results.Ok(ApiResponse.Fail(
+                HttpStatusCode.NotFound,
+                $"Không tìm thấy chủ đề có id = {id}"));
+      }
+
       if (await blogRepository.IsCategorySlugExistAsync(id, model.UrlSlug))
       {
         return Results.Ok(
@@ -166,7 +176,7 @@ namespace TatBlog.WebApi.Endpoints
             $"Slug '{model.UrlSlug} đã được sử dụng'"));
       }
 
-      var category = mapper.Map<Category>(model);
+      mapper.Map(model, category);
       category.Id = id;
 
       return await blogRepository.AddOrUpdateCategoryAsync(category)
