@@ -29,7 +29,6 @@ function PostItem({ post }) {
                 <small className='text-muted'>Chủ đề:</small>
                 <span className='text-primary m-1'>{post.category.name}</span>
               </Card.Text>
-              Phát triển ứng dụng Web nâng cao 2023 Lab 5 Trang 17
               <Card.Text>{post.shortDescription}</Card.Text>
               <div className='tag-list'>{/* <Tags tags={post.tags} /> */}</div>
               <div className='text-end'>
