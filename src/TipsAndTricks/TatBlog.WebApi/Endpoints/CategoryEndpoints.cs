@@ -26,6 +26,10 @@ namespace TatBlog.WebApi.Endpoints
         .WithName("GetCategories")
         .Produces<ApiResponse<PaginationResult<CategoryItem>>>();
 
+      routeGroupBuilder.MapGet("/all/", GetAllCategories)
+        .WithName("GetAllCategories")
+        .Produces<ApiResponse<IList<CategoryItem>>>();
+
       routeGroupBuilder.MapGet("/{id:int}", GetCategoryDetails)
         .WithName("GetCategoryDetails")
         .Produces<ApiResponse<CategoryItem>>();
@@ -72,6 +76,17 @@ namespace TatBlog.WebApi.Endpoints
       return Results.Ok(ApiResponse.Success(paginationResult));
     }
 
+    private static async Task<IResult> GetAllCategories(
+      IBlogRepository blogRepository,
+      ILogger<IResult> logger,
+      IMapper mapper)
+    {
+
+      var categories = await blogRepository
+        .GetCategoriesAsync();
+
+      return Results.Ok(ApiResponse.Success(categories));
+    }
 
     private static async Task<IResult> GetCategoryDetails(
       int id,
