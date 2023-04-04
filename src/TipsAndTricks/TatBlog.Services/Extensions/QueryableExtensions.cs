@@ -12,4 +12,5 @@ namespace TatBlog.Services.Extensions
       return condition ? source.Where(predicate) : source;
     }
   }
+
 }
