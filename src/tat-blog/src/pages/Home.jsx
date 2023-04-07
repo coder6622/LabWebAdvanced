@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import PostSearch from '../components/blog/posts/PostSearch';
 
 function Home() {
-  const querySearchs = new URLSearchParams(useLocation().search);
-  const keyword = querySearchs.get('Keyword') ?? '';
+  const querySearch = new URLSearchParams(useLocation().search);
+  const keyword = querySearch.get('Keyword') ?? '';
 
   return (
     <div className='container'>
@@ -19,7 +19,7 @@ function Home() {
         )}
       </h1>
 
-      <PostSearch querySearch={querySearchs} />
+      <PostSearch querySearch={querySearch} />
     </div>
   );
 }

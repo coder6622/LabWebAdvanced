@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PostItem from './PostItem';
 import Pager from '../../controls/Pager';
-import { getPosts } from '../../../services/BlogRepository';
+import PostsRepository from '../../../services/PostsRepository';
 
 function PostSearch(props) {
-  const { querySearch } = props;
+  const { querySearch, params } = props;
   const [posts, setPosts] = useState({
     items: [],
     metadata: {},
@@ -19,14 +19,15 @@ function PostSearch(props) {
     loadPosts();
 
     async function loadPosts() {
-      console.log(querySearch);
-      const query = `${new URLSearchParams({
-        pageNumber: pageNumber || 1,
+      const query = new URLSearchParams({
+        pageNumber: Object.fromEntries(querySearch || '').length > 0 ? 1 : pageNumber || 1,
         pageSize: 2,
-      })}&${querySearch}`;
+        ...Object.fromEntries(querySearch || ''),
+        ...params,
+      });
 
       console.log(query);
-      getPosts(query).then((data) => {
+      PostsRepository.getPosts(query).then((data) => {
         if (data) {
           setPosts(data);
         } else
@@ -36,7 +37,7 @@ function PostSearch(props) {
           });
       });
     }
-  }, [pageNumber, querySearch]);
+  }, [pageNumber, params, querySearch]);
 
   if (posts.items.length > 0) {
     return (
