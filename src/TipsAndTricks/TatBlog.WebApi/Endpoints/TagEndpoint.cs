@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Carter;
+using Mapster;
 using MapsterMapper;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -13,11 +14,10 @@ using TatBlog.WebApi.Models.Tag;
 
 namespace TatBlog.WebApi.Endpoints
 {
-  public static class TagEndpoint
+  public class TagEndpoint : ICarterModule
   {
-    public static WebApplication MapTagEndpoints(this WebApplication app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-
       var routeGroupBuilder = app.MapGroup("api/tags");
 
       routeGroupBuilder.MapGet("/", GetTags)
@@ -45,8 +45,6 @@ namespace TatBlog.WebApi.Endpoints
       routeGroupBuilder.MapDelete("/{id:int}", DeleteTag)
         .WithName("DeleteTag")
         .Produces<ApiResponse<string>>();
-
-      return app;
     }
 
     private static async Task<IResult> GetTags(

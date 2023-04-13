@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../../config/routes';
+import routes from '../../../config/routes';
 
 function Tags({ tags }) {
   if (tags && Array.isArray(tags) && tags.length > 0) {
