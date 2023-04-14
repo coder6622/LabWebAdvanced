@@ -83,7 +83,7 @@ namespace TatBlog.WebApi.Endpoints
     {
 
       var categories = await blogRepository
-        .GetCategoriesAsync();
+        .GetCategoriesAsync(categories => categories.ProjectToType<CategoryDto>());
 
       return Results.Ok(ApiResponse.Success(categories));
     }

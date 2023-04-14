@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import PostSearch from '../components/blog/posts/PostSearch';
+import PostSearch from 'components/client/blog/posts/PostSearch';
 
-function PostsByCategory() {
+function PostsByAuthor() {
   const params = useParams();
   const location = useLocation();
   const { authorName } = location.state;
@@ -12,7 +12,7 @@ function PostsByCategory() {
       <h1 className='mt-3'>
         {params ? (
           <>
-            Bài viết theo chủ đề:
+            Bài viết theo tác giả:
             <span className='text-danger'> {authorName}</span>
           </>
         ) : (
@@ -25,4 +25,4 @@ function PostsByCategory() {
   );
 }
 
-export default PostsByCategory;
+export default PostsByAuthor;

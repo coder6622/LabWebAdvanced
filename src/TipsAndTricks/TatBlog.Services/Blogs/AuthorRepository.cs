@@ -163,7 +163,7 @@ namespace TatBlog.Services.Blogs
 
       IQueryable<Author> authors = _context.Set<Author>()
               .Include(a => a.Posts)
-              .Where(a => a.Posts.Count > 2 
+              .Where(a => a.Posts.Count > 2
                     && a.Posts.Count <= authorsMax.Posts.Count)
               .Take(n);
 
@@ -270,6 +270,17 @@ namespace TatBlog.Services.Blogs
       return await tResultQuery
         .ToPagedListAsync(pagingParams, cancellationToken);
     }
+
+
+    public async Task<IList<T>> GetAllAuthorsAsync<T>(
+          Func<IQueryable<Author>, IQueryable<T>> mapper,
+          CancellationToken cancellationToken = default)
+    {
+      IQueryable<Author> authors = _context.Set<Author>();
+
+      return await mapper(authors).ToListAsync(cancellationToken);
+    }
+
 
     public async Task<IPagedList<AuthorItem>> GetPagedAuthorsAsync(
       IPagingParams pagingParams,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PostsRepository from '../../../services/PostsRepository';
+import PostsRepository from 'services/PostsRepository';
 import PostEntry from './PostEntry';
 
 function PostDetail(props) {

@@ -1,10 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import PostSearch from '../components/blog/posts/PostSearch';
+import PostSearch from '../../components/client/blog/posts/PostSearch';
+import { useSelector } from 'react-redux';
 
 function Home() {
-  const querySearch = new URLSearchParams(useLocation().search);
-  const keyword = querySearch.get('Keyword') ?? '';
+  const keyword = useSelector((state) => state.postFilterClient.Keyword);
 
   return (
     <div className='container'>
@@ -19,7 +19,7 @@ function Home() {
         )}
       </h1>
 
-      <PostSearch querySearch={querySearch} />
+      <PostSearch />
     </div>
   );
 }

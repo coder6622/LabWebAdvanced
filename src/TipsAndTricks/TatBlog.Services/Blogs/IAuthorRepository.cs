@@ -80,6 +80,11 @@ namespace TatBlog.Services.Blogs
      string sortOrder = "ASC",
      CancellationToken cancellationToken = default);
 
+
+    Task<IList<T>> GetAllAuthorsAsync<T>(
+      Func<IQueryable<Author>, IQueryable<T>> mapper,
+      CancellationToken cancellationToken = default);
+
     Task<IPagedList<T>> GetPagedAuthorsAsync<T>(
       Func<IQueryable<Author>, IQueryable<T>> mapper,
       IPagingParams pagingParams,

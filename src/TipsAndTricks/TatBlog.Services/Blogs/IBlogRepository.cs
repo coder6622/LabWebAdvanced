@@ -20,6 +20,12 @@ namespace TatBlog.Services.Blogs
     Task<IList<CategoryItem>> GetCategoriesAsync(
       bool showOnMenu = true,
       CancellationToken cancellationToken = default);
+
+    Task<IList<T>> GetCategoriesAsync<T>(
+      Func<IQueryable<Category>, IQueryable<T>> mapper,
+      bool showOnMenu = true,
+      CancellationToken cancellationToken = default);
+
     Task<IList<Post>> GetPopularArticlesAsync(
       int numPosts,
       CancellationToken cancellationToken = default);

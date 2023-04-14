@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../../../config/routes';
+import publicRoutes from 'config';
 
 function Tags({ tags }) {
   if (tags && Array.isArray(tags) && tags.length > 0) {
@@ -10,7 +10,7 @@ function Tags({ tags }) {
           let params = new URLSearchParams({ slug: item.name });
           return (
             <Link
-              to={`${routes.tag}?${params}`}
+              to={`${publicRoutes.tag}?${params}`}
               className='btn btn-sm btn-outline-secondary mx-1'
               key={index}
             >

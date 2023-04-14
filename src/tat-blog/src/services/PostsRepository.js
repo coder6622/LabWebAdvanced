@@ -1,10 +1,12 @@
 import config from '../config';
+import myConfig from '../config';
 import http from '../http-common';
+import { api } from './Method';
 
-const getPosts = async (params) => {
+const GetPosts = async (params) => {
   try {
     console.log('fetch');
-    const reponse = await http.get(config.endpoints.posts, { params });
+    const reponse = await http.get(myConfig.endpoints.posts, { params });
 
     const data = reponse.data;
     if (data.isSuccess) {
@@ -17,7 +19,7 @@ const getPosts = async (params) => {
 
 const getPostDetail = async (slug) => {
   try {
-    const reponse = await http.get(config.endpoints.postBySlug + `${slug}`);
+    const reponse = await http.get(myConfig.endpoints.postBySlug + `${slug}`);
 
     const data = reponse.data;
     if (data.isSuccess) {
@@ -28,9 +30,17 @@ const getPostDetail = async (slug) => {
   }
 };
 
+const GetFilterData = async () => {
+  return api({
+    method: 'get',
+    url: config.endpoints.postFilterData,
+  });
+};
+
 const PostsRepository = {
-  getPosts,
+  GetPosts,
   getPostDetail,
+  GetFilterData,
 };
 
 export default PostsRepository;

@@ -1,10 +1,10 @@
-import { isEmptyOrSpaces } from '../../../utils/Utils';
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
+import { isEmptyOrSpaces } from 'utils/Utils';
 
 import React from 'react';
-import config from '../../../config';
 import Tags from '../tags/Tags';
+import config from 'config';
 
 function PostItem({ post }) {
   let imageUrl = isEmptyOrSpaces(post.imageUrl) ? '/images/image_1.jpg' : `${process.env.REACT_APP_PUBLIC_URL}/${post.imageUrl}`;
@@ -26,7 +26,7 @@ function PostItem({ post }) {
             <Card.Body>
               <Card.Title>
                 <Link
-                  to={config.routes.post + `/${post.urlSlug}`}
+                  to={config.publicRoutes.post + `/${post.urlSlug}`}
                   className='text-decoration-none text-black'
                 >
                   {post.title}
@@ -36,7 +36,7 @@ function PostItem({ post }) {
                 <small className='text-muted'>Tác giả:</small>
                 <Link
                   to={{
-                    pathname: `${config.routes.author}/${post.author.id}`,
+                    pathname: `${config.publicRoutes.author}/${post.author.id}`,
                   }}
                   state={{ authorName: post.author.fullName }}
                   className='text-decoration-none text-primary m-1'
@@ -47,7 +47,7 @@ function PostItem({ post }) {
                 <small className='text-muted'>Chủ đề:</small>
                 <Link
                   to={{
-                    pathname: `${config.routes.category}/${post.category.id}`,
+                    pathname: `${config.publicRoutes.category}/${post.category.id}`,
                   }}
                   state={{ authorName: post.category.name }}
                   params={{ urlSlug: post.author.urlSlug }}

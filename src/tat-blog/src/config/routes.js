@@ -1,4 +1,4 @@
-const routes = {
+const publicRoutes = {
   home: '/',
   blog: '/blog',
   contact: '/blog/contact',
@@ -8,6 +8,17 @@ const routes = {
   post: '/blog/post',
   author: '/author',
   category: '/category',
+  notFound: '*',
+  badRequest: '/400',
 };
 
-export default routes;
+const privateRoutes = {
+  home: '/admin',
+  categories: '/admin/categories',
+  authors: '/admin/authors',
+  tags: '/admin/tags',
+  posts: '/admin/posts',
+  comments: '/admin/comments',
+};
+
+export { publicRoutes, privateRoutes };

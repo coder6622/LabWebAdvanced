@@ -28,6 +28,10 @@ namespace TatBlog.WebApi.Endpoints
         .WithName("GetAuthors")
         .Produces<ApiResponse<PaginationResult<AuthorItem>>>();
 
+      routeGroupBuilder.MapGet("/all", GetAuthorsAll)
+            .WithName("GetAllAuthors")
+            .Produces<ApiResponse<IList<AuthorDto>>>();
+
 
       routeGroupBuilder.MapGet("/{id:int}", GetAuthorDetails)
         .WithName("GetAuthorDetails")
@@ -73,6 +77,8 @@ namespace TatBlog.WebApi.Endpoints
         .Produces<ApiResponse<PaginationResult<AuthorItem>>>();
     }
 
+
+
     private static async Task<IResult> GetAuthors(
       [AsParameters] AuthorFilterModel model,
       IAuthorRepository authorRepository,
@@ -87,6 +93,16 @@ namespace TatBlog.WebApi.Endpoints
 
       logger.LogInformation("Trả về kết quả");
       return Results.Ok(ApiResponse.Success(paginationResult));
+    }
+
+
+    private static async Task<IResult> GetAuthorsAll(
+      IAuthorRepository authorRepository)
+    {
+      var authors = await authorRepository
+        .GetAllAuthorsAsync(authors => authors.ProjectToType<AuthorDto>());
+
+      return Results.Ok(ApiResponse.Success(authors));
     }
 
     private static async Task<IResult> GetAuthorDetails(

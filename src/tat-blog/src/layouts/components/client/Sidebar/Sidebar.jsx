@@ -1,6 +1,6 @@
 import React from 'react';
-import SearchForm from '../../../components/widgets/SearchForm';
-import CategoriesWidget from '../../../components/widgets/CategoriesWidget';
+import SearchForm from 'components/widgets/SearchForm';
+import CategoriesWidget from 'components/widgets/CategoriesWidget';
 
 function Sidebar() {
   return (

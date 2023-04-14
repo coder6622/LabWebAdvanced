@@ -1,7 +1,7 @@
 import React from 'react';
-import { isEmptyOrSpaces } from '../../../utils/Utils';
+import { isEmptyOrSpaces } from 'utils/Utils';
 import { Link } from 'react-router-dom';
-import config from '../../../config';
+import config from 'config';
 import Tags from '../tags/Tags';
 
 function PostEntry({ post }) {

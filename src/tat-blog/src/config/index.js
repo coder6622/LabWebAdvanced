@@ -1,8 +1,9 @@
-import routes from './routes';
+import { publicRoutes, privateRoutes } from './routes';
 import endpoints from './endpoints';
 
 const config = {
-  routes,
+  publicRoutes: publicRoutes,
+  privateRoutes: privateRoutes,
   endpoints,
 };
 

@@ -140,6 +140,25 @@ namespace TatBlog.Services.Blogs
         .ToListAsync(cancellationToken);
     }
 
+    public async Task<IList<T>> GetCategoriesAsync<T>(
+      Func<IQueryable<Category>, IQueryable<T>> mapper,
+      bool showOnMenu = true,
+      CancellationToken cancellationToken = default)
+    {
+      IQueryable<Category> categories = _context.Set<Category>();
+
+      if (showOnMenu)
+      {
+        categories = categories.Where(c => c.ShowOnMenu);
+      }
+      else
+      {
+        categories = categories.Where(c => !c.ShowOnMenu);
+      }
+
+      return await mapper(categories).ToListAsync(cancellationToken);
+    }
+
 
     public async Task<Tag> GetTagByIdAsync(
        int id,
