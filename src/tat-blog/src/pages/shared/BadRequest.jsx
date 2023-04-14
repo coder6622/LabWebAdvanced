@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useMyQuery } from 'utils/Utils';
+// import { useMyQuery } from 'utils/Utils';
 import { publicRoutes } from 'config/routes';
 
 export default function BadRequest() {
-  let query = useMyQuery(),
-    redirectTo = query.get('redirectTo') ?? '/';
+  // let query = useMyQuery(),;
+  // redirectTo = query.get('redirectTo') ?? '/';
 
   return (
     <div className='d-flex align-items-center justify-content-center vh-100'>

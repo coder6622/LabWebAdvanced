@@ -12,7 +12,7 @@ import Error from 'pages/shared/Error';
 function PostSearch(props) {
   const { params } = props;
 
-  const postFilter = useSelector((state) => state.postFilterAdmin);
+  const postFilter = useSelector((state) => state.postFilterClient);
 
   const dispatch = useDispatch();
 

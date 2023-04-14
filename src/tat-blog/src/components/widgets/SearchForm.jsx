@@ -11,6 +11,7 @@ const SearchForm = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
+    console.log('hello');
     e.preventDefault();
     const search = keyword.trim();
     dispatch(updateKeyword(search));

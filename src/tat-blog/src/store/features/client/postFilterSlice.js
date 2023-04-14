@@ -34,4 +34,4 @@ const postFilterSlice = createSlice({
 
 export const { reset, updateKeyword, updatePageNumber } = postFilterSlice.actions;
 
-export const reducer = postFilterSlice.reducer;
+export const postFilterClientReducer = postFilterSlice.reducer;

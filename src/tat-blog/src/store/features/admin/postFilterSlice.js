@@ -70,4 +70,4 @@ const postFilterSlice = createSlice({
 
 export const { reset, updateKeyword, updateAuthorId, updateCategoryId, updateMonth, updateYear, updatePageNumber } = postFilterSlice.actions;
 
-export const reducer = postFilterSlice.reducer;
+export const postFilterAdminReducer = postFilterSlice.reducer;

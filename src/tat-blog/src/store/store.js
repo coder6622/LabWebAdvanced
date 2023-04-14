@@ -1,10 +1,12 @@
+import { postFilterClientReducer } from './features/client/postFilterSlice';
+
 const { configureStore } = require('@reduxjs/toolkit');
-const { reducer } = require('./features/admin/postFilterSlice');
+const { postFilterAdminReducer } = require('./features/admin/postFilterSlice');
 
 const store = configureStore({
   reducer: {
-    postFilterAdmin: reducer,
-    postFilterClient: reducer,
+    postFilterAdmin: postFilterAdminReducer,
+    postFilterClient: postFilterClientReducer,
   },
 });
 
