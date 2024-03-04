@@ -8,7 +8,6 @@ const PostItemComponent = customElement(
     render () {
       const post = this.getAttribute('data-post')
       const postObj = JSON.parse(post)
-      console.log(postObj)
       const imageUrl = isEmptyOrSpaces(postObj.imageUrl)
         ? '../../assets/images/image_1.jpg'
         : `${IMAGE_URL_BASE}/${postObj.imageUrl}`

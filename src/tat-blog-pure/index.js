@@ -9,52 +9,13 @@ import router from './app/core/router.js'
 import './app/layouts/client/header/header.js'
 import './app/layouts/client/main/main.js'
 import './app/layouts/client/sidebar/sidebar.js'
-import HomeComponent from './features/client/home/index.js'
+import HomePage from './features/client/home/home.js'
 import DashboardComponent from './features/admin/dashboard/dashboard.js'
 import PostDetailComponent from './features/client/post-detail/index.js'
 import ContactComponent from './features/client/contact/contact.js'
 import AboutPage from './features/client/about/about.js'
 import ErrorPage from './features/client/error/error.js'
 import MainLayout from './app/layouts/client/main/main.js'
-
-// const isLogin = false
-
-// addEventListener('DOMContentLoaded', function () {
-//   const appContainer = document.getElementById('app')
-//   if (isLogin) appContainer.append(document.createElement('app-admin-layout'))
-//   else appContainer.append(document.createElement('app-main-layout'))
-// })
-// document.onreadystatechange = function (e) {
-//   if (document.readyState === 'complete') {
-//   }
-// }
-// window.addEventListener('load', function () {
-//   new Router2()
-// })
-
-// window.addEventListener('hashchange', function () {
-//   new Router2()
-// })
-
-// window.addEventListener('popstate', function () {
-//   new Router2()
-// })
-
-// function navigateTo (url) {
-//   history.pushState(null, null, url)
-//   new Router2()
-// }
-
-// document.addEventListener('click', function (event) {
-//   const target = event.target
-//   if (target.tagName === 'A') {
-//     event.preventDefault()
-//     const href = target.getAttribute('href')
-//     if (href) {
-//       navigateTo(href)
-//     }
-//   }
-// })
 
 globalState.initStates({
   user: null
@@ -65,7 +26,7 @@ const authPrivateRoute = {
     const { user } = globalState.getStates(this)
     return user
   },
-  redirect: '/'
+  redirect: '/#/posts/post'
 }
 
 router.addRoutes(
@@ -75,7 +36,7 @@ router.addRoutes(
   },
   {
     '/': {
-      view: HomeComponent
+      view: HomePage
     },
     '/dashboard': {
       view: DashboardComponent,
@@ -95,3 +56,7 @@ router.addRoutes(
     }
   }
 )
+
+// window.addEventListener('load', function () {
+//   router.render()
+// })

@@ -6,25 +6,7 @@ export function isEmptyOrSpaces (str) {
   )
 }
 
-class Utils {
-  constructor () {
-    console.log(location.hash)
-    this.url = location.hash.slice(1).toLowerCase() || '/'
-    this.r = this.url.split('/')
-    this.request = {
-      resource: null,
-      id: null,
-      verb: null
-    }
-  }
-
-  parseRequestURL () {
-    this.request.resource = this.r[1]
-    this.request.id = this.r[2]
-    this.request.verb = this.r[3]
-    console.log(this.request)
-    return this.request
-  }
+export function exactHashPath (path) {
+  const url = path.split('#')[1]
+  return url ? url : '/'
 }
-
-export default Utils

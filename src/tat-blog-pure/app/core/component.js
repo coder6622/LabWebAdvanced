@@ -20,6 +20,7 @@ class Component extends HTMLElement {
 
   setState (newState) {
     this.state = { ...this.state, ...newState }
+    console.log(newState)
     this.connectedCallback()
   }
 
@@ -46,7 +47,6 @@ class Component extends HTMLElement {
   connectedCallback () {
     this.setProps()
     this.innerHTML = this.render()
-    this.style.display = 'relative'
     this.callLifeCycles()
   }
 

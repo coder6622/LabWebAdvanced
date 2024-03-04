@@ -15,9 +15,6 @@ const SidebarComponent = customElement(
         limit: 20
       })
 
-      console.log(this.categories)
-      console.log(this.archives)
-
       return `
       <div class="my-4">
         <app-categories data-categories='${JSON.stringify(

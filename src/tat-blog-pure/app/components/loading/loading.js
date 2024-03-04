@@ -5,6 +5,7 @@ const LoadingComponent = customElement(
   class extends Component {
     render () {
       return `
+      <h1>Loading ...</h1>
       <div class="spinner-grow text-primary" role="status">
       </div>
       <div class="spinner-grow text-secondary" role="status">
@@ -25,3 +26,5 @@ const LoadingComponent = customElement(
     }
   }
 )
+
+export default LoadingComponent

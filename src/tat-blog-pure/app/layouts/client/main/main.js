@@ -6,8 +6,6 @@ const MainLayout = customElement(
   class extends Component {
     constructor () {
       super({ store, element: document.querySelector('#app') })
-
-      console.log(store.state.isLogin)
     }
     render () {
       const { childrens } = this.props
@@ -45,7 +43,6 @@ const MainLayout = customElement(
     }
 
     hanldeLoginBtn () {
-      console.log('setLogin')
       // store.dispatch('setLogin', !store.state.isLogin)
     }
   }
