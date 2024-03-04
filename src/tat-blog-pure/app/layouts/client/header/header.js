@@ -35,14 +35,14 @@ const HeaderComponent = customElement(
                 </li>
                 <li class="nav-item">
                   <a class="nav-link text-dark"
-                    href="/contact"
+                    href="#/contact"
                     title="Xem thông tin liên lạc và góp ý">
                     Liên hệ
                   </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link text-dark"
-                    href='/about'
+                    href='#/about'
                     title="Thông tin về TAT Blog">
                     Giới thiệu
                   </a>
@@ -56,7 +56,7 @@ const HeaderComponent = customElement(
               </ul>
               <ul class="navbar-nav">
                 <li class="nav-item">
-                  <a href='/dashboard' class="nav-link text-dark"
+                  <a href='#/dashboard' class="nav-link text-dark"
                     title="Admin">
                     Admin
                   </a>

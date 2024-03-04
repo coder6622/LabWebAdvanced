@@ -1,3 +1,49 @@
+// import Utils from '../utils/utils.js'
+// class Router2 {
+//   constructor () {
+//     this.routes = {
+//       '/': import('../../../features/client/home/index.js').then(
+//         m => m.HomeComponent
+//       ),
+//       '/dashboard': import('../../features/admin/dashboard/dashboard.js').then(
+//         m => m.DashboardComponent
+//       ),
+//       '/post/:id': import('../../features/client/post-detail/index.js').then(
+//         m => m.PostDetailComponent
+//       ),
+//       '/contact': import('../../features/client/contact/contact.js').then(
+//         m => m.ContactComponent
+//       ),
+//       '/about': import('../../features/client/about/about.js').then(
+//         m => m.AboutPage
+//       )
+//     }
+
+//     this.content = document.getElementById('router-slot')
+//     this.init()
+//   }
+
+//   async init () {
+//     const request = new Utils().parseRequestURL()
+//     const parsedURL =
+//       (request.resource ? '/' + request.resource : '/') +
+//       (request.id ? '/:id' : '') +
+//       (request.verb ? '/' + request.verb : '')
+
+//     if (this.routes[parsedURL]) {
+//       const component = await this.routes[parsedURL]
+//       this.content.innerHTML = ''
+//       const instance = request.id
+//         ? component.create(request)
+//         : component.create()
+
+//       this.content.append(instance)
+//     }
+//   }
+// }
+
+// export default Router2
+
 class Router {
   constructor () {
     this.init()
@@ -12,12 +58,16 @@ class Router {
       if (event.target.tagName === 'A') {
         event.preventDefault()
         const path = event.target.getAttribute('href')
-        console.log(path)
+        console.log(path, this.currentPath())
         if (path !== this.currentPath()) {
           const checkedPrivatePath = this.checkPrivateRoute(path)
           this.navigate(checkedPrivatePath)
         }
       }
+    })
+
+    window.addEventListener('hashchange', () => {
+      this.render()
     })
 
     window.addEventListener('popstate', () => {
@@ -54,20 +104,20 @@ class Router {
   }
 
   checkPrivateRoute (path) {
-    const splitPath = path.split('?')[0]
-    console.log(splitPath)
-    const { privateRoute } = this.routes[splitPath]
-    if (!privateRoute) {
-      console.log('public route')
-      return path
-    }
-    const { condition, redirect, message } = privateRoute
+    // const splitPath = path.split('?')[0]
+    // const { privateRoute } = this.routes[splitPath]
+    // if (!privateRoute) {
+    //   console.log('public route')
+    //   return path
+    // }
+    // const { condition, redirect, message } = privateRoute
 
-    if (condition()) {
-      return path
-    } else {
-      return redirect
-    }
+    // if (condition()) {
+    //   return path
+    // } else {
+    //   return redirect
+    // }
+    return path
   }
 
   navigate (path) {
