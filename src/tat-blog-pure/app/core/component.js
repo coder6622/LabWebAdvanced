@@ -1,5 +1,3 @@
-import Store from '../store/store.js'
-
 const PREFIX = 'app'
 
 class Component extends HTMLElement {
@@ -20,7 +18,6 @@ class Component extends HTMLElement {
 
   setState (newState) {
     this.state = { ...this.state, ...newState }
-    console.log(newState)
     this.connectedCallback()
   }
 
@@ -44,9 +41,53 @@ class Component extends HTMLElement {
     })
   }
 
+  addEvents () {
+    this.querySelectorAll('*').forEach(element => {
+      element.getAttributeNames().forEach(attribute => {
+        // if the attribute starts with '@'
+        // then we will add the event to the element
+        // example : @click="handleClick" will add the event 'click' to the element
+        // and the function 'handleClick' will be called when the event is triggered
+        if (attribute.startsWith('@')) {
+          const event = attribute.split('@')[1]
+          let callback = element.getAttribute(attribute)
+
+          if (callback.match(/[()]/)) {
+            // if the callback has parameters then get the parameters between the parenthesis
+            callback = callback.split('(')[0] // get the function name without the parameters
+
+            const parameters = element
+              .getAttribute(attribute)
+              .split('(')[1]
+              .split(')')[0]
+
+            if (this[callback]) {
+              // And call the function with the parameters
+              element.addEventListener(event, () => {
+                try {
+                  const parsed = JSON.parse(parameters)
+                  this[callback].bind(this)(JSON.parse(parsed))
+                } catch (e) {
+                  this[callback].bind(this)(parameters)
+                }
+              })
+            }
+          } else {
+            // if the callback is a function in the component
+            // then call the function
+            if (this[callback]) {
+              element.addEventListener(event, this[callback].bind(this))
+            }
+          }
+        }
+      })
+    })
+  }
+
   connectedCallback () {
     this.setProps()
     this.innerHTML = this.render()
+    this.addEvents()
     this.callLifeCycles()
   }
 
@@ -54,8 +95,6 @@ class Component extends HTMLElement {
     this.atTheRemoved()
     this.destroy?.()
   }
-
-  addEvents () {}
 
   // run at the first render
   atTheFirstRender () {}

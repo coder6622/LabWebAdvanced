@@ -16,6 +16,7 @@ import ContactComponent from './features/client/contact/contact.js'
 import AboutPage from './features/client/about/about.js'
 import ErrorPage from './features/client/error/error.js'
 import MainLayout from './app/layouts/client/main/main.js'
+import MainLayoutAdmin from './app/layouts/admin/main/main.js'
 
 globalState.initStates({
   user: null
@@ -26,7 +27,7 @@ const authPrivateRoute = {
     const { user } = globalState.getStates(this)
     return user
   },
-  redirect: '/#/posts/post'
+  redirect: '/'
 }
 
 router.addRoutes(
@@ -36,13 +37,16 @@ router.addRoutes(
   },
   {
     '/': {
-      view: HomePage
+      view: HomePage,
+      layout: MainLayout
     },
     '/dashboard': {
       view: DashboardComponent,
+      layout: MainLayoutAdmin,
       privateRoute: authPrivateRoute
     },
     '/posts/post': {
+      layout: MainLayout,
       view: PostDetailComponent
     },
     '/contact': {

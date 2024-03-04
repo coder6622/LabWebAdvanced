@@ -1,10 +1,16 @@
 import { IMAGE_URL_BASE } from '../../api/config.js'
 import { Component, customElement } from '../../core/component.js'
+import router from '../../core/router.js'
 import { isEmptyOrSpaces } from '../../utils/utils.js'
+import TagItemComponent from '../tag/tag-item.js'
 
 const PostItemComponent = customElement(
   'post-item',
   class extends Component {
+    goToDetail (id) {
+      router.navigate(`/#/posts/post?id=${id}`)
+    }
+
     render () {
       const post = this.getAttribute('data-post')
       const postObj = JSON.parse(post)
@@ -43,16 +49,15 @@ const PostItemComponent = customElement(
               <div class="tag-list pb-3">
               ${postObj.tags
                 .map(tag => {
-                  return `<app-tag-item data-tag='${JSON.stringify(
-                    tag
-                  )}'></app-tag-item>`
+                  return `<${TagItemComponent} 
+                    data-tag='${JSON.stringify(tag)}'>
+                  </${TagItemComponent}>`
                 })
                 .join('\n')}
               </div>
               <div class="text-end pe-2">
-                <a path-with-id='true' href='#/post/${postObj.id}' id=${
-        postObj.id
-      }  class="btn btn-primary">
+                <a class="btn btn-primary" 
+                  href="#/posts/post?id=${postObj.id}">
                   Xem chi tiết
                 </a>
               </div>

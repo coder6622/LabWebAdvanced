@@ -1,6 +1,6 @@
-import Component, { customElement } from '../../../core/component.js'
+import { Component, customElement } from '../../../core/component.js'
 
-const HeaderComponent = customElement(
+const HeaderAdmin = customElement(
   'header-admin',
   class extends Component {
     render () {
@@ -65,4 +65,4 @@ const HeaderComponent = customElement(
   }
 )
 
-export default HeaderComponent
+export default HeaderAdmin

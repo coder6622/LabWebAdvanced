@@ -1,39 +1,99 @@
 import { Posts } from '../../../app/api/posts.js'
 import { Component, customElement } from '../../../app/core/component.js'
-import { View } from './view.js'
+import router from '../../../app/core/router.js'
+import { isEmptyOrSpaces } from '../../../app/utils/utils.js'
 
 const PostDetailComponent = customElement(
   'post-detail',
   class extends Component {
     constructor () {
       super()
-      this.view = new View()
-      this.loading = true
+      this.state = {
+        loading: true,
+        post: {}
+      }
     }
 
-    async render () {
-      this.innerHTML = this.loading ? '<app-loading></app-loading>' : ''
-      this.post = await Posts.getPostById(this.id)
-      await this.initView()
+    async fetchPost (id) {
+      try {
+        const post = await Posts.getPostById(id)
+        this.setState({ post: post })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.setState({ loading: false })
+      }
     }
 
-    async initView () {
-      const postView = await this.view.appendPost(this.post)
-      this.innerHTML = postView
+    async atTheFirstRender () {
+      const { id } = router.getQueries()
+      await this.fetchPost(id)
+    }
+
+    render () {
+      const { loading, post } = this.state
+
+      if (loading) return `<app-loading></app-loading>`
+
+      return `
+        <div class="container">
+          <div class="row">
+            <h1>${post.title}</h1>
+            <p class="lead">
+              <span>
+                <i class="fa fa-user-secret"></i>
+                <small class="text-secondary">
+                  Đăng bởi:
+                </small>
+                <a class="text-decoration-none text-info fw-semibold">
+                ${post.author.fullName}
+                </a>
+              </span>
+              &emsp;
+              <span>
+                <i class="fa fa-brands fa-themeisle"></i>
+                <small class="text-muted">
+                  Chủ đề:
+                </small>
+                <a   
+                  class="text-decoration-none text-info fw-semibold">
+                  ${post.category.name}
+                </a>
+              </span>
+              &emsp;
+              <span>
+                <i class="fa fa-solid fa-eye"></i>
+                <span class="text-info fw-semibold">
+                ${post.viewCount}
+                </span>
+              </span>
+            </p>
+
+            <hr>
+            <p class="lead">
+              <i class="fa fa-calendar"></i>
+              <small class="text-muted">
+                Ngày đăng:
+              </small>
+              ${post.postedDate.toString()}
+            </p>
+            <p class="lead">
+              <i class="fa fa-tags"></i>
+              <span class="text-muted">Tags:&emsp;</span>
+            </p>
+            <hr />
+            <p class="lead">${post.shortDescription}</p>
+            <img src="${
+              isEmptyOrSpaces(post.imageUrl)
+                ? '../../assets/images/image_1.jpg'
+                : `${IMAGE_URL_BASE}/${post.imageUrl}`
+            }" 
+              class="img-responsive">
+            <p class="pt-4">${post.description}</p>
+          </div>
+        </div>
+      `
     }
   }
 )
 export default PostDetailComponent
-
-// export class  extends Component {
-//   static create (params) {
-//     const component = Component.create('post-detail')
-
-//     if (params.id) {
-//       component.id = params.id
-//     }
-//     return component
-//   }
-// }
-
-// Component.define('post-detail', PostDetailComponent)

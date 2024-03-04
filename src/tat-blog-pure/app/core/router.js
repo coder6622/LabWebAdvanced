@@ -10,7 +10,6 @@ class Router {
       if (event.target.tagName === 'A') {
         event.preventDefault()
         const path = event.target.getAttribute('href')
-        console.log(path, 'to', this.currentPath())
         if (path !== this.currentPath()) {
           const checkedPrivatePath = this.checkPrivateRoute(path)
           this.navigate(checkedPrivatePath)
@@ -36,11 +35,10 @@ class Router {
 
   getQueries () {
     const queries = {}
-    const search = window.location.search
+    const search = window.location.hash.split('?')[1]
 
     if (search) {
-      const queryStr = search.slice(1) // remove ?
-      const queryArr = queryStr.split('&')
+      const queryArr = search.split('&')
       queryArr.forEach(item => {
         const [key, value] = item.split('=')
         queries[key] = value
@@ -52,8 +50,8 @@ class Router {
   checkPrivateRoute (path) {
     const splitPath = exactHashPath(path.split('?')[0])
 
-    console.log(splitPath)
     const privateRoute = this.routes[splitPath]?.privateRoute
+
     if (!privateRoute) {
       return path
     }
@@ -75,18 +73,27 @@ class Router {
 
   navigate (path) {
     window.history.pushState(null, null, path)
-    // this.render()
-    window.dispatchEvent(new Event('popstate'))
+    this.render()
+    // window.dispatchEvent(new Event('popstate'))
   }
 
   render () {
-    const currentPath = exactHashPath(this.currentPath())
+    const currentPath = exactHashPath(this.currentPath().split('?')[0])
+
     const view = this.routes[currentPath]?.view
 
     if (!view) {
       this.navigate('/#/error')
     } else if (this.parentComponent) {
-      this.myApp.innerHTML = `<${this.parentComponent} childrens="<${view}></${view}>"/>`
+      if (this.myApp.innerHTML.trim() == '') {
+        this.myApp.innerHTML = `<${this.parentComponent} childrens="<${view}></${view}>"/>`
+      } else {
+        const existingChildElement = document.querySelector(
+          'app-main-layout #router-slot'
+        )
+        existingChildElement.innerHTML = ''
+        existingChildElement.innerHTML = `<${view}></${view}>`
+      }
     } else {
       this.myApp.innerHTML = `<${view}/>`
     }

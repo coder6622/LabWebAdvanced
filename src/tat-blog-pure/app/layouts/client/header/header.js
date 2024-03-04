@@ -1,8 +1,20 @@
+import globalState from '../../../core/GlobalStates.js'
 import { Component, customElement } from '../../../core/component.js'
 
 const HeaderComponent = customElement(
   'header',
   class extends Component {
+    constructor () {
+      super()
+    }
+
+    loginDummy () {
+      globalState.setState({ user: { name: 'Long' } })
+      const { user } = globalState.getStates(this)
+
+      console.log(user)
+    }
+
     render () {
       return `
       <header>
@@ -56,10 +68,10 @@ const HeaderComponent = customElement(
               </ul>
               <ul class="navbar-nav">
                 <li class="nav-item">
-                  <a href='#/dashboard' class="nav-link text-dark"
+                  <button @click="loginDummy()" class="nav-link text-dark"
                     title="Admin">
                     Admin
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
