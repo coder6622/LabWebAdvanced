@@ -1,0 +1,63 @@
+import { Component, customElement } from '../../../app/core/component.js'
+
+const ContactComponent = customElement(
+  'contact-page',
+  class extends Component {
+    render () {
+      return `<div class="container mt-3">
+      <div class="row card">
+        <div class="card-header text-white bg-primary">
+          <i class="fa fa-envelope"></i> Liên hệ với chúng tôi
+        </div>
+        <div class="card-body">
+          <form action="" method="post">
+            <div class="form-group">
+              <label for="name">Tên</label>
+              <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
+                    placeholder="Nhập tên" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Địa chỉ Email</label>
+              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                    placeholder="Nhập email" required>
+              <small id="emailHelp" class="form-text text-muted">
+                Chúng tôi sẽ không bao giờ chia sẻ email của bạn với
+                bất cứ ai khác.
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="subject">Nội dung</label>
+              <textarea class="form-control" id="subject" name="subject" rows="8" required></textarea>
+            </div>
+            <br>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class=" btn btn-primary">Gửi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row card mt-3">
+        <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-home"></i> Địa chỉ liên hệ</div>
+        <div class="row">
+          <div class="card-body col-7">
+            <p><b>Chủ blog</b></p>
+            <p><b>Địa chỉ:</b> Đang cập nhật</p>
+            <p><b>Website:</b> Đang cập nhật</p>
+            <p><b>Email:</b> Đang cập nhật</p>
+            <p><b>Điện thoại:</b> Đang cập nhật</p>
+          </div>
+          <div class="col-5 p-2">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.2877902405253!2d108.44201621412589!3d11.95456563961217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317112d959f88991%3A0x9c66baf1767356fa!2zVHLGsOG7nW5nIMSQ4bqhaSBI4buNYyDEkMOgIEzhuqF0!5e0!3m2!1svi!2s!4v1633261535076!5m2!1svi!2s"
+                    width="100%" height="210px" style="border:0;" allowfullscreen="true" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    `
+    }
+  }
+)
+
+export default ContactComponent
