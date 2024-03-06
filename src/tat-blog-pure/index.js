@@ -8,15 +8,14 @@ import globalState from './app/core/GlobalStates.js'
 import router from './app/core/router.js'
 import './app/layouts/client/header/header.js'
 import './app/layouts/client/main/main.js'
-import './app/layouts/client/sidebar/sidebar.js'
-import HomePage from './features/client/home/home.js'
-import DashboardComponent from './features/admin/dashboard/dashboard.js'
-import PostDetailComponent from './features/client/post-detail/index.js'
-import ContactComponent from './features/client/contact/contact.js'
-import AboutPage from './features/client/about/about.js'
-import ErrorPage from './features/client/error/error.js'
 import MainLayout from './app/layouts/client/main/main.js'
-import MainLayoutAdmin from './app/layouts/admin/main/main.js'
+import './app/layouts/client/sidebar/sidebar.js'
+import DashboardComponent from './features/admin/dashboard/dashboard.js'
+import AboutPage from './features/client/about/about.js'
+import ContactComponent from './features/client/contact/contact.js'
+import ErrorPage from './features/client/error/error.js'
+import HomePage from './features/client/home/home.js'
+import PostDetailComponent from './features/client/post-detail/index.js'
 
 globalState.initStates({
   user: null
@@ -37,16 +36,13 @@ router.addRoutes(
   },
   {
     '/': {
-      view: HomePage,
-      layout: MainLayout
+      view: HomePage
     },
     '/dashboard': {
       view: DashboardComponent,
-      layout: MainLayoutAdmin,
       privateRoute: authPrivateRoute
     },
     '/posts/post': {
-      layout: MainLayout,
       view: PostDetailComponent
     },
     '/contact': {

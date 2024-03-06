@@ -1,5 +1,5 @@
-import { Component, customElement } from '../../../core/component'
-import HeaderAdmin from '../header/header'
+import { Component, customElement } from '../../../core/component.js'
+import HeaderAdmin from '../header/header.js'
 
 const MainLayoutAdmin = customElement(
   'main-layout-admin',

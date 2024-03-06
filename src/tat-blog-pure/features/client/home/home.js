@@ -1,39 +1,95 @@
-import { Posts } from '../../../app/api/posts.js'
 import { Component, customElement } from '../../../app/core/component.js'
-import PostItemComponent from '../../../app/components/post-iem/post-item.js'
+import router from '../../../app/core/router.js'
+import HeaderTop from '../../../app/layouts/client/top-header/top-header.js'
+import LivesPage from './lives-page.js'
+import NewsPage from './news-page.js'
+import TrendsPage from './trends-page.js'
+import TVAppPage from './tv-app-page.js'
+
+// const HomePage = customElement(
+//   'home',
+//   class extends Component {
+//     constructor () {
+//       super()
+
+//       this.routes = {
+//         news: NewsPage,
+//         app: TVAppPage,
+//         live: LivesPage
+//       }
+//     }
+
+//     render () {
+//       const { children } = this.props
+//       const querySearch = router.getQueries()
+//       const tab = querySearch.tab
+//       console.log(tab)
+
+//       return `
+//       <div class="page-content-container">
+//         <${HeaderTop}></${HeaderTop}>
+//         <div class="page-content-body">
+//           ${
+//             tab
+//               ? `<${this.routes[tab]}></${this.routes[tab]}>`
+//               : `<${TrendsPage}>></${TrendsPage}>`
+//           }
+//         </div>
+//       </div>`
+//     }
+//   }
+// )
+
+// export default HomePage
 
 const HomePage = customElement(
   'home',
   class extends Component {
     constructor () {
       super()
-      this.state = {
-        loading: true,
-        posts: []
+
+      this.routes = {
+        news: NewsPage,
+        app: TVAppPage,
+        live: LivesPage
+      }
+
+      this.handleTabChange = this.handleTabChange.bind(this)
+    }
+
+    connectedCallback () {
+      super.connectedCallback()
+      // router.onChange(this.handleTabChange) // Listen for changes in the query parameters
+      this.handleTabChange()
+      window.addEventListener('popstate', this.handleTabChange)
+    }
+
+    disconnectedCallback () {
+      super.disconnectedCallback()
+      // router.offChange(this.handleTabChange) // Stop listening for changes in the query parameters
+      window.removeEventListener('popstate', this.handleTabChange)
+    }
+
+    handleTabChange () {
+      console.log('helloworld')
+      const querySearch = router.getQueries()
+      const tab = querySearch.tab
+
+      // Re-render the content in the page-content-body based on the new tab value
+      const pageContentBody = this.$('.page-content-body')
+      if (pageContentBody) {
+        pageContentBody.innerHTML = tab
+          ? `<${this.routes[tab]}></${this.routes[tab]}>`
+          : `<${TrendsPage}></${TrendsPage}>`
       }
     }
 
-    async atTheFirstRender () {
-      const posts = await Posts.getPosts({ pageNumber: 1, pageSize: 10 })
-      this.setState({ loading: false, posts: posts.items })
-    }
-
     render () {
-      const { loading, posts } = this.state
-
-      if (loading) return `<app-loading></app-loading>`
-
       return `
       <div class="page-content-container">
-        <div class="row">
-          ${posts
-            .map(
-              post =>
-                `<${PostItemComponent} 
-                  id='${post.id}'
-                  data-post='${JSON.stringify(post)}'></${PostItemComponent}>`
-            )
-            .join('\n')}
+        <${HeaderTop}></${HeaderTop}>
+        <div class="page-content-body">
+         
         </div>
       </div>`
     }

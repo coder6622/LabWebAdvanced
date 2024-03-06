@@ -2,6 +2,7 @@ import { exactHashPath } from '../utils/utils.js'
 
 class Router {
   constructor () {
+    this.listeners = []
     this.init()
   }
 
@@ -17,9 +18,9 @@ class Router {
       }
     })
 
-    window.addEventListener('hashchange', () => {
-      this.render()
-    })
+    // window.addEventListener('hashchange', () => {
+    //   this.render()
+    // })
 
     window.addEventListener('popstate', () => {
       this.render()
@@ -97,6 +98,17 @@ class Router {
     } else {
       this.myApp.innerHTML = `<${view}/>`
     }
+
+    this.listeners.forEach(listener => listener())
+  }
+
+  onChange (callback) {
+    this.listeners.push(callback)
+  }
+
+  // Method to remove a listener for query parameter changes
+  offChange (callback) {
+    this.listeners = this.listeners.filter(listener => listener !== callback)
   }
 }
 

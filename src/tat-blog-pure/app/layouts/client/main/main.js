@@ -1,5 +1,5 @@
 import { Component, customElement } from '../../../core/component.js'
-import HeaderComponent from '../header/header.js'
+import SideMenu from '../header/header.js'
 import SidebarComponent from '../sidebar/sidebar.js'
 
 const MainLayout = customElement(
@@ -11,10 +11,12 @@ const MainLayout = customElement(
     render () {
       const { childrens } = this.props
       return `
-        <${HeaderComponent}></${HeaderComponent}> 
         <div class="container-fluid">
           <div class="row">
-            <div class="col-9">
+            <div class="col-2">
+              <${SideMenu}></${SideMenu}> 
+            </div>
+            <div class="col-7">
               <main id="router-slot" class="layout-page-content">
               ${childrens}
               </main>
