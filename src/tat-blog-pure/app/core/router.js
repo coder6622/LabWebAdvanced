@@ -1,8 +1,12 @@
-import { exactHashPath } from '../utils/utils.js'
+import {
+  exactHashPath,
+  getCurrentPath,
+  getPrevPath,
+  getQueries
+} from '../utils/utils.js'
 
 class Router {
   constructor () {
-    this.listeners = []
     this.init()
   }
 
@@ -11,16 +15,12 @@ class Router {
       if (event.target.tagName === 'A') {
         event.preventDefault()
         const path = event.target.getAttribute('href')
-        if (path !== this.currentPath()) {
+        if (path !== getCurrentPath()) {
           const checkedPrivatePath = this.checkPrivateRoute(path)
           this.navigate(checkedPrivatePath)
         }
       }
     })
-
-    // window.addEventListener('hashchange', () => {
-    //   this.render()
-    // })
 
     window.addEventListener('popstate', () => {
       this.render()
@@ -32,20 +32,6 @@ class Router {
     this.parentComponent = elements.parentComponent
     this.myApp = document.querySelector(elements.myApp)
     this.render()
-  }
-
-  getQueries () {
-    const queries = {}
-    const search = window.location.hash.split('?')[1]
-
-    if (search) {
-      const queryArr = search.split('&')
-      queryArr.forEach(item => {
-        const [key, value] = item.split('=')
-        queries[key] = value
-      })
-    }
-    return queries
   }
 
   checkPrivateRoute (path) {
@@ -64,51 +50,63 @@ class Router {
     }
   }
 
-  currentPath () {
-    const hashPath = window.location.hash
-    if (hashPath) {
-      return hashPath
-    }
-    return '/'
-  }
-
   navigate (path) {
-    window.history.pushState(null, null, path)
+    window.history.pushState({ prevUrl: window.location.hash }, null, path)
     this.render()
-    // window.dispatchEvent(new Event('popstate'))
   }
 
   render () {
-    const currentPath = exactHashPath(this.currentPath().split('?')[0])
+    const { currentPath, queries } = getQueries()
 
-    const view = this.routes[currentPath]?.view
+    const tab = queries.tab
 
-    if (!view) {
+    const route = this.routes[currentPath]
+
+    const viewParent = route.view
+    const viewListChild = route.child
+    const viewChild = viewListChild
+      ? tab
+        ? this.routes[currentPath].child[tab]
+        : Object.values(this.routes[currentPath].child)[0]
+      : null
+
+    if (!viewParent) {
       this.navigate('/#/error')
     } else if (this.parentComponent) {
       if (this.myApp.innerHTML.trim() == '') {
-        this.myApp.innerHTML = `<${this.parentComponent} childrens="<${view}></${view}>"/>`
+        if (viewChild) {
+          console.log('has viewchild')
+          this.myApp.innerHTML = `<${this.parentComponent} 
+            childrens="<${viewParent}></${viewParent}>"></${this.parentComponent}>`
+          const pageContentBody = document.querySelector(
+            `${viewParent} #page-content-body`
+          )
+          pageContentBody.innerHTML = `<${viewChild}></${viewChild}>`
+        } else {
+          this.myApp.innerHTML = `<${this.parentComponent} 
+          childrens="<${viewParent}></${viewParent}>"/>`
+        }
       } else {
-        const existingChildElement = document.querySelector(
-          'app-main-layout #router-slot'
-        )
-        existingChildElement.innerHTML = ''
-        existingChildElement.innerHTML = `<${view}></${view}>`
+        console.log('render')
+        if (getPrevPath() !== currentPath) {
+          const existingChildElement = document.querySelector(
+            'app-main-layout #router-slot'
+          )
+          existingChildElement.innerHTML = ''
+          existingChildElement.innerHTML = `<${viewParent}></${viewParent}>`
+          if (viewListChild) {
+            const pageContentBody = document.querySelector('#page-content-body')
+            pageContentBody.innerHTML = `<${viewChild}></${viewChild}>`
+          }
+        } else if (viewListChild) {
+          console.log('render tab')
+          const pageContentBody = document.querySelector('#page-content-body')
+          pageContentBody.innerHTML = `<${viewChild}></${viewChild}>`
+        }
       }
     } else {
-      this.myApp.innerHTML = `<${view}/>`
+      this.myApp.innerHTML = `<${viewParent}/>`
     }
-
-    this.listeners.forEach(listener => listener())
-  }
-
-  onChange (callback) {
-    this.listeners.push(callback)
-  }
-
-  // Method to remove a listener for query parameter changes
-  offChange (callback) {
-    this.listeners = this.listeners.filter(listener => listener !== callback)
   }
 }
 

@@ -15,6 +15,10 @@ import AboutPage from './features/client/about/about.js'
 import ContactComponent from './features/client/contact/contact.js'
 import ErrorPage from './features/client/error/error.js'
 import HomePage from './features/client/home/home.js'
+import LivesPage from './features/client/home/lives-page.js'
+import NewsPage from './features/client/home/news-page.js'
+import TrendsPage from './features/client/home/trends-page.js'
+import TVAppPage from './features/client/home/tv-app-page.js'
 import PostDetailComponent from './features/client/post-detail/index.js'
 
 globalState.initStates({
@@ -36,7 +40,13 @@ router.addRoutes(
   },
   {
     '/': {
-      view: HomePage
+      view: HomePage,
+      child: {
+        '': TrendsPage,
+        news: NewsPage,
+        app: TVAppPage,
+        live: LivesPage
+      }
     },
     '/dashboard': {
       view: DashboardComponent,

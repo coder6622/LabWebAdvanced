@@ -48,48 +48,50 @@ const HomePage = customElement(
     constructor () {
       super()
 
-      this.routes = {
-        news: NewsPage,
-        app: TVAppPage,
-        live: LivesPage
-      }
+      // this.routes = {
+      //   news: NewsPage,
+      //   app: TVAppPage,
+      //   live: LivesPage
+      // }
 
-      this.handleTabChange = this.handleTabChange.bind(this)
+      // this.handleTabChange = this.handleTabChange.bind(this)
     }
 
-    connectedCallback () {
-      super.connectedCallback()
-      // router.onChange(this.handleTabChange) // Listen for changes in the query parameters
-      this.handleTabChange()
-      window.addEventListener('popstate', this.handleTabChange)
-    }
+    // connectedCallback () {
+    //   super.connectedCallback()
+    //   // router.onChange(this.handleTabChange) // Listen for changes in the query parameters
+    //   this.handleTabChange()
+    //   window.addEventListener('popstate', this.handleTabChange)
+    // }
 
-    disconnectedCallback () {
-      super.disconnectedCallback()
-      // router.offChange(this.handleTabChange) // Stop listening for changes in the query parameters
-      window.removeEventListener('popstate', this.handleTabChange)
-    }
+    // disconnectedCallback () {
+    //   super.disconnectedCallback()
+    //   // router.offChange(this.handleTabChange) // Stop listening for changes in the query parameters
+    //   window.removeEventListener('popstate', this.handleTabChange)
+    // }
 
-    handleTabChange () {
-      console.log('helloworld')
-      const querySearch = router.getQueries()
-      const tab = querySearch.tab
+    // handleTabChange () {
+    //   console.log('helloworld')
+    //   const querySearch = router.getQueries()
+    //   const tab = querySearch.tab
 
-      // Re-render the content in the page-content-body based on the new tab value
-      const pageContentBody = this.$('.page-content-body')
-      if (pageContentBody) {
-        pageContentBody.innerHTML = tab
-          ? `<${this.routes[tab]}></${this.routes[tab]}>`
-          : `<${TrendsPage}></${TrendsPage}>`
-      }
-    }
+    //   // Re-render the content in the page-content-body based on the new tab value
+    //   const pageContentBody = this.$('.page-content-body')
+    //   if (pageContentBody) {
+    //     pageContentBody.innerHTML = tab
+    //       ? `<${this.routes[tab]}></${this.routes[tab]}>`
+    //       : `<${TrendsPage}></${TrendsPage}>`
+    //   }
+    // }
 
     render () {
+      const { children } = this.props
+      console.log(children)
       return `
       <div class="page-content-container">
         <${HeaderTop}></${HeaderTop}>
-        <div class="page-content-body">
-         
+        <div id="page-content-body">
+        ${children} 
         </div>
       </div>`
     }

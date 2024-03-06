@@ -1,7 +1,7 @@
 import { Posts } from '../../../app/api/posts.js'
 import { Component, customElement } from '../../../app/core/component.js'
 import router from '../../../app/core/router.js'
-import { isEmptyOrSpaces } from '../../../app/utils/utils.js'
+import { getQueries, isEmptyOrSpaces } from '../../../app/utils/utils.js'
 
 const PostDetailComponent = customElement(
   'post-detail',
@@ -26,7 +26,7 @@ const PostDetailComponent = customElement(
     }
 
     async atTheFirstRender () {
-      const { id } = router.getQueries()
+      const { id } = getQueries().queries
       await this.fetchPost(id)
     }
 
